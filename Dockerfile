@@ -20,7 +20,7 @@ COPY HCM_Flood_Level/Infrastructure/ HCM_Flood_Level/Infrastructure/
 COPY HCM_Flood_Level/WebAPI/ HCM_Flood_Level/WebAPI/
 
 # Build the application
-WORKDIR /src/HCM_Flood_Level
+WORKDIR /src/HCM_Flood_Level/WebAPI
 RUN dotnet build -c Release -o /app/build
 
 # Stage 2: Publish
