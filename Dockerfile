@@ -21,8 +21,8 @@ COPY HCM_Flood_Level/WebAPI/ HCM_Flood_Level/WebAPI/
 
 # Stage 2: Publish
 FROM build AS publish
-WORKDIR /src/HCM_Flood_Level/WebAPI
-RUN dotnet publish -c Release -o /app/publish
+WORKDIR /src/HCM_Flood_Level
+RUN dotnet publish WebAPI/WebAPI.csproj -c Release -o /app/publish
 
 # Stage 3: Runtime
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
