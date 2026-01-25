@@ -8,7 +8,9 @@ using System.Text;
 using WebAPI.Extensions;
 using WebAPI.Middleware;
 
-var builder = WebApplication.CreateBuilder(args);
+public static void Main(string[] args)
+{
+    var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
@@ -113,3 +115,4 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+}
