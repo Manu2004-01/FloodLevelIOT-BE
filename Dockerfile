@@ -3,23 +3,23 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 WORKDIR /src
 
 # Copy solution file
-COPY HCM_Flood_Level.sln ./
+COPY HCM_Flood_Level/HCM_Flood_Level.sln ./
 
 # Copy project files
-COPY Core/Core.csproj Core/
-COPY Infrastructure/Infrastructure.csproj Infrastructure/
-COPY WebAPI/WebAPI.csproj WebAPI/
+COPY HCM_Flood_Level/Core/Core.csproj HCM_Flood_Level/Core/
+COPY HCM_Flood_Level/Infrastructure/Infrastructure.csproj HCM_Flood_Level/Infrastructure/
+COPY HCM_Flood_Level/WebAPI/WebAPI.csproj HCM_Flood_Level/WebAPI/
 
 # Restore dependencies
 RUN dotnet restore
 
 # Copy all source files
-COPY Core/ Core/
-COPY Infrastructure/ Infrastructure/
-COPY WebAPI/ WebAPI/
+COPY HCM_Flood_Level/Core/ HCM_Flood_Level/Core/
+COPY HCM_Flood_Level/Infrastructure/ HCM_Flood_Level/Infrastructure/
+COPY HCM_Flood_Level/WebAPI/ HCM_Flood_Level/WebAPI/
 
 # Build the application
-WORKDIR /src/WebAPI
+WORKDIR /src/HCM_Flood_Level/WebAPI
 RUN dotnet build -c Release -o /app/build
 
 # Stage 2: Publish
