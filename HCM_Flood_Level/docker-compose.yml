@@ -1,0 +1,28 @@
+version: '3.8'
+
+services:
+  webapi:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: floodlevel-api
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    environment:
+      - ASPNETCORE_ENVIRONMENT=Development
+      - ASPNETCORE_URLS=http://+:8080
+      - ConnectionStrings__CoreDb=User Id=postgres.ixckoxqheegmeotthupx;Password=Iotmanage@1101;Server=aws-1-ap-southeast-1.pooler.supabase.com;Port=5432;Database=postgres
+      - ConnectionStrings__EventsDb=User Id=postgres.xprezcqbvcctvidrkonk;Password=IotOperational@1101;Server=aws-1-ap-southeast-1.pooler.supabase.com;Port=5432;Database=postgres
+      - Jwt__Key=YourSuperSecretKeyThatShouldBeAtLeast32CharactersLongForHS256Algorithm
+      - Jwt__Issuer=FloodLevelHCM
+      - Jwt__Audience=FloodLevelHCMUsers
+      - Jwt__ExpiresMinutes=60
+    restart: unless-stopped
+    networks:
+      - floodlevel-network
+
+networks:
+  floodlevel-network:
+    driver: bridge
+

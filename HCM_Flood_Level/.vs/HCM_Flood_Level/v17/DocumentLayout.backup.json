@@ -1,0 +1,137 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "D:\\FPTU\\FloodLevelIOT-BE\\HCM_Flood_Level\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{E0705B8D-A8BA-4818-A9B5-F64473F23E9A}|WebAPI\\WebAPI.csproj|d:\\fptu\\floodleveliot-be\\hcm_flood_level\\webapi\\controllers\\admin\\manageacccontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E0705B8D-A8BA-4818-A9B5-F64473F23E9A}|WebAPI\\WebAPI.csproj|solutionrelative:webapi\\controllers\\admin\\manageacccontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E0705B8D-A8BA-4818-A9B5-F64473F23E9A}|WebAPI\\WebAPI.csproj|d:\\fptu\\floodleveliot-be\\hcm_flood_level\\webapi\\models\\mappinguser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E0705B8D-A8BA-4818-A9B5-F64473F23E9A}|WebAPI\\WebAPI.csproj|solutionrelative:webapi\\models\\mappinguser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{34A3E703-B133-440D-A8E4-9E6583E657CC}|Infrastructure\\Infrastructure.csproj|d:\\fptu\\floodleveliot-be\\hcm_flood_level\\infrastructure\\repositories\\admin\\manageaccrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{34A3E703-B133-440D-A8E4-9E6583E657CC}|Infrastructure\\Infrastructure.csproj|solutionrelative:infrastructure\\repositories\\admin\\manageaccrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3D73A4B9-1067-4E8D-B10E-77B202CAA7BC}|Core\\Core.csproj|d:\\fptu\\floodleveliot-be\\hcm_flood_level\\core\\interfaces\\admin\\imanageaccrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3D73A4B9-1067-4E8D-B10E-77B202CAA7BC}|Core\\Core.csproj|solutionrelative:core\\interfaces\\admin\\imanageaccrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3D73A4B9-1067-4E8D-B10E-77B202CAA7BC}|Core\\Core.csproj|d:\\fptu\\floodleveliot-be\\hcm_flood_level\\core\\dtos\\admin\\manageaccdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3D73A4B9-1067-4E8D-B10E-77B202CAA7BC}|Core\\Core.csproj|solutionrelative:core\\dtos\\admin\\manageaccdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 0,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedWidth": 200,
+          "SelectedChildIndex": 3,
+          "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "IManageAccRepository.cs",
+              "DocumentMoniker": "D:\\FPTU\\FloodLevelIOT-BE\\HCM_Flood_Level\\Core\\Interfaces\\Admin\\IManageAccRepository.cs",
+              "RelativeDocumentMoniker": "Core\\Interfaces\\Admin\\IManageAccRepository.cs",
+              "ToolTip": "D:\\FPTU\\FloodLevelIOT-BE\\HCM_Flood_Level\\Core\\Interfaces\\Admin\\IManageAccRepository.cs",
+              "RelativeToolTip": "Core\\Interfaces\\Admin\\IManageAccRepository.cs",
+              "ViewState": "AgIAAAoAAAAAAAAAAAAAAA4AAAAyAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-25T09:13:16.549Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "ManageAccRepository.cs",
+              "DocumentMoniker": "D:\\FPTU\\FloodLevelIOT-BE\\HCM_Flood_Level\\Infrastructure\\Repositories\\Admin\\ManageAccRepository.cs",
+              "RelativeDocumentMoniker": "Infrastructure\\Repositories\\Admin\\ManageAccRepository.cs",
+              "ToolTip": "D:\\FPTU\\FloodLevelIOT-BE\\HCM_Flood_Level\\Infrastructure\\Repositories\\Admin\\ManageAccRepository.cs",
+              "RelativeToolTip": "Infrastructure\\Repositories\\Admin\\ManageAccRepository.cs",
+              "ViewState": "AgIAAB8AAAAAAAAAAIAwwCgAAAAYAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-25T09:19:36.936Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "MappingUser.cs",
+              "DocumentMoniker": "D:\\FPTU\\FloodLevelIOT-BE\\HCM_Flood_Level\\WebAPI\\Models\\MappingUser.cs",
+              "RelativeDocumentMoniker": "WebAPI\\Models\\MappingUser.cs",
+              "ToolTip": "D:\\FPTU\\FloodLevelIOT-BE\\HCM_Flood_Level\\WebAPI\\Models\\MappingUser.cs",
+              "RelativeToolTip": "WebAPI\\Models\\MappingUser.cs",
+              "ViewState": "AgIAAAgAAAAAAAAAAAAAwBQAAAAdAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-25T09:48:57.336Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "ManageAccController.cs",
+              "DocumentMoniker": "D:\\FPTU\\FloodLevelIOT-BE\\HCM_Flood_Level\\WebAPI\\Controllers\\Admin\\ManageAccController.cs",
+              "RelativeDocumentMoniker": "WebAPI\\Controllers\\Admin\\ManageAccController.cs",
+              "ToolTip": "D:\\FPTU\\FloodLevelIOT-BE\\HCM_Flood_Level\\WebAPI\\Controllers\\Admin\\ManageAccController.cs",
+              "RelativeToolTip": "WebAPI\\Controllers\\Admin\\ManageAccController.cs",
+              "ViewState": "AgIAAFUAAAAAAAAAAAAIwFcAAABUAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-25T09:32:58.926Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "ManageAccDTO.cs",
+              "DocumentMoniker": "D:\\FPTU\\FloodLevelIOT-BE\\HCM_Flood_Level\\Core\\DTOs\\Admin\\ManageAccDTO.cs",
+              "RelativeDocumentMoniker": "Core\\DTOs\\Admin\\ManageAccDTO.cs",
+              "ToolTip": "D:\\FPTU\\FloodLevelIOT-BE\\HCM_Flood_Level\\Core\\DTOs\\Admin\\ManageAccDTO.cs",
+              "RelativeToolTip": "Core\\DTOs\\Admin\\ManageAccDTO.cs",
+              "ViewState": "AgIAACEAAAAAAAAAAAAhwCYAAAATAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-01-25T10:08:12.181Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{1c4feeaa-4718-4aa9-859d-94ce25d182ba}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:1:0:{e8b06f52-6d01-11d2-aa7d-00c04f990343}"
+            }
+          ]
+        },
+        {
+          "DockedWidth": 228,
+          "SelectedChildIndex": -1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
+            }
+          ]
+        },
+        {
+          "DockedWidth": 228,
+          "SelectedChildIndex": -1,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}
