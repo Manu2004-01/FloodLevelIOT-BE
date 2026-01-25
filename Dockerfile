@@ -5,7 +5,7 @@ WORKDIR /src
 # Copy solution file
 COPY HCM_Flood_Level/HCM_Flood_Level.sln HCM_Flood_Level/
 
-# Copy project files
+# Copy project files first for better layer caching
 COPY HCM_Flood_Level/Core/Core.csproj HCM_Flood_Level/Core/
 COPY HCM_Flood_Level/Infrastructure/Infrastructure.csproj HCM_Flood_Level/Infrastructure/
 COPY HCM_Flood_Level/WebAPI/WebAPI.csproj HCM_Flood_Level/WebAPI/
@@ -14,14 +14,17 @@ COPY HCM_Flood_Level/WebAPI/WebAPI.csproj HCM_Flood_Level/WebAPI/
 WORKDIR /src/HCM_Flood_Level
 RUN dotnet restore
 
-# Copy all source files
+# Copy all source files (including Program.cs)
 COPY HCM_Flood_Level/Core/ HCM_Flood_Level/Core/
 COPY HCM_Flood_Level/Infrastructure/ HCM_Flood_Level/Infrastructure/
 COPY HCM_Flood_Level/WebAPI/ HCM_Flood_Level/WebAPI/
 
-# Build the application
+# Verify Program.cs exists
+RUN test -f /src/HCM_Flood_Level/WebAPI/Program.cs || (echo "Program.cs not found!" && ls -la /src/HCM_Flood_Level/WebAPI/ && exit 1)
+
+# Build the application (build without output to verify it compiles)
 WORKDIR /src/HCM_Flood_Level/WebAPI
-RUN dotnet build -c Release -o /app/build
+RUN dotnet build -c Release
 
 # Stage 2: Publish
 FROM build AS publish
