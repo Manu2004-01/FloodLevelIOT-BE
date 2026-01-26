@@ -19,8 +19,12 @@ COPY HCM_Flood_Level/Core/ HCM_Flood_Level/Core/
 COPY HCM_Flood_Level/Infrastructure/ HCM_Flood_Level/Infrastructure/
 COPY HCM_Flood_Level/WebAPI/ HCM_Flood_Level/WebAPI/
 
-# Verify Program.cs exists
-RUN ls -la /src/HCM_Flood_Level/WebAPI/Program.cs || echo "Program.cs not found!"
+# Explicitly copy Program.cs to ensure it's included
+COPY HCM_Flood_Level/WebAPI/Program.cs HCM_Flood_Level/WebAPI/Program.cs
+
+# Verify Program.cs exists and list all files in WebAPI directory
+RUN ls -la /src/HCM_Flood_Level/WebAPI/ | head -20
+RUN test -f /src/HCM_Flood_Level/WebAPI/Program.cs && echo "Program.cs found!" || echo "Program.cs NOT found!"
 
 # Build the application (build without output to verify it compiles)
 WORKDIR /src/HCM_Flood_Level
