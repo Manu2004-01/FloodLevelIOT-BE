@@ -21,7 +21,7 @@ COPY HCM_Flood_Level/WebAPI/ HCM_Flood_Level/WebAPI/
 
 # Build the application (build without output to verify it compiles)
 WORKDIR /src/HCM_Flood_Level
-RUN dotnet build WebAPI/WebAPI.csproj -c Release
+RUN dotnet build HCM_Flood_Level.sln -c Release --no-incremental
 
 # Stage 2: Publish
 FROM build AS publish
