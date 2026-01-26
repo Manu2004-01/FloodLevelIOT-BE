@@ -1,29 +1,19 @@
 # Stage 1: Build
 FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
-WORKDIR /src
+WORKDIR /src/HCM_Flood_Level
 
-# Copy solution file
-COPY HCM_Flood_Level/HCM_Flood_Level.sln HCM_Flood_Level/
-
-# Copy project files first for better layer caching
-COPY HCM_Flood_Level/Core/Core.csproj HCM_Flood_Level/Core/
-COPY HCM_Flood_Level/Infrastructure/Infrastructure.csproj HCM_Flood_Level/Infrastructure/
-COPY HCM_Flood_Level/WebAPI/WebAPI.csproj HCM_Flood_Level/WebAPI/
+# Copy entire solution source first to avoid missing files due to caching
+COPY HCM_Flood_Level/ .
 
 # Restore dependencies
-WORKDIR /src/HCM_Flood_Level
 RUN dotnet restore
 
-# Copy entire solution source (includes all .cs files)
-COPY HCM_Flood_Level/ HCM_Flood_Level/
-
-# Verify Program.cs exists and list contents
+# Optional: list WebAPI contents and verify Program.cs exists
 RUN ls -la /src/HCM_Flood_Level/WebAPI/ | head -50
 RUN test -f /src/HCM_Flood_Level/WebAPI/Program.cs && echo "Program.cs found!" || (echo "Program.cs NOT found!" && ls -la /src/HCM_Flood_Level/WebAPI/)
 
-# Build the application (build without output to verify it compiles)
-WORKDIR /src/HCM_Flood_Level
-RUN dotnet build HCM_Flood_Level.sln -c Release --no-incremental
+# Build only the WebAPI project to avoid solution-level surprises
+RUN dotnet build WebAPI/WebAPI.csproj -c Release --no-incremental
 
 # Stage 2: Publish
 FROM build AS publish
@@ -34,14 +24,14 @@ RUN dotnet publish WebAPI/WebAPI.csproj -c Release -o /app/publish
 FROM mcr.microsoft.com/dotnet/aspnet:8.0 AS final
 WORKDIR /app
 
-# Create a non-root user
-RUN groupadd -r appuser && useradd -r -g appuser appuser
+# Create a non-root user (optional but recommended)
+RUN addgroup --system appuser && adduser --system --ingroup appuser appuser || true
 
 # Copy published files
 COPY --from=publish /app/publish .
 
 # Change ownership
-RUN chown -R appuser:appuser /app
+RUN chown -R appuser:appuser /app || true
 
 # Switch to non-root user
 USER appuser
