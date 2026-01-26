@@ -14,16 +14,12 @@ COPY HCM_Flood_Level/WebAPI/WebAPI.csproj HCM_Flood_Level/WebAPI/
 WORKDIR /src/HCM_Flood_Level
 RUN dotnet restore
 
-# Copy all source files recursively (including all .cs files)
-COPY HCM_Flood_Level/Core/ HCM_Flood_Level/Core/
-COPY HCM_Flood_Level/Infrastructure/ HCM_Flood_Level/Infrastructure/
+# Copy entire solution source (includes all .cs files)
+COPY HCM_Flood_Level/ HCM_Flood_Level/
 
-# Copy WebAPI files - use simple recursive copy which includes all .cs files
-COPY HCM_Flood_Level/WebAPI/ HCM_Flood_Level/WebAPI/
-
-# Verify Program.cs exists and list all files in WebAPI directory
-RUN ls -la /src/HCM_Flood_Level/WebAPI/ | head -20
-RUN test -f /src/HCM_Flood_Level/WebAPI/Program.cs && echo "Program.cs found!" || echo "Program.cs NOT found!"
+# Verify Program.cs exists and list contents
+RUN ls -la /src/HCM_Flood_Level/WebAPI/ | head -50
+RUN test -f /src/HCM_Flood_Level/WebAPI/Program.cs && echo "Program.cs found!" || (echo "Program.cs NOT found!" && ls -la /src/HCM_Flood_Level/WebAPI/)
 
 # Build the application (build without output to verify it compiles)
 WORKDIR /src/HCM_Flood_Level
