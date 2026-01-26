@@ -18,19 +18,8 @@ RUN dotnet restore
 COPY HCM_Flood_Level/Core/ HCM_Flood_Level/Core/
 COPY HCM_Flood_Level/Infrastructure/ HCM_Flood_Level/Infrastructure/
 
-# Copy WebAPI files - explicitly copy Program.cs first
-COPY HCM_Flood_Level/WebAPI/Program.cs HCM_Flood_Level/WebAPI/Program.cs
-COPY HCM_Flood_Level/WebAPI/*.cs HCM_Flood_Level/WebAPI/ 2>/dev/null || true
-COPY HCM_Flood_Level/WebAPI/Controllers/ HCM_Flood_Level/WebAPI/Controllers/
-COPY HCM_Flood_Level/WebAPI/Extensions/ HCM_Flood_Level/WebAPI/Extensions/
-COPY HCM_Flood_Level/WebAPI/Errors/ HCM_Flood_Level/WebAPI/Errors/
-COPY HCM_Flood_Level/WebAPI/Helpers/ HCM_Flood_Level/WebAPI/Helpers/
-COPY HCM_Flood_Level/WebAPI/Middleware/ HCM_Flood_Level/WebAPI/Middleware/
-COPY HCM_Flood_Level/WebAPI/Models/ HCM_Flood_Level/WebAPI/Models/
-COPY HCM_Flood_Level/WebAPI/Properties/ HCM_Flood_Level/WebAPI/Properties/
-COPY HCM_Flood_Level/WebAPI/wwwroot/ HCM_Flood_Level/WebAPI/wwwroot/
-COPY HCM_Flood_Level/WebAPI/*.json HCM_Flood_Level/WebAPI/
-COPY HCM_Flood_Level/WebAPI/*.http HCM_Flood_Level/WebAPI/ 2>/dev/null || true
+# Copy WebAPI files - use simple recursive copy which includes all .cs files
+COPY HCM_Flood_Level/WebAPI/ HCM_Flood_Level/WebAPI/
 
 # Verify Program.cs exists and list all files in WebAPI directory
 RUN ls -la /src/HCM_Flood_Level/WebAPI/ | head -20
