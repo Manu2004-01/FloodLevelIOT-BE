@@ -19,6 +19,9 @@ COPY HCM_Flood_Level/Core/ HCM_Flood_Level/Core/
 COPY HCM_Flood_Level/Infrastructure/ HCM_Flood_Level/Infrastructure/
 COPY HCM_Flood_Level/WebAPI/ HCM_Flood_Level/WebAPI/
 
+# Verify Program.cs exists
+RUN ls -la /src/HCM_Flood_Level/WebAPI/Program.cs || echo "Program.cs not found!"
+
 # Build the application (build without output to verify it compiles)
 WORKDIR /src/HCM_Flood_Level
 RUN dotnet build HCM_Flood_Level.sln -c Release --no-incremental
