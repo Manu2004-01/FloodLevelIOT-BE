@@ -20,12 +20,14 @@ namespace WebAPI.Extensions
 
 
             //FileProvider
+            var wwwrootPath = Path.Combine(Directory.GetCurrentDirectory(), "wwwroot");
+            if (!Directory.Exists(wwwrootPath))
+            {
+                Directory.CreateDirectory(wwwrootPath);
+            }
             services.AddSingleton<IFileProvider>
                 (
-                    new PhysicalFileProvider(Path.Combine
-                    (
-                        Directory.GetCurrentDirectory(), "wwwroot")
-                    )
+                    new PhysicalFileProvider(wwwrootPath)
                 );
 
             services.Configure<ApiBehaviorOptions>(opt =>
