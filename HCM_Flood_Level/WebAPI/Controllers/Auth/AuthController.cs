@@ -2,22 +2,23 @@
 using Core.Interfaces;
 using Core.Services;
 using Infrastructure.DBContext;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebAPI.Errors;
 
 namespace WebAPI.Controllers.Auth
 {
-    [Route("Auth")]
+    [Route("api/auth")]
     [ApiController]
-    public class LoginController : ControllerBase
+    public class AuthController : ControllerBase
     {
         private readonly ManageDBContext _context;
         private readonly ITokenService _tokenService;
         private readonly IUnitOfWork _unitOfWork;
         private readonly IConfiguration _configuration;
 
-        public LoginController(ManageDBContext context, ITokenService tokenService, IUnitOfWork unitOfWork, IConfiguration configuration)
+        public AuthController(ManageDBContext context, ITokenService tokenService, IUnitOfWork unitOfWork, IConfiguration configuration)
         {
             _context = context;
             _tokenService = tokenService;
@@ -26,10 +27,6 @@ namespace WebAPI.Controllers.Auth
         }
 
         [HttpPost("login")]
-        [ProducesResponseType(StatusCodes.Status200OK)]
-        [ProducesResponseType(StatusCodes.Status400BadRequest)]
-        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
-        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
         public async Task<IActionResult> Login([FromQuery] LoginDTO login)
         {
             try
@@ -64,9 +61,21 @@ namespace WebAPI.Controllers.Auth
             }
             catch (Exception ex)
             {
-                // Log the exception for debugging
-                // In production, use a proper logging framework like ILogger
-                return StatusCode(500, new BaseCommentResponse(500, $"Đã xảy ra lỗi máy chủ nội bộ trong quá trình đăng nhập: {ex.Message}"));
+                return StatusCode(500, new BaseCommentResponse(500, $"Đã xảy ra lỗi máy chủ nội bộ!!!"));
+            }
+        }
+
+        [HttpPost("logout")]
+        [Authorize]
+        public async Task<IActionResult> Logout()
+        {
+            try
+            {
+                return Ok(new BaseCommentResponse(200, "Đăng xuất thành công"));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new BaseCommentResponse(500, $"Đã xảy ra lỗi máy chủ nội bộ!!!"));
             }
         }
     }

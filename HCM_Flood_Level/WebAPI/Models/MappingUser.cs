@@ -18,6 +18,12 @@ namespace WebAPI.Models
 
             CreateMap<CreateAccDTO, User>()
                 .ForMember(a => a.RoleId, a => a.MapFrom(b => b.RoleId))
+                .ForMember(a => a.PasswordHash, a => a.Ignore()) // Password will be hashed in repository
+                .ReverseMap();
+
+            CreateMap<UpdateAccDTO, User>()
+                .ForMember(a => a.RoleId, a => a.MapFrom(b => b.RoleId))
+                .ForMember(a => a.Status, a => a.MapFrom(b => b.Status))
                 .ReverseMap();
         }
     }

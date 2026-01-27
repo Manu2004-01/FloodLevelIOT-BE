@@ -134,6 +134,7 @@ namespace Infrastructure.DBContext
                 entity.Property(e => e.SensorId).HasColumnName("sensor_id");
                 entity.Property(e => e.LocationId).HasColumnName("location_id");
                 entity.Property(e => e.SensorCode).HasColumnName("sensor_code");
+                entity.Property(e => e.SensorName).HasColumnName("sensor_name");
                 entity.Property(e => e.SensorType).HasColumnName("sensor_type");
                 entity.Property(e => e.SensorStatus).HasColumnName("status");
                 entity.Property(e => e.InstalledAt).HasColumnName("installed_at");

@@ -13,5 +13,7 @@ namespace Core.Interfaces.Admin
     {
         Task<IEnumerable<User>> GetAllAccAsync(EntityParam entityParam);
         Task<bool> AddNewAccAsync(CreateAccDTO dto);
+        Task<bool> UpdateAccAsync(int id, UpdateAccDTO dto);
+        Task<bool> DeleteAccAsync(int id);
     }
 }

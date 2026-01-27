@@ -10,6 +10,7 @@ namespace Core.Entities
     {
         public int SensorId { get; set; }
         public string SensorCode { get; set; }
+        public string SensorName { get; set; }
         public string SensorType { get; set; }
         public string SensorStatus { get; set; }
         public DateTime InstalledAt { get; set; }
