@@ -9,7 +9,7 @@ using WebAPI.Helpers;
 
 namespace WebAPI.Controllers.Admin
 {
-    [Route("api/[controller]")]
+    [Route("api/admin")]
     [ApiController]
     public class ManageAccController : ControllerBase
     {
@@ -21,7 +21,7 @@ namespace WebAPI.Controllers.Admin
             _mapper = mapper;
         }
 
-        [HttpGet("manage-acc")]
+        [HttpGet("users")]
         public async Task<ActionResult> GetAllAcc([FromQuery] int pagenumber, [FromQuery] int pazesize, [FromQuery] string? search = null)
         {
             try
@@ -48,7 +48,7 @@ namespace WebAPI.Controllers.Admin
             }
         }
 
-        [HttpGet("acc/{id}")]
+        [HttpGet("users/{id}")]
         public async Task<ActionResult> GetAccById(int id)
         {
             try
@@ -69,7 +69,7 @@ namespace WebAPI.Controllers.Admin
             }
         }
 
-        [HttpPost("create-acc")]
+        [HttpPost("users")]
         public async Task<ActionResult> CreateAcc([FromQuery] CreateAccDTO dto)
         {
             try
@@ -86,6 +86,55 @@ namespace WebAPI.Controllers.Admin
                     return BadRequest(new BaseCommentResponse(400, "Tạo tài khoản không thành công"));
 
                 return Ok(new BaseCommentResponse(200, "Tạo tài khoản thành công"));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new BaseCommentResponse(500, "Đã xảy ra lỗi máy chủ nội bộ!!!"));
+            }
+        }
+
+        [HttpPut("users/{id}")]
+        public async Task<ActionResult> UpdateAcc(int id, [FromQuery] UpdateAccDTO dto)
+        {
+            try
+            {
+                if (id <= 0)
+                    return BadRequest(new BaseCommentResponse(400, "ID người dùng không hợp lệ"));
+
+                if (dto == null)
+                    return BadRequest(new BaseCommentResponse(400, "Cần cập nhật dữ liệu"));
+
+                // Check if at least one field is provided for update
+                if (!dto.RoleId.HasValue && string.IsNullOrEmpty(dto.Status))
+                    return BadRequest(new BaseCommentResponse(400, "Cần cung cấp ít nhất một trường để cập nhật"));
+                
+                var result = await _unitOfWork.ManageAccRepository.UpdateAccAsync(id, dto);
+
+                if (result == false)
+                    return NotFound(new BaseCommentResponse(404, "Không tìm thấy người dùng"));
+
+                return Ok(new BaseCommentResponse(200, "Cập nhật tài khoản thành công"));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new BaseCommentResponse(500, "Đã xảy ra lỗi máy chủ nội bộ!!!"));
+            }
+        }
+
+        [HttpDelete("users/{id}")]
+        public async Task<ActionResult> DeleteAcc(int id)
+        {
+            try
+            {
+                if(id <= 0)
+                    return BadRequest(new BaseCommentResponse(400, "ID người dùng không hợp lệ"));
+
+                var result = await _unitOfWork.ManageAccRepository.DeleteAccAsync(id);
+
+                if (result == false)
+                    return NotFound(new BaseCommentResponse(404, "Không tìm thấy người dùng"));
+
+                return Ok(new BaseCommentResponse(200, "Đã xóa người dùng thành công"));
             }
             catch (Exception ex)
             {

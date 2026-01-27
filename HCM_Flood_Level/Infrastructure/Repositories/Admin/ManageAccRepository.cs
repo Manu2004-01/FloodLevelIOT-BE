@@ -2,6 +2,7 @@
 using Core.DTOs.Admin;
 using Core.Entities;
 using Core.Interfaces.Admin;
+using Core.Services;
 using Core.Sharing;
 using Infrastructure.DBContext;
 using Infrastructure.Repositories;
@@ -32,11 +33,24 @@ namespace Infrastructure.Repositories.Admin
         {
             var acc = _mapper.Map<User>(dto);
             
-            // Set default values for Status and CreatedAt
+            if (!string.IsNullOrEmpty(dto.Password))
+            {
+                acc.PasswordHash = PasswordHelper.HashPassword(dto.Password);
+            }
+            
             acc.Status = "Active";
             acc.CreatedAt = DateTime.UtcNow;
 
             await _context.Users.AddAsync(acc);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> DeleteAccAsync(int id)
+        {
+            var currentUser = await _context.Users.FindAsync(id);
+
+            _context.Users.Remove(currentUser);
             await _context.SaveChangesAsync();
             return true;
         }
@@ -60,6 +74,28 @@ namespace Infrastructure.Repositories.Admin
                 .Take(entityParam.Pagesize);
 
             return await query.ToListAsync();
+        }
+
+        public async Task<bool> UpdateAccAsync(int id, UpdateAccDTO dto)
+        {
+            var currentUser = await _context.Users.FindAsync(id);
+
+            if (currentUser == null)
+                return false;
+
+            // Only update fields that are provided (partial update)
+            if (dto.RoleId.HasValue)
+            {
+                currentUser.RoleId = dto.RoleId.Value;
+            }
+
+            if (!string.IsNullOrEmpty(dto.Status))
+            {
+                currentUser.Status = dto.Status;
+            }
+
+            await _context.SaveChangesAsync();
+            return true;
         }
     }
 }
