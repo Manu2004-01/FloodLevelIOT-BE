@@ -63,3 +63,5 @@ nunit-*.xml
 .idea/
 .vscode/
 
+**/bin/
+**/obj/
