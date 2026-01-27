@@ -1,6 +1,9 @@
 ﻿using AutoMapper;
+using Core.DTOs.Admin;
+using Core.DTOs.Sensor;
 using Core.Entities;
 using Core.Interfaces;
+using Core.Sharing;
 using Infrastructure.DBContext;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
@@ -12,7 +15,7 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
 {
-    public class SensorRepository: GenericRepository<Sensor>, ISensor
+    public class SensorRepository : GenericRepository<Sensor>, ISensor
     {
         private readonly ManageDBContext _context;
         private readonly IFileProvider _fileProvider;
@@ -24,16 +27,50 @@ namespace Infrastructure.Repositories
             _fileProvider = fileProvider;
             _mapper = mapper;
         }
-        public async Task<IEnumerable<Sensor>> GetAllWithDetailsAsync()
+
+        public async Task<IEnumerable<Sensor>> GetAllSensorsAsync(EntityParam param)
         {
-            return await _context.Sensors
+            var query = _context.Sensors
                 .Include(s => s.Location)
                     .ThenInclude(l => l.Area)
+                .AsQueryable();
+
+            // Search
+            if (!string.IsNullOrWhiteSpace(param.Search))
+            {
+                query = query.Where(s =>
+                    s.SensorCode.Contains(param.Search) ||
+                    s.SensorName.Contains(param.Search) ||
+                    s.SensorType.Contains(param.Search) ||
+                    s.Location.LocationName.Contains(param.Search)
+                );
+            }
+
+            // Pagination
+            return await query
                 .OrderByDescending(s => s.InstalledAt)
+                .Skip((param.Pagenumber - 1) * param.Pagesize)
+                .Take(param.Pagesize)
                 .ToListAsync();
         }
 
-        public async Task<Sensor> GetByIdWithDetailsAsync(int id)
+        public async Task<int> CountAsync(string? search = null)
+        {
+            var query = _context.Sensors.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(search))
+            {
+                query = query.Where(s =>
+                    s.SensorCode.Contains(search) ||
+                    s.SensorName.Contains(search) ||
+                    s.SensorType.Contains(search)
+                );
+            }
+
+            return await query.CountAsync();
+        }
+
+        public async Task<Sensor> GetSensorByIdAsync(int id)
         {
             return await _context.Sensors
                 .Include(s => s.Location)
@@ -53,36 +90,134 @@ namespace Infrastructure.Repositories
             return await query.AnyAsync();
         }
 
-        public async Task<bool> UpdateLocationAsync(int sensorId, double latitude, double longitude, string address)
+        public async Task<bool> AddNewSensorAsync(CreateSensorDTO dto)
         {
-            var sensor = await _context.Sensors
-                .Include(s => s.Location)
-                .FirstOrDefaultAsync(s => s.SensorId == sensorId);
+            try
+            {
+                // Check if sensor code already exists
+                if (await SensorCodeExistsAsync(dto.SensorCode))
+                    return false;
 
-            if (sensor == null || sensor.Location == null)
+                // Check if location exists
+                var locationExists = await _context.Locations.AnyAsync(l => l.LocationId == dto.LocationId);
+                if (!locationExists)
+                    return false;
+
+                var sensor = new Sensor
+                {
+                    SensorCode = dto.SensorCode,
+                    SensorName = dto.SensorName,
+                    SensorType = dto.SensorType,
+                    SensorStatus = dto.SensorStatus,
+                    InstalledAt = dto.InstalledAt,
+                    LocationId = dto.LocationId
+                };
+
+                await _context.Sensors.AddAsync(sensor);
+                return await _context.SaveChangesAsync() > 0;
+            }
+            catch
+            {
                 return false;
-
-            sensor.Location.Latitude = latitude;
-            sensor.Location.Longitude = longitude;
-            sensor.Location.Address = address;
-
-            await _context.SaveChangesAsync();
-            return true;
+            }
         }
 
-        public async Task<bool> UpdateThresholdAsync(int sensorId, double? minThreshold, double? maxThreshold, string thresholdType)
+        public async Task<bool> UpdateSensorAsync(int id, UpdateSensorDTO dto)
         {
-            var sensor = await _context.Sensors.FindAsync(sensorId);
+            try
+            {
+                var sensor = await _context.Sensors.FindAsync(id);
+                if (sensor == null)
+                    return false;
 
-            if (sensor == null)
+                // Update only provided fields
+                if (!string.IsNullOrEmpty(dto.SensorName))
+                    sensor.SensorName = dto.SensorName;
+
+                if (!string.IsNullOrEmpty(dto.SensorType))
+                    sensor.SensorType = dto.SensorType;
+
+                if (!string.IsNullOrEmpty(dto.SensorStatus))
+                    sensor.SensorStatus = dto.SensorStatus;
+
+                if (dto.LocationId.HasValue)
+                {
+                    // Check if location exists
+                    var locationExists = await _context.Locations.AnyAsync(l => l.LocationId == dto.LocationId.Value);
+                    if (!locationExists)
+                        return false;
+
+                    sensor.LocationId = dto.LocationId.Value;
+                }
+
+                _context.Sensors.Update(sensor);
+                return await _context.SaveChangesAsync() > 0;
+            }
+            catch
+            {
                 return false;
+            }
+        }
 
-            //sensor.MinThreshold = minThreshold;
-            //sensor.MaxThreshold = maxThreshold;
-            //sensor.ThresholdType = thresholdType;
+        public async Task<bool> UpdateLocationAsync(int sensorId, UpdateLocationDTO dto)
+        {
+            try
+            {
+                var sensor = await _context.Sensors
+                    .Include(s => s.Location)
+                    .FirstOrDefaultAsync(s => s.SensorId == sensorId);
 
-            await _context.SaveChangesAsync();
-            return true;
+                if (sensor == null || sensor.Location == null)
+                    return false;
+
+                sensor.Location.Latitude = dto.Latitude;
+                sensor.Location.Longitude = dto.Longitude;
+                sensor.Location.Address = dto.Address;
+
+                return await _context.SaveChangesAsync() > 0;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> UpdateThresholdAsync(int sensorId, UpdateThresholdDTO dto)
+        {
+            try
+            {
+                var sensor = await _context.Sensors.FindAsync(sensorId);
+                if (sensor == null)
+                    return false;
+
+                //sensor.MinThreshold = dto.MinThreshold;
+                //sensor.MaxThreshold = dto.MaxThreshold;
+                //sensor.ThresholdType = dto.ThresholdType;
+
+                _context.Sensors.Update(sensor);
+                return await _context.SaveChangesAsync() > 0;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public async Task<bool> DeleteSensorAsync(int id)
+        {
+            try
+            {
+                var sensor = await _context.Sensors.FindAsync(id);
+                if (sensor == null)
+                    return false;
+
+                _context.Sensors.Remove(sensor);
+                return await _context.SaveChangesAsync() > 0;
+            }
+            catch
+            {
+                return false;
+            }
         }
     }
 }
