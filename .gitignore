@@ -55,6 +55,7 @@ nunit-*.xml
 
 # Visual Studio
 .vs/
+**/.vs/
 *.user
 *.suo
 *.userosscache
