@@ -26,9 +26,9 @@ namespace WebAPI.Controllers
         /// </summary>
         [HttpGet("devices")]
         public async Task<ActionResult> GetAllDevices(
-            [FromQuery] int pagenumber = 1,
-            [FromQuery] int pagesize = 10,
-            [FromQuery] string? search = null)
+     [FromQuery] int pagenumber = 1,
+     [FromQuery] int pagesize = 10,
+     [FromQuery] string? search = null)
         {
             try
             {
@@ -44,13 +44,18 @@ namespace WebAPI.Controllers
 
                 var total = await _unitOfWork.SensorRepository.CountAsync(search);
 
-                var result = _mapper.Map<List<SensorDto>>(sensors);
+                var result = _mapper.Map<List<SensorDTO>>(sensors);
 
-                return Ok(new Pagination<SensorDto>(pagesize, pagenumber, total, result));
+                return Ok(new Pagination<SensorDTO>(pagesize, pagenumber, total, result));
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new BaseCommentResponse(500, "Đã xảy ra lỗi máy chủ nội bộ!!!"));
+                // THÊM LOGGING ĐỂ XEM LỖI CHI TIẾT
+                Console.WriteLine($"Error: {ex.Message}");
+                Console.WriteLine($"Stack Trace: {ex.StackTrace}");
+                Console.WriteLine($"Inner Exception: {ex.InnerException?.Message}");
+
+                return StatusCode(500, new BaseCommentResponse(500, $"Đã xảy ra lỗi: {ex.Message}"));
             }
         }
 

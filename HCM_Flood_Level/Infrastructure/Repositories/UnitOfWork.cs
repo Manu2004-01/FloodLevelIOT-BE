@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Core.Entities;
 using Core.Interfaces;
 using Core.Interfaces.Admin;
 using Infrastructure.DBContext;
@@ -20,6 +21,7 @@ namespace Infrastructure.Repositories
         private readonly IMapper _mapper;
 
         public IManageAccRepository ManageAccRepository { get;  }
+        public ISensor SensorRepository { get; }
 
         public UnitOfWork(ManageDBContext context, EventsDBContext eventsContext, IFileProvider fileProvider, IMapper mapper)
         {
@@ -28,6 +30,7 @@ namespace Infrastructure.Repositories
             _fileProvider = fileProvider;
             _mapper = mapper;
             ManageAccRepository = new ManageAccRepository(_context, _fileProvider, _mapper);
+            SensorRepository = new SensorRepository(_context, _fileProvider, _mapper);
         }
     }
 }
