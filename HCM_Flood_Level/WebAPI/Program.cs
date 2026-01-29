@@ -7,6 +7,7 @@ using Microsoft.OpenApi.Models;
 using System.Text;
 using WebAPI.Extensions;
 using WebAPI.Middleware;
+using Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -113,5 +114,8 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
+// Ensure DBs are configured/created (development helper)
+await InfrastructureRequistration.InfrastructureConfigMiddleware(app);
 
 app.Run();

@@ -20,5 +20,14 @@ namespace Core.Entities
 
         public int LocationId { get; set; }
         public Location Location { get; set; }
+
+        public int? InstalledBy { get; set; }
+        public Core.Entities.Staff InstalledByStaff { get; set; }
+        public string Protocol { get; set; }
+        public string Specification { get; set; }
+        public double? WarningThreshold { get; set; }
+        public double? DangerThreshold { get; set; }
+        public int? MaxLevel { get; set; }
+        public DateTime CreatedAt { get; set; }
     }
 }

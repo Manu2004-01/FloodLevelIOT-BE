@@ -9,6 +9,6 @@ namespace Core.Interfaces
 {
     public interface ITokenService
     {
-        string CreateToken(User user, string roleName);
+        string CreateToken(Core.Entities.Staff user, string roleName);
     }
 }

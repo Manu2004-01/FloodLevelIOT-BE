@@ -43,9 +43,9 @@ namespace WebAPI.Controllers.Auth
                 if (string.IsNullOrWhiteSpace(login.Password))
                     return BadRequest(new BaseCommentResponse(400, "Mật khẩu là bắt buộc"));
 
-                var log = await _context.Users
+                var log = await _context.Staffs
                     .Include(l => l.Role)
-                    .FirstOrDefaultAsync(l => l.Username == login.Username);
+                    .FirstOrDefaultAsync(l => l.StaffAccName == login.Username);
 
                 if (log == null)
                     return Unauthorized(new BaseCommentResponse(401, "Tên đăng nhập hoặc mật khẩu không đúng"));

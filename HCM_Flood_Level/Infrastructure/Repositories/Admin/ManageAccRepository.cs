@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Core.DTOs.Admin;
+using Core.DTOs.Sensor;
 using Core.Entities;
 using Core.Interfaces.Admin;
 using Core.Services;
@@ -16,7 +17,7 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories.Admin
 {
-    public class ManageAccRepository : GenericRepository<User>, IManageAccRepository
+    public class ManageAccRepository : GenericRepository<Staff>, IManageStaffRepository
     {
         private readonly ManageDBContext _context;
         private readonly IFileProvider _fileProvider;
@@ -29,35 +30,35 @@ namespace Infrastructure.Repositories.Admin
             _mapper = mapper;
         }
 
-        public async Task<bool> AddNewAccAsync(CreateAccDTO dto)
+        public async Task<bool> AddNewStaffAsync(CreateStaffDTO dto)
         {
-            var acc = _mapper.Map<User>(dto);
+            var acc = _mapper.Map<Staff>(dto);
             
             if (!string.IsNullOrEmpty(dto.Password))
             {
                 acc.PasswordHash = PasswordHelper.HashPassword(dto.Password);
             }
             
-            acc.Status = "Active";
+            acc.IsActive = true;
             acc.CreatedAt = DateTime.UtcNow;
 
-            await _context.Users.AddAsync(acc);
+            await _context.Staffs.AddAsync(acc);
             await _context.SaveChangesAsync();
             return true;
         }
 
-        public async Task<bool> DeleteAccAsync(int id)
+        public async Task<bool> DeleteStaffAsync(int id)
         {
-            var currentUser = await _context.Users.FindAsync(id);
+            var currentUser = await _context.Staffs.FindAsync(id);
 
-            _context.Users.Remove(currentUser);
+            _context.Staffs.Remove(currentUser);
             await _context.SaveChangesAsync();
             return true;
         }
 
-        public async Task<IEnumerable<User>> GetAllAccAsync(EntityParam entityParam)
+        public async Task<IEnumerable<Staff>> GetAllStaffAsync(EntityParam entityParam)
         {
-            var query = _context.Users
+            var query = _context.Staffs
                 .Include(u => u.Role)
                 .AsQueryable();
 
@@ -65,7 +66,7 @@ namespace Infrastructure.Repositories.Admin
             {
                 query = query.Where(u => 
                     u.FullName.ToLower().Contains(entityParam.Search) ||
-                    u.Username.ToLower().Contains(entityParam.Search) ||
+                    u.StaffAccName.ToLower().Contains(entityParam.Search) ||
                     u.Email.ToLower().Contains(entityParam.Search));
             }
 
@@ -76,9 +77,9 @@ namespace Infrastructure.Repositories.Admin
             return await query.ToListAsync();
         }
 
-        public async Task<bool> UpdateAccAsync(int id, UpdateAccDTO dto)
+        public async Task<bool> UpdateStaffAsync(int id, UpdateStaffDTO dto)
         {
-            var currentUser = await _context.Users.FindAsync(id);
+            var currentUser = await _context.Staffs.FindAsync(id);
 
             if (currentUser == null)
                 return false;
@@ -89,10 +90,8 @@ namespace Infrastructure.Repositories.Admin
                 currentUser.RoleId = dto.RoleId.Value;
             }
 
-            if (!string.IsNullOrEmpty(dto.Status))
-            {
-                currentUser.Status = dto.Status;
-            }
+            if (dto.Status.HasValue)
+                currentUser.IsActive = dto.Status.Value;
 
             await _context.SaveChangesAsync();
             return true;

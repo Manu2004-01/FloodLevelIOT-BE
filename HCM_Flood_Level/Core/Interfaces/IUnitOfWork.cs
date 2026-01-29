@@ -9,7 +9,7 @@ namespace Core.Interfaces
 {
     public interface IUnitOfWork
     {
-        IManageAccRepository ManageAccRepository { get; }
+        IManageStaffRepository ManageAccRepository { get; }
         ISensor SensorRepository { get; }
     }
 }

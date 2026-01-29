@@ -40,12 +40,12 @@ namespace WebAPI.Models
                     opt => opt.MapFrom(src => src.InstalledAt))
                 .ForMember(dest => dest.LocationId,
                     opt => opt.MapFrom(src => src.LocationId))
-                //.ForMember(dest => dest.MinThreshold,
-                //    opt => opt.MapFrom(src => src.MinThreshold))
-                //.ForMember(dest => dest.MaxThreshold,
-                //    opt => opt.MapFrom(src => src.MaxThreshold))
-                //.ForMember(dest => dest.ThresholdType,
-                //    opt => opt.MapFrom(src => src.ThresholdType))
+                .ForMember(dest => dest.MinThreshold,
+                    opt => opt.MapFrom(src => src.MinThreshold))
+                .ForMember(dest => dest.MaxThreshold,
+                    opt => opt.MapFrom(src => src.MaxThreshold))
+                .ForMember(dest => dest.ThresholdType,
+                    opt => opt.MapFrom(src => src.ThresholdType))
                 .ForMember(dest => dest.Location,
                     opt => opt.MapFrom(src => src.Location));
 

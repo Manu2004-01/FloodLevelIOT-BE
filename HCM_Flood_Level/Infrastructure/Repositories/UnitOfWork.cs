@@ -19,7 +19,7 @@ namespace Infrastructure.Repositories
         private readonly IFileProvider _fileProvider;
         private readonly IMapper _mapper;
 
-        public IManageAccRepository ManageAccRepository { get;  }
+        public IManageStaffRepository ManageAccRepository { get;  }
 
         public ISensor SensorRepository { get; }
 

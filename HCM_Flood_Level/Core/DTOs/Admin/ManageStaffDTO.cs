@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Core.DTOs.Admin
 {
-    public class ManageAccDTO
+    public class ManageStaffDTO
     {
         public int UserId { get; set; }
         public string FullName { get; set; }
@@ -14,23 +14,23 @@ namespace Core.DTOs.Admin
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
         public DateTime CreatedAt { get; set; }
-        public string Status { get; set; }
+        public bool Status { get; set; }
 
         public string RoleName { get; set; }
     }
 
-    public class AccDTO
+    public class StaffDTO
     {
         public int UserId { get; set; }
         public string FullName { get; set; }
         public string Username { get; set; }
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
-        public string Status { get; set; }
+        public bool Status { get; set; }
         public string RoleName { get; set; }
     }
 
-    public class CreateAccDTO
+    public class CreateStaffDTO
     {
         public string FullName { get; set; }
         public string Username { get; set; }
@@ -40,9 +40,9 @@ namespace Core.DTOs.Admin
         public int RoleId { get; set; }
     }
 
-    public class UpdateAccDTO
+    public class UpdateStaffDTO
     {
         public int? RoleId { get; set; }
-        public string? Status { get; set; }
+        public bool? Status { get; set; }
     }
 }
