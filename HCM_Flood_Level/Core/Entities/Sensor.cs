@@ -13,6 +13,9 @@ namespace Core.Entities
         public string SensorName { get; set; }
         public string SensorType { get; set; }
         public string SensorStatus { get; set; }
+        public double MinThreshold { get; set; }
+        public double MaxThreshold { get; set; }
+        public string ThresholdType { get; set; }
         public DateTime InstalledAt { get; set; }
 
         public int LocationId { get; set; }

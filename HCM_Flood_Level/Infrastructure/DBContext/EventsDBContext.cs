@@ -34,6 +34,8 @@ namespace Infrastructure.DBContext
         {
             modelBuilder.Entity<SensorReading>(entity =>
             {
+                // Explicitly set primary key because property name is 'ReadingId'
+                entity.HasKey(e => e.ReadingId);
                 entity.Property(e => e.ReadingId).HasColumnName("reading_id");
                 entity.Property(e => e.SensorId).HasColumnName("sensor_id");
                 entity.Property(e => e.WaterLevel).HasColumnName("water_level_cm");
@@ -44,6 +46,7 @@ namespace Infrastructure.DBContext
 
             modelBuilder.Entity<Alert>(entity =>
             {
+                entity.HasKey(e => e.AlertId);
                 entity.Property(e => e.AlertId).HasColumnName("alert_id");
                 entity.Property(e => e.LocationId).HasColumnName("location_id");
                 entity.Property(e => e.LevelId).HasColumnName("level_id");
@@ -53,6 +56,7 @@ namespace Infrastructure.DBContext
 
             modelBuilder.Entity<AlertLog>(entity =>
             {
+                entity.HasKey(e => e.LogId);
                 entity.Property(e => e.LogId).HasColumnName("log_id");
                 entity.Property(e => e.AlertId).HasColumnName("alert_id");
                 entity.Property(e => e.Channel).HasColumnName("channel");

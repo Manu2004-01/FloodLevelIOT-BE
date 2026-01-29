@@ -109,8 +109,11 @@ namespace Infrastructure.Repositories
                     SensorName = dto.SensorName,
                     SensorType = dto.SensorType,
                     SensorStatus = dto.SensorStatus,
-                    InstalledAt = dto.InstalledAt,
-                    LocationId = dto.LocationId
+                    InstalledAt = DateTime.SpecifyKind(dto.InstalledAt, DateTimeKind.Utc),
+                    LocationId = dto.LocationId,
+                    MinThreshold = dto.MinThreshold ?? 0,
+                    MaxThreshold = dto.MaxThreshold ?? 0,
+                    ThresholdType = dto.ThresholdType ?? string.Empty
                 };
 
                 await _context.Sensors.AddAsync(sensor);
@@ -149,6 +152,9 @@ namespace Infrastructure.Repositories
 
                     sensor.LocationId = dto.LocationId.Value;
                 }
+
+                // Ensure InstalledAt has UTC kind before saving to PostgreSQL (Npgsql requires UTC for timestamptz)
+                sensor.InstalledAt = DateTime.SpecifyKind(sensor.InstalledAt, DateTimeKind.Utc);
 
                 _context.Sensors.Update(sensor);
                 return await _context.SaveChangesAsync() > 0;
@@ -190,9 +196,14 @@ namespace Infrastructure.Repositories
                 if (sensor == null)
                     return false;
 
-                //sensor.MinThreshold = dto.MinThreshold;
-                //sensor.MaxThreshold = dto.MaxThreshold;
-                //sensor.ThresholdType = dto.ThresholdType;
+                if (dto.MinThreshold.HasValue)
+                    sensor.MinThreshold = dto.MinThreshold.Value;
+
+                if (dto.MaxThreshold.HasValue)
+                    sensor.MaxThreshold = dto.MaxThreshold.Value;
+
+                if (!string.IsNullOrWhiteSpace(dto.ThresholdType))
+                    sensor.ThresholdType = dto.ThresholdType;
 
                 _context.Sensors.Update(sensor);
                 return await _context.SaveChangesAsync() > 0;

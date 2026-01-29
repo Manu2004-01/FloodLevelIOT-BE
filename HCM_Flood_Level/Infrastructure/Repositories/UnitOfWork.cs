@@ -21,6 +21,8 @@ namespace Infrastructure.Repositories
 
         public IManageAccRepository ManageAccRepository { get;  }
 
+        public ISensor SensorRepository { get; }
+
         public UnitOfWork(ManageDBContext context, EventsDBContext eventsContext, IFileProvider fileProvider, IMapper mapper)
         {
             _context = context;
@@ -28,6 +30,7 @@ namespace Infrastructure.Repositories
             _fileProvider = fileProvider;
             _mapper = mapper;
             ManageAccRepository = new ManageAccRepository(_context, _fileProvider, _mapper);
+            SensorRepository = new SensorRepository(_context, _fileProvider, _mapper);
         }
     }
 }

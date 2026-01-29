@@ -126,7 +126,7 @@ namespace Infrastructure.DBContext
                 entity.Property(e => e.LocationName).HasColumnName("location_name");
                 entity.Property(e => e.Latitude).HasColumnName("latitude");
                 entity.Property(e => e.Longitude).HasColumnName("longitude");
-                entity.Property(e => e.Address).HasColumnName("road_name");
+                entity.Property(e => e.Address).HasColumnName("address");
             });
 
             modelBuilder.Entity<Sensor>(entity =>
@@ -138,6 +138,9 @@ namespace Infrastructure.DBContext
                 entity.Property(e => e.SensorType).HasColumnName("sensor_type");
                 entity.Property(e => e.SensorStatus).HasColumnName("status");
                 entity.Property(e => e.InstalledAt).HasColumnName("installed_at");
+                entity.Property(e => e.MinThreshold).HasColumnName("minthreshold");
+                entity.Property(e => e.MaxThreshold).HasColumnName("maxthreshold");
+                entity.Property(e => e.ThresholdType).HasColumnName("thresholdtype");
             });
 
             modelBuilder.Entity<FloodLevel>(entity =>

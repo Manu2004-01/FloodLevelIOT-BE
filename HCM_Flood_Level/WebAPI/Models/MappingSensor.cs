@@ -9,27 +9,23 @@ namespace WebAPI.Models
     {
         public MappingSensor()
         {
-            CreateMap<Sensor, SensorDto>()
+            CreateMap<Sensor, SensorDTO>()
                 .ForMember(dest => dest.SensorId,
                     opt => opt.MapFrom(src => src.SensorId))
                 .ForMember(dest => dest.SensorCode,
                     opt => opt.MapFrom(src => src.SensorCode))
                 .ForMember(dest => dest.SensorName,
                     opt => opt.MapFrom(src => src.SensorName))
-                .ForMember(dest => dest.SensorType,
-                    opt => opt.MapFrom(src => src.SensorType))
+                .ForMember(dest => dest.LocationName,
+                    opt => opt.MapFrom(src => src.Location != null ? src.Location.LocationName : null))
+                .ForMember(dest => dest.AreaName,
+                    opt => opt.MapFrom(src => src.Location != null && src.Location.Area != null ? src.Location.Area.AreaName : null))
                 .ForMember(dest => dest.SensorStatus,
                     opt => opt.MapFrom(src => src.SensorStatus))
                 .ForMember(dest => dest.InstalledAt,
-                    opt => opt.MapFrom(src => src.InstalledAt))
-                .ForMember(dest => dest.LocationName,
-                    opt => opt.MapFrom(src => src.Location != null ? src.Location.LocationName : null))
-                .ForMember(dest => dest.Address,
-                    opt => opt.MapFrom(src => src.Location != null ? src.Location.Address : null))
-                .ForMember(dest => dest.AreaName,
-                    opt => opt.MapFrom(src => src.Location != null && src.Location.Area != null ? src.Location.Area.AreaName : null));
+                    opt => opt.MapFrom(src => src.InstalledAt));
 
-            CreateMap<Sensor, SensorDTO>()
+            CreateMap<Sensor, SensorDetailDTO>()
                 .ForMember(dest => dest.SensorId,
                     opt => opt.MapFrom(src => src.SensorId))
                 .ForMember(dest => dest.SensorCode,
