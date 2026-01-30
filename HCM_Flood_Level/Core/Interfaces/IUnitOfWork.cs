@@ -1,4 +1,5 @@
 ﻿using Core.Interfaces.Admin;
+using Core.Interfaces.Sensors;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,7 +10,7 @@ namespace Core.Interfaces
 {
     public interface IUnitOfWork
     {
-        IManageStaffRepository ManageAccRepository { get; }
-        ISensor SensorRepository { get; }
+        IManageStaffRepository ManageStaffRepository { get; }
+        IManageSensorRepository ManageSensorRepository { get; }
     }
 }

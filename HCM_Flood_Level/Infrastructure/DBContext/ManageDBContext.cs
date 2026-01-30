@@ -72,6 +72,12 @@ namespace Infrastructure.DBContext
                 .HasForeignKey(s => s.LocationId)
                 .OnDelete(DeleteBehavior.Restrict);
 
+            modelBuilder.Entity<Sensor>()
+                .HasOne(s => s.InstalledByStaff)
+                .WithMany()
+                .HasForeignKey(s => s.InstalledBy)
+                .OnDelete(DeleteBehavior.Restrict);
+
             modelBuilder.Entity<DigitalSign>()
                 .HasOne(d => d.Location)
                 .WithMany()
@@ -91,9 +97,9 @@ namespace Infrastructure.DBContext
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<MaintenanceRequest>()
-                .HasOne(m => m.AssignedUser)
+                .HasOne(m => m.AssignedStaff)
                 .WithMany()
-                .HasForeignKey(m => m.AssignTo)
+                .HasForeignKey(m => m.AssignedStaffTo)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<MaintenanceRequest>()
@@ -164,7 +170,6 @@ namespace Infrastructure.DBContext
             {
                 entity.Property(e => e.AreaId).HasColumnName("area_id");
                 entity.Property(e => e.AreaName).HasColumnName("area_name");
-                entity.Property(e => e.Description).HasColumnName("description");
             });
 
             modelBuilder.Entity<Location>(entity =>
@@ -174,7 +179,6 @@ namespace Infrastructure.DBContext
                 entity.Property(e => e.LocationName).HasColumnName("location_name");
                 entity.Property(e => e.Latitude).HasColumnName("latitude");
                 entity.Property(e => e.Longitude).HasColumnName("longitude");
-                entity.Property(e => e.Address).HasColumnName("address");
                 entity.Property(e => e.RoadName).HasColumnName("road_name");
             });
 
@@ -182,17 +186,14 @@ namespace Infrastructure.DBContext
             {
                 entity.Property(e => e.SensorId).HasColumnName("sensor_id");
                 entity.Property(e => e.LocationId).HasColumnName("location_id");
+                entity.Property(e => e.InstalledBy).HasColumnName("installed_by");
                 entity.Property(e => e.SensorCode).HasColumnName("sensor_code");
                 entity.Property(e => e.SensorName).HasColumnName("sensor_name");
                 entity.Property(e => e.SensorType).HasColumnName("sensor_type");
-                entity.Property(e => e.SensorStatus).HasColumnName("status");
-                entity.Property(e => e.InstalledAt).HasColumnName("installed_at");
-                entity.Property(e => e.MinThreshold).HasColumnName("minthreshold");
-                entity.Property(e => e.MaxThreshold).HasColumnName("maxthreshold");
-                entity.Property(e => e.ThresholdType).HasColumnName("thresholdtype");
-                entity.Property(e => e.InstalledBy).HasColumnName("installed_by");
                 entity.Property(e => e.Protocol).HasColumnName("protocol");
                 entity.Property(e => e.Specification).HasColumnName("specification");
+                entity.Property(e => e.Status).HasColumnName("status");
+                entity.Property(e => e.InstalledAt).HasColumnName("installed_at");
                 entity.Property(e => e.WarningThreshold).HasColumnName("warning_threshold");
                 entity.Property(e => e.DangerThreshold).HasColumnName("danger_threshold");
                 entity.Property(e => e.MaxLevel).HasColumnName("max_level");
@@ -215,13 +216,13 @@ namespace Infrastructure.DBContext
                 entity.Property(e => e.SignId).HasColumnName("sign_id");
                 entity.Property(e => e.LocationId).HasColumnName("location_id");
                 entity.Property(e => e.SignCode).HasColumnName("sign_code");
-                entity.Property(e => e.SignStatus).HasColumnName("status");
+                entity.Property(e => e.Status).HasColumnName("status");
             });
 
             modelBuilder.Entity<Priority>(entity =>
             {
                 entity.Property(e => e.PriorityId).HasColumnName("priority_id");
-                entity.Property(e => e.Name).HasColumnName("display_name");
+                entity.Property(e => e.DisplayName).HasColumnName("display_name");
             });
            
             modelBuilder.Entity<MaintenanceRequest>(entity =>
@@ -232,7 +233,7 @@ namespace Infrastructure.DBContext
                 entity.Property(e => e.PriorityId).HasColumnName("priority_id");
                 entity.Property(e => e.Description).HasColumnName("description");
                 entity.Property(e => e.Deadline).HasColumnName("deadline");
-                entity.Property(e => e.AssignTo).HasColumnName("assigned_staff_to");
+                entity.Property(e => e.AssignedStaffTo).HasColumnName("assigned_staff_to");
                 entity.Property(e => e.CreatedBy).HasColumnName("created_by");
                 entity.Property(e => e.Note).HasColumnName("note");
                 entity.Property(e => e.Status).HasColumnName("status");

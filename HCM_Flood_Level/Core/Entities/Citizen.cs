@@ -13,7 +13,7 @@ namespace Core.Entities
         public int AreaId { get; set; }
         public Area Area { get; set; }
 
-        public bool IsActive { get; set; }
+        public bool IsActive { get; set; } = true;
         public DateTime CreatedAt { get; set; }
     }
 }

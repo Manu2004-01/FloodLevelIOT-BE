@@ -10,6 +10,6 @@ namespace Core.Entities
     {
         public int AreaId { get; set; }
         public string AreaName { get; set; }
-        public string Description { get; set; }
+        // Description removed to match DB schema (only AreaId, AreaName)
     }
 }

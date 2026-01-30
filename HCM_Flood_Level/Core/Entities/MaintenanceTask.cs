@@ -22,7 +22,7 @@ namespace Core.Entities
 
         public DateTime? Deadline { get; set; }
 
-        public string Status { get; set; }
+        public string Status { get; set; } = "Assigned";
 
         public DateTime? StartedAt { get; set; }
         public DateTime? CompletedAt { get; set; }

@@ -22,13 +22,12 @@ namespace WebAPI.Models
 
             CreateMap<CreateStaffDTO, Staff>()
                 .ForMember(a => a.RoleId, a => a.MapFrom(b => b.RoleId))
-                .ForMember(a => a.PasswordHash, a => a.Ignore()) // Password will be hashed in repository
+                .ForMember(a => a.PasswordHash, a => a.Ignore()) 
                 .ForMember(a => a.StaffAccName, a => a.MapFrom(b => b.Username))
                 .ReverseMap();
 
             CreateMap<UpdateStaffDTO, Staff>()
                 .ForMember(a => a.RoleId, a => a.MapFrom(b => b.RoleId))
-                // IsActive will be handled explicitly in repository using dto.Status
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
         }
     }

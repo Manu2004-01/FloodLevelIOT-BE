@@ -17,13 +17,13 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories.Admin
 {
-    public class ManageAccRepository : GenericRepository<Staff>, IManageStaffRepository
+    public class ManageStaffRepository : GenericRepository<Staff>, IManageStaffRepository
     {
         private readonly ManageDBContext _context;
         private readonly IFileProvider _fileProvider;
         private readonly IMapper _mapper;
 
-        public ManageAccRepository(ManageDBContext context, IFileProvider fileProvider, IMapper mapper) : base(context)
+        public ManageStaffRepository(ManageDBContext context, IFileProvider fileProvider, IMapper mapper) : base(context)
         {
             _context = context;
             _fileProvider = fileProvider;

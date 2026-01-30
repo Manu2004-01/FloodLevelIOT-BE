@@ -29,14 +29,14 @@ namespace WebAPI.Controllers.Admin
                 if (pagenumber <= 0 || pazesize <= 0)
                     return BadRequest(new BaseCommentResponse(400, "Số trang và kích thước trang phải lớn hơn 0"));
 
-                var acc = await _unitOfWork.ManageAccRepository.GetAllStaffAsync(new EntityParam
+                var acc = await _unitOfWork.ManageStaffRepository.GetAllStaffAsync(new EntityParam
                 {
                     Pagenumber = pagenumber,
                     Pagesize = pazesize,
                     Search = search
                 });
 
-                var total = await _unitOfWork.ManageAccRepository.CountAsync();
+                var total = await _unitOfWork.ManageStaffRepository.CountAsync();
 
                 var result = _mapper.Map<List<ManageStaffDTO>>(acc);
 
@@ -56,7 +56,7 @@ namespace WebAPI.Controllers.Admin
                 if (id <= 0)
                     return BadRequest(new BaseCommentResponse(400, "ID người dùng không hợp lệ"));
 
-                var acc = await _unitOfWork.ManageAccRepository.GetByIdAsync(id, u => u.Role);
+                var acc = await _unitOfWork.ManageStaffRepository.GetByIdAsync(id, u => u.Role);
                 if (acc == null)
                     return NotFound(new BaseCommentResponse(404, "Không tìm thấy tài khoản"));
 
@@ -74,13 +74,13 @@ namespace WebAPI.Controllers.Admin
         {
             try
             {
-                if (dto == null)
-                    return BadRequest(new BaseCommentResponse(400, "Dữ liệu không hợp lệ"));
+                if (!ModelState.IsValid)
+                    return BadRequest(new BaseCommentResponse(400, "Dữ liệu đầu vào không hợp lệ"));
 
-                if(dto == null)
+                if (dto == null)
                     return BadRequest(new BaseCommentResponse(400, "Dữ liệu người dùng là bắt buộc"));
 
-                var result = await _unitOfWork.ManageAccRepository.AddNewStaffAsync(dto);
+                var result = await _unitOfWork.ManageStaffRepository.AddNewStaffAsync(dto);
 
                 if (!result)
                     return BadRequest(new BaseCommentResponse(400, "Tạo tài khoản không thành công"));
@@ -107,7 +107,7 @@ namespace WebAPI.Controllers.Admin
                 if (!dto.RoleId.HasValue && !dto.Status.HasValue)
                     return BadRequest(new BaseCommentResponse(400, "Cần cung cấp ít nhất một trường để cập nhật"));
                 
-                var result = await _unitOfWork.ManageAccRepository.UpdateStaffAsync(id, dto);
+                var result = await _unitOfWork.ManageStaffRepository.UpdateStaffAsync(id, dto);
 
                 if (result == false)
                     return NotFound(new BaseCommentResponse(404, "Không tìm thấy người dùng"));
@@ -128,7 +128,7 @@ namespace WebAPI.Controllers.Admin
                 if(id <= 0)
                     return BadRequest(new BaseCommentResponse(400, "ID người dùng không hợp lệ"));
 
-                var result = await _unitOfWork.ManageAccRepository.DeleteStaffAsync(id);
+                var result = await _unitOfWork.ManageStaffRepository.DeleteStaffAsync(id);
 
                 if (result == false)
                     return NotFound(new BaseCommentResponse(404, "Không tìm thấy người dùng"));

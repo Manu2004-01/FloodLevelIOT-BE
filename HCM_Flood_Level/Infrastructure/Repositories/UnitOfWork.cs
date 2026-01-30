@@ -1,8 +1,10 @@
 ﻿using AutoMapper;
 using Core.Interfaces;
 using Core.Interfaces.Admin;
+using Core.Interfaces.Sensors;
 using Infrastructure.DBContext;
 using Infrastructure.Repositories.Admin;
+using Infrastructure.Repositories.Sensors;
 using Microsoft.Extensions.FileProviders;
 using System;
 using System.Collections.Generic;
@@ -19,9 +21,9 @@ namespace Infrastructure.Repositories
         private readonly IFileProvider _fileProvider;
         private readonly IMapper _mapper;
 
-        public IManageStaffRepository ManageAccRepository { get;  }
+        public IManageStaffRepository ManageStaffRepository { get;  }
 
-        public ISensor SensorRepository { get; }
+        public IManageSensorRepository ManageSensorRepository { get; }
 
         public UnitOfWork(ManageDBContext context, EventsDBContext eventsContext, IFileProvider fileProvider, IMapper mapper)
         {
@@ -29,8 +31,8 @@ namespace Infrastructure.Repositories
             _eventsContext = eventsContext;
             _fileProvider = fileProvider;
             _mapper = mapper;
-            ManageAccRepository = new ManageAccRepository(_context, _fileProvider, _mapper);
-            SensorRepository = new SensorRepository(_context, _fileProvider, _mapper);
+            ManageStaffRepository = new ManageStaffRepository(_context, _fileProvider, _mapper);
+            ManageSensorRepository = new ManageSensorRepository(_context, _fileProvider, _mapper);
         }
     }
 }
