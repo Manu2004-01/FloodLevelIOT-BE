@@ -10,7 +10,7 @@ namespace Core.Entities
     {
         public int SignId { get; set; }
         public string SignCode { get; set; }
-        public string SignStatus { get; set; }
+        public string Status { get; set; }
 
         public int LocationId { get; set; }
         public Location Location { get; set; }

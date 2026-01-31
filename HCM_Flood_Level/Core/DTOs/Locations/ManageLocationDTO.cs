@@ -4,17 +4,19 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.Entities
+namespace Core.DTOs.Locations
 {
-    public class Location
+    public class ManageLocationDTO
+    {
+    }
+
+    public class LocationDetailDTO
     {
         public int LocationId { get; set; }
         public string LocationName { get; set; }
-        public decimal? Latitude { get; set; }
-        public decimal? Longitude { get; set; }
-        public string RoadName { get; set; }
-
+        public double Latitude { get; set; }
+        public double Longitude { get; set; }
         public int AreaId { get; set; }
-        public Area Area { get; set; }
+        public string AreaName { get; set; }
     }
 }

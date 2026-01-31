@@ -8,23 +8,27 @@ namespace WebAPI.Models
     {
         public MappingUser()
         {
-            CreateMap<User, ManageAccDTO>()
-                .ForMember(a => a.UserId, a => a.MapFrom(b => b.UserId))
-                .ForMember(a => a.RoleName, a => a.MapFrom(b => b.Role != null ? b.Role.RoleName : string.Empty));
+            CreateMap<Staff, ManageStaffDTO>()
+                .ForMember(a => a.UserId, a => a.MapFrom(b => b.StaffId))
+                .ForMember(a => a.Status, a => a.MapFrom(b => b.IsActive))
+                .ForMember(a => a.RoleName, a => a.MapFrom(b => b.Role != null ? b.Role.RoleName : string.Empty))
+                .ForMember(a => a.Username, a => a.MapFrom(b => b.StaffAccName));
 
-            CreateMap<User, AccDTO>()
-                .ForMember(a => a.UserId, a => a.MapFrom(b => b.UserId))
-                .ForMember(a => a.RoleName, a => a.MapFrom(b => b.Role != null ? b.Role.RoleName : string.Empty));
+            CreateMap<Staff, StaffDTO>()
+                .ForMember(a => a.UserId, a => a.MapFrom(b => b.StaffId))
+                .ForMember(a => a.Status, a => a.MapFrom(b => b.IsActive))
+                .ForMember(a => a.RoleName, a => a.MapFrom(b => b.Role != null ? b.Role.RoleName : string.Empty))
+                .ForMember(a => a.Username, a => a.MapFrom(b => b.StaffAccName));
 
-            CreateMap<CreateAccDTO, User>()
+            CreateMap<CreateStaffDTO, Staff>()
                 .ForMember(a => a.RoleId, a => a.MapFrom(b => b.RoleId))
-                .ForMember(a => a.PasswordHash, a => a.Ignore()) // Password will be hashed in repository
+                .ForMember(a => a.PasswordHash, a => a.Ignore()) 
+                .ForMember(a => a.StaffAccName, a => a.MapFrom(b => b.Username))
                 .ReverseMap();
 
-            CreateMap<UpdateAccDTO, User>()
+            CreateMap<UpdateStaffDTO, Staff>()
                 .ForMember(a => a.RoleId, a => a.MapFrom(b => b.RoleId))
-                .ForMember(a => a.Status, a => a.MapFrom(b => b.Status))
-                .ReverseMap();
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
         }
     }
 }

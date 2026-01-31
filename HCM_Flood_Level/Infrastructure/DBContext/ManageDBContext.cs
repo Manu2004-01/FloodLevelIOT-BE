@@ -14,7 +14,7 @@ namespace Infrastructure.DBContext
         {
         }
 
-        public virtual DbSet<User> Users { get; set; }
+        public virtual DbSet<Core.Entities.Staff> Staffs { get; set; }
         public virtual DbSet<Role> Roles { get; set; }
         public virtual DbSet<Area> Areas { get; set; }
         public virtual DbSet<DigitalSign> DigitalSigns { get; set; }
@@ -23,6 +23,9 @@ namespace Infrastructure.DBContext
         public virtual DbSet<Sensor> Sensors { get; set; }
         public virtual DbSet<Priority> Priorities { get; set; }
         public virtual DbSet<MaintenanceRequest> MaintenanceRequests { get; set; }
+        public virtual DbSet<MaintenanceTask> MaintenanceTasks { get; set; }
+        public virtual DbSet<MaintenanceSchedule> MaintenanceSchedules { get; set; }
+        public virtual DbSet<Citizen> Citizens { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -30,7 +33,7 @@ namespace Infrastructure.DBContext
 
             ConfigureColumnNames(modelBuilder);
 
-            modelBuilder.Entity<User>().ToTable("users");
+            modelBuilder.Entity<Core.Entities.Staff>().ToTable("staffs");
             modelBuilder.Entity<Role>().ToTable("roles");
             modelBuilder.Entity<Area>().ToTable("areas");
             modelBuilder.Entity<Location>().ToTable("locations");
@@ -39,8 +42,11 @@ namespace Infrastructure.DBContext
             modelBuilder.Entity<DigitalSign>().ToTable("digitalsigns");
             modelBuilder.Entity<Priority>().ToTable("priorities");
             modelBuilder.Entity<MaintenanceRequest>().ToTable("maintenancerequests");
+            modelBuilder.Entity<MaintenanceTask>().ToTable("maintenancetasks");
+            modelBuilder.Entity<MaintenanceSchedule>().ToTable("maintenanceschedules");
+            modelBuilder.Entity<Citizen>().ToTable("citizens");
 
-            modelBuilder.Entity<User>()
+            modelBuilder.Entity<Core.Entities.Staff>()
                 .HasIndex(u => u.Email)
                 .IsUnique();
 
@@ -48,7 +54,7 @@ namespace Infrastructure.DBContext
                 .HasIndex(s => s.SensorCode)
                 .IsUnique();
 
-            modelBuilder.Entity<User>()
+            modelBuilder.Entity<Staff>()
                 .HasOne(u => u.Role)
                 .WithMany()
                 .HasForeignKey(u => u.RoleId)
@@ -64,6 +70,12 @@ namespace Infrastructure.DBContext
                 .HasOne(s => s.Location)
                 .WithMany()
                 .HasForeignKey(s => s.LocationId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<Sensor>()
+                .HasOne(s => s.InstalledByStaff)
+                .WithMany()
+                .HasForeignKey(s => s.InstalledBy)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<DigitalSign>()
@@ -85,9 +97,51 @@ namespace Infrastructure.DBContext
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<MaintenanceRequest>()
-                .HasOne(m => m.AssignedUser)
+                .HasOne(m => m.AssignedStaff)
                 .WithMany()
-                .HasForeignKey(m => m.AssignTo)
+                .HasForeignKey(m => m.AssignedStaffTo)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<MaintenanceRequest>()
+                .HasOne(m => m.CreatedByUser)
+                .WithMany()
+                .HasForeignKey(m => m.CreatedBy)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<MaintenanceTask>()
+                .HasOne(t => t.Request)
+                .WithMany()
+                .HasForeignKey(t => t.RequestId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<MaintenanceTask>()
+                .HasOne(t => t.Sensor)
+                .WithMany()
+                .HasForeignKey(t => t.SensorId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<MaintenanceTask>()
+                .HasOne(t => t.Priority)
+                .WithMany()
+                .HasForeignKey(t => t.PriorityId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<MaintenanceTask>()
+                .HasOne(t => t.AssignedStaff)
+                .WithMany()
+                .HasForeignKey(t => t.AssignedStaffId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<MaintenanceSchedule>()
+                .HasOne(s => s.Sensor)
+                .WithMany()
+                .HasForeignKey(s => s.SensorId)
+                .OnDelete(DeleteBehavior.Restrict);
+
+            modelBuilder.Entity<MaintenanceSchedule>()
+                .HasOne(s => s.AssignedStaff)
+                .WithMany()
+                .HasForeignKey(s => s.AssignedStaffId)
                 .OnDelete(DeleteBehavior.Restrict);
         }
 
@@ -99,16 +153,16 @@ namespace Infrastructure.DBContext
                 entity.Property(e => e.RoleName).HasColumnName("role_name");
             });
 
-            modelBuilder.Entity<User>(entity =>
+            modelBuilder.Entity<Staff>(entity =>
             {
-                entity.Property(e => e.UserId).HasColumnName("user_id");
+                entity.Property(e => e.StaffId).HasColumnName("staff_id");
                 entity.Property(e => e.FullName).HasColumnName("full_name");
-                entity.Property(e => e.Username).HasColumnName("user_name");
+                entity.Property(e => e.StaffAccName).HasColumnName("staff_acc_name");
                 entity.Property(e => e.Email).HasColumnName("email");
                 entity.Property(e => e.PhoneNumber).HasColumnName("phone_number");
                 entity.Property(e => e.PasswordHash).HasColumnName("password_hash");
                 entity.Property(e => e.RoleId).HasColumnName("role_id");
-                entity.Property(e => e.Status).HasColumnName("status");
+                entity.Property(e => e.IsActive).HasColumnName("is_active");
                 entity.Property(e => e.CreatedAt).HasColumnName("created_at");
             });
 
@@ -116,7 +170,6 @@ namespace Infrastructure.DBContext
             {
                 entity.Property(e => e.AreaId).HasColumnName("area_id");
                 entity.Property(e => e.AreaName).HasColumnName("area_name");
-                entity.Property(e => e.Description).HasColumnName("description");
             });
 
             modelBuilder.Entity<Location>(entity =>
@@ -126,18 +179,25 @@ namespace Infrastructure.DBContext
                 entity.Property(e => e.LocationName).HasColumnName("location_name");
                 entity.Property(e => e.Latitude).HasColumnName("latitude");
                 entity.Property(e => e.Longitude).HasColumnName("longitude");
-                entity.Property(e => e.Address).HasColumnName("road_name");
+                entity.Property(e => e.RoadName).HasColumnName("road_name");
             });
 
             modelBuilder.Entity<Sensor>(entity =>
             {
                 entity.Property(e => e.SensorId).HasColumnName("sensor_id");
                 entity.Property(e => e.LocationId).HasColumnName("location_id");
+                entity.Property(e => e.InstalledBy).HasColumnName("installed_by");
                 entity.Property(e => e.SensorCode).HasColumnName("sensor_code");
                 entity.Property(e => e.SensorName).HasColumnName("sensor_name");
                 entity.Property(e => e.SensorType).HasColumnName("sensor_type");
-                entity.Property(e => e.SensorStatus).HasColumnName("status");
+                entity.Property(e => e.Protocol).HasColumnName("protocol");
+                entity.Property(e => e.Specification).HasColumnName("specification");
+                entity.Property(e => e.Status).HasColumnName("status");
                 entity.Property(e => e.InstalledAt).HasColumnName("installed_at");
+                entity.Property(e => e.WarningThreshold).HasColumnName("warning_threshold");
+                entity.Property(e => e.DangerThreshold).HasColumnName("danger_threshold");
+                entity.Property(e => e.MaxLevel).HasColumnName("max_level");
+                entity.Property(e => e.CreatedAt).HasColumnName("created_at");
             });
 
             modelBuilder.Entity<FloodLevel>(entity =>
@@ -156,15 +216,15 @@ namespace Infrastructure.DBContext
                 entity.Property(e => e.SignId).HasColumnName("sign_id");
                 entity.Property(e => e.LocationId).HasColumnName("location_id");
                 entity.Property(e => e.SignCode).HasColumnName("sign_code");
-                entity.Property(e => e.SignStatus).HasColumnName("status");
+                entity.Property(e => e.Status).HasColumnName("status");
             });
 
             modelBuilder.Entity<Priority>(entity =>
             {
                 entity.Property(e => e.PriorityId).HasColumnName("priority_id");
-                entity.Property(e => e.Name).HasColumnName("display_name");
+                entity.Property(e => e.DisplayName).HasColumnName("display_name");
             });
-
+           
             modelBuilder.Entity<MaintenanceRequest>(entity =>
             {
                 entity.HasKey(e => e.RequestId);
@@ -172,9 +232,55 @@ namespace Infrastructure.DBContext
                 entity.Property(e => e.SensorId).HasColumnName("sensor_id");
                 entity.Property(e => e.PriorityId).HasColumnName("priority_id");
                 entity.Property(e => e.Description).HasColumnName("description");
-                entity.Property(e => e.AssignTo).HasColumnName("assigned_to");
+                entity.Property(e => e.Deadline).HasColumnName("deadline");
+                entity.Property(e => e.AssignedStaffTo).HasColumnName("assigned_staff_to");
+                entity.Property(e => e.CreatedBy).HasColumnName("created_by");
                 entity.Property(e => e.Note).HasColumnName("note");
                 entity.Property(e => e.Status).HasColumnName("status");
+                entity.Property(e => e.CreatedAt).HasColumnName("created_at");
+            });
+
+            modelBuilder.Entity<MaintenanceTask>(entity =>
+            {
+                entity.HasKey(e => e.TaskId);
+                entity.Property(e => e.TaskId).HasColumnName("task_id");
+                entity.Property(e => e.RequestId).HasColumnName("request_id");
+                entity.Property(e => e.SensorId).HasColumnName("sensor_id");
+                entity.Property(e => e.PriorityId).HasColumnName("priority_id");
+                entity.Property(e => e.Description).HasColumnName("description");
+                entity.Property(e => e.AssignedStaffId).HasColumnName("assigned_staff_id");
+                entity.Property(e => e.Deadline).HasColumnName("deadline");
+                entity.Property(e => e.Status).HasColumnName("status");
+                entity.Property(e => e.StartedAt).HasColumnName("started_at");
+                entity.Property(e => e.CompletedAt).HasColumnName("completed_at");
+                entity.Property(e => e.CreatedAt).HasColumnName("created_at");
+            });
+
+            modelBuilder.Entity<MaintenanceSchedule>(entity =>
+            {
+                entity.HasKey(e => e.ScheduleId);
+                entity.Property(e => e.ScheduleId).HasColumnName("schedule_id");
+                entity.Property(e => e.SensorId).HasColumnName("sensor_id");
+                entity.Property(e => e.ScheduleType).HasColumnName("schedule_type");
+                entity.Property(e => e.ScheduleMode).HasColumnName("schedule_mode");
+                entity.Property(e => e.StartDate).HasColumnName("start_date");
+                entity.Property(e => e.EndDate).HasColumnName("end_date");
+                entity.Property(e => e.AssignedStaffId).HasColumnName("assigned_staff_id");
+                entity.Property(e => e.Note).HasColumnName("note");
+                entity.Property(e => e.Status).HasColumnName("status");
+                entity.Property(e => e.CreatedAt).HasColumnName("created_at");
+            });
+
+            modelBuilder.Entity<Citizen>(entity =>
+            {
+                entity.HasKey(e => e.CitizenId);
+                entity.Property(e => e.CitizenId).HasColumnName("citizen_id");
+                entity.Property(e => e.FullName).HasColumnName("full_name");
+                entity.Property(e => e.PhoneNumber).HasColumnName("phone_number");
+                entity.Property(e => e.Email).HasColumnName("email");
+                entity.Property(e => e.PasswordHash).HasColumnName("password_hash");
+                entity.Property(e => e.AreaId).HasColumnName("area_id");
+                entity.Property(e => e.IsActive).HasColumnName("is_active");
                 entity.Property(e => e.CreatedAt).HasColumnName("created_at");
             });
         }

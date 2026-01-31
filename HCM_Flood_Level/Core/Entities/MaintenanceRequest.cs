@@ -18,11 +18,18 @@ namespace Core.Entities
 
         public string Description { get; set; }
 
-        public int AssignTo { get; set; }
-        public User AssignedUser { get; set; }
+        // Deadline for handling the request (nullable to support optional deadlines)
+        public DateTime? Deadline { get; set; }
+
+        public int? AssignedStaffTo { get; set; }
+        public Core.Entities.Staff AssignedStaff { get; set; }
+
+        // User who created the request
+        public int CreatedBy { get; set; }
+        public Core.Entities.Staff CreatedByUser { get; set; }
 
         public string Note { get; set; }
-        public string Status { get; set; }  
+        public string Status { get; set; } = "Pending";
         public DateTime CreatedAt { get; set; }
     }
 }

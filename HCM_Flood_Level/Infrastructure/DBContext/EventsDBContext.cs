@@ -12,6 +12,7 @@ namespace Infrastructure.DBContext
         public virtual DbSet<SensorReading> SensorReadings { get; set; }
         public virtual DbSet<Alert> Alerts { get; set; }
         public virtual DbSet<AlertLog> AlertLogs { get; set; }
+        public virtual DbSet<FloodEvent> FloodEvents { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -22,6 +23,7 @@ namespace Infrastructure.DBContext
             modelBuilder.Entity<SensorReading>().ToTable("sensorreadings");
             modelBuilder.Entity<Alert>().ToTable("alerts");
             modelBuilder.Entity<AlertLog>().ToTable("alertlogs");
+            modelBuilder.Entity<FloodEvent>().ToTable("floodevents");
 
             modelBuilder.Entity<AlertLog>()
                 .HasOne(al => al.Alert)
@@ -34,6 +36,8 @@ namespace Infrastructure.DBContext
         {
             modelBuilder.Entity<SensorReading>(entity =>
             {
+                // Explicitly set primary key because property name is 'ReadingId'
+                entity.HasKey(e => e.ReadingId);
                 entity.Property(e => e.ReadingId).HasColumnName("reading_id");
                 entity.Property(e => e.SensorId).HasColumnName("sensor_id");
                 entity.Property(e => e.WaterLevel).HasColumnName("water_level_cm");
@@ -44,6 +48,7 @@ namespace Infrastructure.DBContext
 
             modelBuilder.Entity<Alert>(entity =>
             {
+                entity.HasKey(e => e.AlertId);
                 entity.Property(e => e.AlertId).HasColumnName("alert_id");
                 entity.Property(e => e.LocationId).HasColumnName("location_id");
                 entity.Property(e => e.LevelId).HasColumnName("level_id");
@@ -53,11 +58,25 @@ namespace Infrastructure.DBContext
 
             modelBuilder.Entity<AlertLog>(entity =>
             {
+                entity.HasKey(e => e.LogId);
                 entity.Property(e => e.LogId).HasColumnName("log_id");
                 entity.Property(e => e.AlertId).HasColumnName("alert_id");
                 entity.Property(e => e.Channel).HasColumnName("channel");
                 entity.Property(e => e.SentAt).HasColumnName("sent_at");
                 entity.Property(e => e.LogStatus).HasColumnName("status");
+            });
+
+            modelBuilder.Entity<FloodEvent>(entity =>
+            {
+                entity.HasKey(e => e.EventId);
+                entity.Property(e => e.EventId).HasColumnName("event_id");
+                entity.Property(e => e.SensorId).HasColumnName("sensor_id");
+                entity.Property(e => e.LocationId).HasColumnName("location_id");
+                entity.Property(e => e.StartTime).HasColumnName("start_time");
+                entity.Property(e => e.EndTime).HasColumnName("end_time");
+                entity.Property(e => e.MaxWaterLevel).HasColumnName("max_water_level");
+                entity.Property(e => e.Severity).HasColumnName("severity");
+                entity.Property(e => e.CreatedAt).HasColumnName("created_at");
             });
         }
     }

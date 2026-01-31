@@ -6,16 +6,16 @@ using Microsoft.AspNetCore.Mvc;
 using WebAPI.Errors;
 using WebAPI.Helpers;
 
-namespace WebAPI.Controllers
+namespace WebAPI.Controllers.Sensors
 {
     [Route("api/admin")]
     [ApiController]
-    public class SensorController : ControllerBase
+    public class ManageSensorController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public SensorController(IUnitOfWork unitOfWork, IMapper mapper)
+        public ManageSensorController(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
@@ -35,18 +35,18 @@ namespace WebAPI.Controllers
                 if (pagenumber <= 0 || pagesize <= 0)
                     return BadRequest(new BaseCommentResponse(400, "Số trang và kích thước trang phải lớn hơn 0"));
 
-                var sensors = await _unitOfWork.SensorRepository.GetAllSensorsAsync(new EntityParam
+                var sensors = await _unitOfWork.ManageSensorRepository.GetAllSensorsAsync(new EntityParam
                 {
                     Pagenumber = pagenumber,
                     Pagesize = pagesize,
                     Search = search
                 });
 
-                var total = await _unitOfWork.SensorRepository.CountAsync(search);
+                var total = await _unitOfWork.ManageSensorRepository.CountAsync();
 
-                var result = _mapper.Map<List<SensorDTO>>(sensors);
+                var result = _mapper.Map<List<ManageSensorDTO>>(sensors);
 
-                return Ok(new Pagination<SensorDTO>(pagesize, pagenumber, total, result));
+                return Ok(new Pagination<ManageSensorDTO>(pagesize, pagenumber, total, result));
             }
             catch (Exception ex)
             {
@@ -70,7 +70,10 @@ namespace WebAPI.Controllers
                 if (id <= 0)
                     return BadRequest(new BaseCommentResponse(400, "ID thiết bị không hợp lệ"));
 
-                var sensor = await _unitOfWork.SensorRepository.GetSensorByIdAsync(id);
+                var sensor = await _unitOfWork.ManageSensorRepository.GetByIdAsync(id,
+                    s => s.Location,
+                    s => s.Location.Area,
+                    s => s.InstalledByStaff);
 
                 if (sensor == null)
                     return NotFound(new BaseCommentResponse(404, "Không tìm thấy thiết bị"));
@@ -88,12 +91,15 @@ namespace WebAPI.Controllers
         /// POST /api/admin/devices - Thêm mới thiết bị
         /// </summary>
         [HttpPost("devices")]
-        public async Task<ActionResult> CreateDevice([FromBody] CreateSensorDTO dto)
+        public async Task<ActionResult> CreateDevice([FromQuery] CreateSensorDTO dto)
         {
             try
             {
+                if (!ModelState.IsValid)
+                    return BadRequest(new BaseCommentResponse(400, "Dữ liệu đầu vào không hợp lệ"));
+
                 if (dto == null)
-                    return BadRequest(new BaseCommentResponse(400, "Dữ liệu không hợp lệ"));
+                    return BadRequest(new BaseCommentResponse(400, "Dữ liệu thiết bị là bắt buộc"));
 
                 // Validation
                 if (string.IsNullOrWhiteSpace(dto.SensorCode))
@@ -108,14 +114,10 @@ namespace WebAPI.Controllers
                 if (dto.LocationId <= 0)
                     return BadRequest(new BaseCommentResponse(400, "Vị trí lắp đặt là bắt buộc"));
 
-                // Check if sensor code already exists
-                if (await _unitOfWork.SensorRepository.SensorCodeExistsAsync(dto.SensorCode))
-                    return BadRequest(new BaseCommentResponse(400, $"Mã thiết bị '{dto.SensorCode}' đã tồn tại trong hệ thống"));
-
-                var result = await _unitOfWork.SensorRepository.AddNewSensorAsync(dto);
+                var result = await _unitOfWork.ManageSensorRepository.AddNewSensorAsync(dto);
 
                 if (!result)
-                    return BadRequest(new BaseCommentResponse(400, "Tạo thiết bị không thành công"));
+                    return BadRequest(new BaseCommentResponse(400, "Tạo thiết bị không thành công. Vui lòng kiểm tra lại mã thiết bị, vị trí hoặc tọa độ."));
 
                 return Ok(new BaseCommentResponse(200, "Tạo thiết bị thành công"));
             }
@@ -129,7 +131,7 @@ namespace WebAPI.Controllers
         /// PUT /api/admin/devices/{id} - Cập nhật thông tin thiết bị
         /// </summary>
         [HttpPut("devices/{id}")]
-        public async Task<ActionResult> UpdateDevice(int id, [FromBody] UpdateSensorDTO dto)
+        public async Task<ActionResult> UpdateDevice(int id, [FromQuery] UpdateSensorDTO dto)
         {
             try
             {
@@ -139,87 +141,32 @@ namespace WebAPI.Controllers
                 if (dto == null)
                     return BadRequest(new BaseCommentResponse(400, "Cần cập nhật dữ liệu"));
 
-                // Check if at least one field is provided for update
-                if (string.IsNullOrEmpty(dto.SensorName) &&
+                // Check if at least one updatable field is provided
+                if (!dto.LocationId.HasValue &&
+                    !dto.InstalledBy.HasValue &&
+                    string.IsNullOrEmpty(dto.Specification) &&
+                    string.IsNullOrEmpty(dto.SensorCode) &&
+                    string.IsNullOrEmpty(dto.SensorName) &&
+                    string.IsNullOrEmpty(dto.Protocol) &&
                     string.IsNullOrEmpty(dto.SensorType) &&
-                    string.IsNullOrEmpty(dto.SensorStatus) &&
-                    !dto.LocationId.HasValue)
+                    !dto.MinThreshold.HasValue &&
+                    !dto.MaxThreshold.HasValue &&
+                    !dto.MaxLevel.HasValue)
+                {
                     return BadRequest(new BaseCommentResponse(400, "Cần cung cấp ít nhất một trường để cập nhật"));
+                }
 
-                var result = await _unitOfWork.SensorRepository.UpdateSensorAsync(id, dto);
+                // Verify sensor exists first to return 404 when appropriate
+                var existing = await _unitOfWork.ManageSensorRepository.GetByIdAsync(id);
+                if (existing == null)
+                    return NotFound(new BaseCommentResponse(404, "Không tìm thấy thiết bị"));
+
+                var result = await _unitOfWork.ManageSensorRepository.UpdateSensorAsync(id, dto);
 
                 if (!result)
-                    return NotFound(new BaseCommentResponse(404, "Không tìm thấy thiết bị"));
+                    return BadRequest(new BaseCommentResponse(400, "Cập nhật thiết bị không thành công. Vui lòng kiểm tra vị trí, người lắp hoặc mã thiết bị."));
 
                 return Ok(new BaseCommentResponse(200, "Cập nhật thiết bị thành công"));
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new BaseCommentResponse(500, "Đã xảy ra lỗi máy chủ nội bộ!!!"));
-            }
-        }
-
-        /// <summary>
-        /// PUT /api/admin/devices/{id}/location - Cập nhật vị trí thiết bị
-        /// </summary>
-        [HttpPut("devices/{id}/location")]
-        public async Task<ActionResult> UpdateDeviceLocation(int id, [FromBody] UpdateLocationDTO dto)
-        {
-            try
-            {
-                if (id <= 0)
-                    return BadRequest(new BaseCommentResponse(400, "ID thiết bị không hợp lệ"));
-
-                if (dto == null)
-                    return BadRequest(new BaseCommentResponse(400, "Dữ liệu không hợp lệ"));
-
-                // Validation cho tọa độ
-                if (dto.Latitude < -90 || dto.Latitude > 90)
-                    return BadRequest(new BaseCommentResponse(400, "Vĩ độ (Latitude) phải trong khoảng -90 đến 90"));
-
-                if (dto.Longitude < -180 || dto.Longitude > 180)
-                    return BadRequest(new BaseCommentResponse(400, "Kinh độ (Longitude) phải trong khoảng -180 đến 180"));
-
-                if (string.IsNullOrWhiteSpace(dto.Address))
-                    return BadRequest(new BaseCommentResponse(400, "Địa chỉ là bắt buộc"));
-
-                var result = await _unitOfWork.SensorRepository.UpdateLocationAsync(id, dto);
-
-                if (!result)
-                    return NotFound(new BaseCommentResponse(404, "Không tìm thấy thiết bị hoặc vị trí"));
-
-                return Ok(new BaseCommentResponse(200, "Cập nhật vị trí thiết bị thành công"));
-            }
-            catch (Exception ex)
-            {
-                return StatusCode(500, new BaseCommentResponse(500, "Đã xảy ra lỗi máy chủ nội bộ!!!"));
-            }
-        }
-
-        /// <summary>
-        /// PUT /api/admin/devices/{id}/threshold - Cập nhật ngưỡng cảnh báo
-        /// </summary>
-        [HttpPut("devices/{id}/threshold")]
-        public async Task<ActionResult> UpdateDeviceThreshold(int id, [FromBody] UpdateThresholdDTO dto)
-        {
-            try
-            {
-                if (id <= 0)
-                    return BadRequest(new BaseCommentResponse(400, "ID thiết bị không hợp lệ"));
-
-                if (dto == null)
-                    return BadRequest(new BaseCommentResponse(400, "Dữ liệu không hợp lệ"));
-
-                // Validation cho ngưỡng
-                //if (dto.MinThreshold.HasValue && dto.MaxThreshold.HasValue && dto.MinThreshold >= dto.MaxThreshold)
-                //    return BadRequest(new BaseCommentResponse(400, "Ngưỡng tối thiểu phải nhỏ hơn ngưỡng tối đa"));
-
-                var result = await _unitOfWork.SensorRepository.UpdateThresholdAsync(id, dto);
-
-                if (!result)
-                    return NotFound(new BaseCommentResponse(404, "Không tìm thấy thiết bị"));
-
-                return Ok(new BaseCommentResponse(200, "Cập nhật ngưỡng cảnh báo thành công"));
             }
             catch (Exception ex)
             {
@@ -238,7 +185,7 @@ namespace WebAPI.Controllers
                 if (id <= 0)
                     return BadRequest(new BaseCommentResponse(400, "ID thiết bị không hợp lệ"));
 
-                var result = await _unitOfWork.SensorRepository.DeleteSensorAsync(id);
+                var result = await _unitOfWork.ManageSensorRepository.DeleteSensorAsync(id);
 
                 if (!result)
                     return NotFound(new BaseCommentResponse(404, "Không tìm thấy thiết bị"));
