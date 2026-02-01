@@ -8,6 +8,8 @@ namespace Core.DTOs.Locations
 {
     public class ManageLocationDTO
     {
+        public int LocationId { get; set; }
+        public string LocationName { get; set; }
     }
 
     public class LocationDetailDTO

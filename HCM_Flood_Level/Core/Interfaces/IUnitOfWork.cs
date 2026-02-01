@@ -12,5 +12,8 @@ namespace Core.Interfaces
     {
         IManageStaffRepository ManageStaffRepository { get; }
         IManageSensorRepository ManageSensorRepository { get; }
+        IMaintenanceScheduleRepository ManageMaintenanceScheduleRepository { get; }
+        ILocationRepository LocationRepository { get; }
+        IAreaRepository AreaRepository { get; }
     }
 }

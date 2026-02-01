@@ -22,7 +22,7 @@ namespace WebAPI.Controllers.Admin
         }
 
         [HttpGet("staffs")]
-        public async Task<ActionResult> GetAllAcc([FromQuery] int pagenumber = 1, [FromQuery] int pazesize = 10, [FromQuery] string? search = null)
+        public async Task<ActionResult> GetAllAcc([FromQuery] int pagenumber = 1, [FromQuery] int pazesize = 10, [FromQuery] string? search = null, [FromQuery] int? roleid = null)
         {
             try
             {
@@ -33,7 +33,8 @@ namespace WebAPI.Controllers.Admin
                 {
                     Pagenumber = pagenumber,
                     Pagesize = pazesize,
-                    Search = search
+                    Search = search,
+                    RoleId = roleid
                 });
 
                 var total = await _unitOfWork.ManageStaffRepository.CountAsync();

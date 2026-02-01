@@ -1,5 +1,6 @@
 ﻿using AutoMapper;
 using Core.DTOs.Sensor;
+using Core.Entities;
 using Core.Interfaces;
 using Core.Sharing;
 using Microsoft.AspNetCore.Mvc;
@@ -44,7 +45,14 @@ namespace WebAPI.Controllers.Sensors
 
                 var total = await _unitOfWork.ManageSensorRepository.CountAsync();
 
-                var result = _mapper.Map<List<ManageSensorDTO>>(sensors);
+                var sensorIds = sensors.Select(s => s.SensorId).ToList();
+                var latestReadings = await _unitOfWork.ManageSensorRepository.GetLatestReadingsForSensorIdsAsync(sensorIds);
+                var readingsBySensor = latestReadings.Where(r => r != null).ToDictionary(r => r.SensorId, r => r);
+
+                var result = _mapper.Map<List<ManageSensorDTO>>(sensors, opts =>
+                {
+                    opts.Items["LatestReadings"] = readingsBySensor;
+                });
 
                 return Ok(new Pagination<ManageSensorDTO>(pagesize, pagenumber, total, result));
             }
@@ -73,7 +81,17 @@ namespace WebAPI.Controllers.Sensors
                 if (sensor == null)
                     return NotFound(new BaseCommentResponse(404, "Không tìm thấy thiết bị"));
 
-                var result = _mapper.Map<SensorDTO>(sensor);
+                
+
+                // Fetch latest reading for this sensor and pass to AutoMapper via context
+                var latestReadings = await _unitOfWork.ManageSensorRepository.GetLatestReadingsForSensorIdsAsync(new List<int> { sensor.SensorId });
+                var readingsBySensor = latestReadings.Where(r => r != null).ToDictionary(r => r.SensorId, r => r);
+
+                var result = _mapper.Map<SensorDTO>(sensor, opts =>
+                {
+                    opts.Items["LatestReadings"] = readingsBySensor;
+                });
+
                 return Ok(result);
             }
             catch (Exception ex)
@@ -109,10 +127,20 @@ namespace WebAPI.Controllers.Sensors
                 if (dto.LocationId <= 0)
                     return BadRequest(new BaseCommentResponse(400, "Vị trí lắp đặt là bắt buộc"));
 
+                // Controller-level validation: ensure location exists
+                var locationExists = await _unitOfWork.ManageSensorRepository.LocationExistsAsync(dto.LocationId);
+                if (!locationExists)
+                    return BadRequest(new BaseCommentResponse(400, "Vị trí lắp đặt không tồn tại"));
+
+                // Controller-level validation: prevent duplicate sensor for same location
+                var locationHasSensor = await _unitOfWork.ManageSensorRepository.LocationHasSensorAsync(dto.LocationId);
+                if (locationHasSensor)
+                    return BadRequest(new BaseCommentResponse(400, "Vị trí này đã có thiết bị, không thể tạo thêm"));
+
                 var result = await _unitOfWork.ManageSensorRepository.AddNewSensorAsync(dto);
 
                 if (!result)
-                    return BadRequest(new BaseCommentResponse(400, "Tạo thiết bị không thành công. Vui lòng kiểm tra lại mã thiết bị, vị trí hoặc tọa độ."));
+                    return BadRequest(new BaseCommentResponse(400, "Tạo thiết bị không thành công."));
 
                 return Ok(new BaseCommentResponse(200, "Tạo thiết bị thành công"));
             }

@@ -13,6 +13,7 @@ namespace Infrastructure.DBContext
         public virtual DbSet<Alert> Alerts { get; set; }
         public virtual DbSet<AlertLog> AlertLogs { get; set; }
         public virtual DbSet<FloodEvent> FloodEvents { get; set; }
+        public virtual DbSet<Sensor> Sensors { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -24,6 +25,14 @@ namespace Infrastructure.DBContext
             modelBuilder.Entity<Alert>().ToTable("alerts");
             modelBuilder.Entity<AlertLog>().ToTable("alertlogs");
             modelBuilder.Entity<FloodEvent>().ToTable("floodevents");
+            modelBuilder.Entity<Sensor>().ToTable("sensors");
+
+            // Link SensorReading -> Sensor (application-level FK mapping)
+            modelBuilder.Entity<SensorReading>()
+                .HasOne<Sensor>()
+                .WithMany()
+                .HasForeignKey(sr => sr.SensorId)
+                .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<AlertLog>()
                 .HasOne(al => al.Alert)
@@ -40,6 +49,7 @@ namespace Infrastructure.DBContext
                 entity.HasKey(e => e.ReadingId);
                 entity.Property(e => e.ReadingId).HasColumnName("reading_id");
                 entity.Property(e => e.SensorId).HasColumnName("sensor_id");
+                entity.Property(e => e.Status).HasColumnName("status");
                 entity.Property(e => e.WaterLevel).HasColumnName("water_level_cm");
                 entity.Property(e => e.Battery).HasColumnName("battery_percent");
                 entity.Property(e => e.SignalStrength).HasColumnName("signal_strength");
@@ -76,6 +86,23 @@ namespace Infrastructure.DBContext
                 entity.Property(e => e.EndTime).HasColumnName("end_time");
                 entity.Property(e => e.MaxWaterLevel).HasColumnName("max_water_level");
                 entity.Property(e => e.Severity).HasColumnName("severity");
+                entity.Property(e => e.CreatedAt).HasColumnName("created_at");
+            });
+
+            modelBuilder.Entity<Sensor>(entity =>
+            {
+                entity.Property(e => e.SensorId).HasColumnName("sensor_id");
+                entity.Property(e => e.LocationId).HasColumnName("location_id");
+                entity.Property(e => e.InstalledBy).HasColumnName("installed_by");
+                entity.Property(e => e.SensorCode).HasColumnName("sensor_code");
+                entity.Property(e => e.SensorName).HasColumnName("sensor_name");
+                entity.Property(e => e.SensorType).HasColumnName("sensor_type");
+                entity.Property(e => e.Protocol).HasColumnName("protocol");
+                entity.Property(e => e.Specification).HasColumnName("specification");
+                entity.Property(e => e.InstalledAt).HasColumnName("installed_at");
+                entity.Property(e => e.WarningThreshold).HasColumnName("warning_threshold");
+                entity.Property(e => e.DangerThreshold).HasColumnName("danger_threshold");
+                entity.Property(e => e.MaxLevel).HasColumnName("max_level");
                 entity.Property(e => e.CreatedAt).HasColumnName("created_at");
             });
         }

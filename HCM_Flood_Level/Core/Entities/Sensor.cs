@@ -12,7 +12,7 @@ namespace Core.Entities
         public string SensorCode { get; set; }
         public string SensorName { get; set; }
         public string SensorType { get; set; }
-        public string Status { get; set; } = "Offline";
+        //public string Status { get; set; } = "Offline";
         public string Protocol { get; set; }
         public string Specification { get; set; }
         public DateTime? InstalledAt { get; set; }

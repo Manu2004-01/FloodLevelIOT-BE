@@ -8,7 +8,7 @@ namespace Core.Entities
 {
     public class Alert
     {
-        public int AlertId { get; set; }
+        public long AlertId { get; set; }
         public int LevelId { get; set; }
         public int LocationId { get; set; }
         public string AlertMessage { get; set; }

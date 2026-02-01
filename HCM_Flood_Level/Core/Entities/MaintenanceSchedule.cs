@@ -15,7 +15,7 @@ namespace Core.Entities
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
 
-        public int AssignedStaffId { get; set; }
+        public int? AssignedStaffId { get; set; }
         public Staff AssignedStaff { get; set; }
 
         public string Note { get; set; }

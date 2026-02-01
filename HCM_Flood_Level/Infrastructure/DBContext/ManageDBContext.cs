@@ -14,7 +14,7 @@ namespace Infrastructure.DBContext
         {
         }
 
-        public virtual DbSet<Core.Entities.Staff> Staffs { get; set; }
+        public virtual DbSet<Staff> Staffs { get; set; }
         public virtual DbSet<Role> Roles { get; set; }
         public virtual DbSet<Area> Areas { get; set; }
         public virtual DbSet<DigitalSign> DigitalSigns { get; set; }
@@ -33,7 +33,7 @@ namespace Infrastructure.DBContext
 
             ConfigureColumnNames(modelBuilder);
 
-            modelBuilder.Entity<Core.Entities.Staff>().ToTable("staffs");
+            modelBuilder.Entity<Staff>().ToTable("staffs");
             modelBuilder.Entity<Role>().ToTable("roles");
             modelBuilder.Entity<Area>().ToTable("areas");
             modelBuilder.Entity<Location>().ToTable("locations");
@@ -46,7 +46,7 @@ namespace Infrastructure.DBContext
             modelBuilder.Entity<MaintenanceSchedule>().ToTable("maintenanceschedules");
             modelBuilder.Entity<Citizen>().ToTable("citizens");
 
-            modelBuilder.Entity<Core.Entities.Staff>()
+            modelBuilder.Entity<Staff>()
                 .HasIndex(u => u.Email)
                 .IsUnique();
 
@@ -192,7 +192,8 @@ namespace Infrastructure.DBContext
                 entity.Property(e => e.SensorType).HasColumnName("sensor_type");
                 entity.Property(e => e.Protocol).HasColumnName("protocol");
                 entity.Property(e => e.Specification).HasColumnName("specification");
-                entity.Property(e => e.Status).HasColumnName("status");
+                //// Sensor status is tracked in events DB (SensorReadings.status); do not map here
+                //entity.Ignore(e => e.Status);
                 entity.Property(e => e.InstalledAt).HasColumnName("installed_at");
                 entity.Property(e => e.WarningThreshold).HasColumnName("warning_threshold");
                 entity.Property(e => e.DangerThreshold).HasColumnName("danger_threshold");

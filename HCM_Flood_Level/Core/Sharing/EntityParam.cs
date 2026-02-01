@@ -12,7 +12,7 @@ namespace Core.Sharing
         public string Sorting { get; set; }
 
         //Filter
-
+        public int? RoleId { get; set; }
 
         //Page size
         public int maxpagesize { get; set; } = 100;

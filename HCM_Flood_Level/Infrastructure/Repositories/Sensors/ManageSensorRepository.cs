@@ -18,12 +18,14 @@ namespace Infrastructure.Repositories.Sensors
     public class ManageSensorRepository : GenericRepository<Sensor>, IManageSensorRepository
     {
         private readonly ManageDBContext _context;
+        private readonly EventsDBContext _eventsContext;
         private readonly IFileProvider _fileProvider;
         private readonly IMapper _mapper;
 
-        public ManageSensorRepository(ManageDBContext context, IFileProvider fileProvider, IMapper mapper) : base(context)
+        public ManageSensorRepository(ManageDBContext context, EventsDBContext eventsContext, IFileProvider fileProvider, IMapper mapper) : base(context)
         {
             _context = context;
+            _eventsContext = eventsContext;
             _fileProvider = fileProvider;
             _mapper = mapper;
         }
@@ -54,16 +56,12 @@ namespace Infrastructure.Repositories.Sensors
 
         public async Task<bool> AddNewSensorAsync(CreateSensorDTO dto)
         {
-            var sensorCodeExists = await _context.Sensors.AnyAsync(s => s.SensorCode == dto.SensorCode);
-            if (sensorCodeExists)
-                return false;
-
             var locationExists = await _context.Locations.AnyAsync(l => l.LocationId == dto.LocationId);
             if (!locationExists)
                 return false;
 
-            // Ensure the installer (staff) exists to avoid FK constraint errors
-            if (dto.InstalledBy <= 0 || !await _context.Staffs.AnyAsync(s => s.StaffId == dto.InstalledBy))
+            var duplicateLocation = await _context.Sensors.AnyAsync(s => s.LocationId == dto.LocationId);
+            if (duplicateLocation)
                 return false;
 
             var sensor = _mapper.Map<Sensor>(dto);
@@ -73,7 +71,30 @@ namespace Infrastructure.Repositories.Sensors
 
             await _context.Sensors.AddAsync(sensor);
             await _context.SaveChangesAsync();
-            return true;    
+
+            // Sau khi tạo sensor, tạo bản ghi SensorReading mặc định
+            var defaultReading = new SensorReading
+            {
+                SensorId = sensor.SensorId,
+                Status = "Offline",
+                WaterLevel = 0,
+                SignalStrength = "Không kết nối",
+                Battery = 100,
+                RecordAt = DateTime.UtcNow
+            };
+            await AddSensorReadingAsync(defaultReading);
+
+            return true;
+        }
+
+        public async Task<bool> LocationExistsAsync(int locationId)
+        {
+            return await _context.Locations.AnyAsync(l => l.LocationId == locationId);
+        }
+
+        public async Task<bool> LocationHasSensorAsync(int locationId)
+        {
+            return await _context.Sensors.AnyAsync(s => s.LocationId == locationId);
         }
 
         public async Task<bool> UpdateSensorAsync(int id, UpdateSensorDTO dto)
@@ -83,7 +104,6 @@ namespace Infrastructure.Repositories.Sensors
             if (sensor == null)
                 return false;
 
-            // Location change: validate existence
             if (dto.LocationId.HasValue)
             {
                 var locationExists = await _context.Locations.AnyAsync(l => l.LocationId == dto.LocationId.Value);
@@ -145,6 +165,66 @@ namespace Infrastructure.Repositories.Sensors
             _context.Sensors.Remove(sensor);
             await _context.SaveChangesAsync();
             return true;
+        }
+
+        public async Task<IEnumerable<SensorReading>> GetLatestReadingsForSensorIdsAsync(IEnumerable<int> sensorIds)
+        {
+            if (sensorIds == null)
+                return new List<SensorReading>();
+
+            var ids = sensorIds.Distinct().ToList();
+
+            var latest = await _eventsContext.SensorReadings
+                .Where(r => ids.Contains(r.SensorId))
+                .GroupBy(r => r.SensorId)
+                .Select(g => g.OrderByDescending(r => r.RecordAt).FirstOrDefault())
+                .ToListAsync();
+
+            return latest.Where(r => r != null)!;
+        }
+
+        public async Task<IEnumerable<int>> GetAllSensorIdsAsync()
+        {
+            return await _context.Sensors.Select(s => s.SensorId).ToListAsync();
+        }
+
+        public async Task AddSensorReadingAsync(SensorReading reading)
+        {
+            if (reading == null) return;
+            await _eventsContext.SensorReadings.AddAsync(reading);
+            await _eventsContext.SaveChangesAsync();
+        }
+
+        public async Task PruneSensorReadingsAsync(int sensorId, int maxEntries)
+        {
+            var readings = await _eventsContext.SensorReadings
+                .Where(r => r.SensorId == sensorId)
+                .OrderByDescending(r => r.RecordAt)
+                .ToListAsync();
+
+            if (readings.Count <= maxEntries) return;
+
+            var toDelete = readings.Skip(maxEntries).ToList();
+            _eventsContext.SensorReadings.RemoveRange(toDelete);
+            await _eventsContext.SaveChangesAsync();
+        }
+
+        public async Task<double?> GetMaxFloodEventLevelForSensorAsync(int sensorId)
+        {
+            var evt = await _eventsContext.FloodEvents
+                .Where(f => f.SensorId == sensorId)
+                .OrderByDescending(f => f.MaxWaterLevel)
+                .FirstOrDefaultAsync();
+
+            return evt?.MaxWaterLevel;
+        }
+
+        public async Task AddFloodEventAsync(FloodEvent floodEvent)
+        {
+            if (floodEvent == null) return;
+            floodEvent.CreatedAt = DateTime.UtcNow;
+            await _eventsContext.FloodEvents.AddAsync(floodEvent);
+            await _eventsContext.SaveChangesAsync();
         }
     }
 }

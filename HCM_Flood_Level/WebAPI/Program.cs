@@ -62,6 +62,9 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 
 builder.Services.AddHttpContextAccessor();
 
+// Background generator for sensor readings (30-minute interval)
+builder.Services.AddHostedService<WebAPI.Services.SensorReadingGeneratorService>();
+
 var jwtSection = builder.Configuration.GetSection("Jwt");
 var jwtKey = jwtSection["Key"];
 

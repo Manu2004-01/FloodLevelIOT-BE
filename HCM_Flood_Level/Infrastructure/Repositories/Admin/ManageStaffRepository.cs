@@ -70,9 +70,14 @@ namespace Infrastructure.Repositories.Admin
                     u.Email.ToLower().Contains(entityParam.Search));
             }
 
-            query = query
-                .Skip((entityParam.Pagenumber - 1) * entityParam.Pagesize)
-                .Take(entityParam.Pagesize);
+            if (entityParam.RoleId.HasValue)
+            {
+                query = query.Where(u => u.RoleId == entityParam.RoleId.Value);
+            }
+
+            query = query.OrderBy(u => u.FullName)
+                         .Skip((entityParam.Pagenumber - 1) * entityParam.Pagesize)
+                         .Take(entityParam.Pagesize);
 
             return await query.ToListAsync();
         }
