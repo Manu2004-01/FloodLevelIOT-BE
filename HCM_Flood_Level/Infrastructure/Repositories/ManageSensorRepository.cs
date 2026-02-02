@@ -1,8 +1,7 @@
 ﻿using AutoMapper;
-using Core.DTOs.Admin;
-using Core.DTOs.Sensor;
+using Core.DTOs;
 using Core.Entities;
-using Core.Interfaces.Sensors;
+using Core.Interfaces;
 using Core.Sharing;
 using Infrastructure.DBContext;
 using Microsoft.EntityFrameworkCore;
@@ -13,7 +12,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infrastructure.Repositories.Sensors
+namespace Infrastructure.Repositories
 {
     public class ManageSensorRepository : GenericRepository<Sensor>, IManageSensorRepository
     {

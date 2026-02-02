@@ -3,8 +3,16 @@
   "WorkspaceRootPath": "D:\\FPTU\\FloodLevelIOT-BE\\HCM_Flood_Level\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{E0705B8D-A8BA-4818-A9B5-F64473F23E9A}|WebAPI\\WebAPI.csproj|d:\\fptu\\floodleveliot-be\\hcm_flood_level\\webapi\\controllers\\admin\\manageacccontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E0705B8D-A8BA-4818-A9B5-F64473F23E9A}|WebAPI\\WebAPI.csproj|solutionrelative:webapi\\controllers\\admin\\manageacccontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{E0705B8D-A8BA-4818-A9B5-F64473F23E9A}|WebAPI\\WebAPI.csproj|d:\\fptu\\floodleveliot-be\\hcm_flood_level\\webapi\\controllers\\maintenanceschedulecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E0705B8D-A8BA-4818-A9B5-F64473F23E9A}|WebAPI\\WebAPI.csproj|solutionrelative:webapi\\controllers\\maintenanceschedulecontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E0705B8D-A8BA-4818-A9B5-F64473F23E9A}|WebAPI\\WebAPI.csproj|d:\\fptu\\floodleveliot-be\\hcm_flood_level\\webapi\\controllers\\staffcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E0705B8D-A8BA-4818-A9B5-F64473F23E9A}|WebAPI\\WebAPI.csproj|solutionrelative:webapi\\controllers\\staffcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3D73A4B9-1067-4E8D-B10E-77B202CAA7BC}|Core\\Core.csproj|d:\\fptu\\floodleveliot-be\\hcm_flood_level\\core\\sharing\\entityparam.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3D73A4B9-1067-4E8D-B10E-77B202CAA7BC}|Core\\Core.csproj|solutionrelative:core\\sharing\\entityparam.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -14,7 +22,7 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 5,
           "Children": [
             {
               "$type": "Bookmark",
@@ -30,15 +38,41 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "ManageAccController.cs",
-              "DocumentMoniker": "D:\\FPTU\\FloodLevelIOT-BE\\HCM_Flood_Level\\WebAPI\\Controllers\\Admin\\ManageAccController.cs",
-              "RelativeDocumentMoniker": "WebAPI\\Controllers\\Admin\\ManageAccController.cs",
-              "ToolTip": "D:\\FPTU\\FloodLevelIOT-BE\\HCM_Flood_Level\\WebAPI\\Controllers\\Admin\\ManageAccController.cs",
-              "RelativeToolTip": "WebAPI\\Controllers\\Admin\\ManageAccController.cs",
-              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "DocumentIndex": 2,
+              "Title": "EntityParam.cs",
+              "DocumentMoniker": "D:\\FPTU\\FloodLevelIOT-BE\\HCM_Flood_Level\\Core\\Sharing\\EntityParam.cs",
+              "RelativeDocumentMoniker": "Core\\Sharing\\EntityParam.cs",
+              "ToolTip": "D:\\FPTU\\FloodLevelIOT-BE\\HCM_Flood_Level\\Core\\Sharing\\EntityParam.cs",
+              "RelativeToolTip": "Core\\Sharing\\EntityParam.cs",
+              "ViewState": "AgIAAA0AAAAAAAAAAAAQwAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-01-27T08:05:38.437Z",
+              "WhenOpened": "2026-02-02T05:11:36.717Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "StaffController.cs",
+              "DocumentMoniker": "D:\\FPTU\\FloodLevelIOT-BE\\HCM_Flood_Level\\WebAPI\\Controllers\\StaffController.cs",
+              "RelativeDocumentMoniker": "WebAPI\\Controllers\\StaffController.cs",
+              "ToolTip": "D:\\FPTU\\FloodLevelIOT-BE\\HCM_Flood_Level\\WebAPI\\Controllers\\StaffController.cs",
+              "RelativeToolTip": "WebAPI\\Controllers\\StaffController.cs",
+              "ViewState": "AgIAACUAAAAAAAAAAAAYwB8AAABzAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-02T04:59:26.302Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "MaintenanceScheduleController.cs",
+              "DocumentMoniker": "D:\\FPTU\\FloodLevelIOT-BE\\HCM_Flood_Level\\WebAPI\\Controllers\\MaintenanceScheduleController.cs",
+              "RelativeDocumentMoniker": "WebAPI\\Controllers\\MaintenanceScheduleController.cs",
+              "ToolTip": "D:\\FPTU\\FloodLevelIOT-BE\\HCM_Flood_Level\\WebAPI\\Controllers\\MaintenanceScheduleController.cs",
+              "RelativeToolTip": "WebAPI\\Controllers\\MaintenanceScheduleController.cs",
+              "ViewState": "AgIAABMAAAAAAAAAAAAAwA4AAAAgAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-02T04:59:02.411Z",
               "EditorCaption": ""
             }
           ]

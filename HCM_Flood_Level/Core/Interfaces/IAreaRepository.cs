@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.Interfaces.Admin
+namespace Core.Interfaces
 {
     public interface IAreaRepository : IGenericRepository<Area>
     {

@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Core.DTOs.Sensor;
+using Core.DTOs;
 using Core.Entities;
 using Core.Interfaces;
 using Core.Sharing;
@@ -7,16 +7,16 @@ using Microsoft.AspNetCore.Mvc;
 using WebAPI.Errors;
 using WebAPI.Helpers;
 
-namespace WebAPI.Controllers.Sensors
+namespace WebAPI.Controllers
 {
     [Route("api/admin")]
     [ApiController]
-    public class ManageSensorController : ControllerBase
+    public class SensorController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public ManageSensorController(IUnitOfWork unitOfWork, IMapper mapper)
+        public SensorController(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;

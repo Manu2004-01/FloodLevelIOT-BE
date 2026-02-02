@@ -1,4 +1,4 @@
-﻿using Core.DTOs.Sensor;
+﻿using Core.DTOs;
 using Core.Entities;
 using Core.Sharing;
 using System;
@@ -7,7 +7,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.Interfaces.Sensors
+namespace Core.Interfaces
 {
     public interface IManageSensorRepository : IGenericRepository<Sensor>
     {

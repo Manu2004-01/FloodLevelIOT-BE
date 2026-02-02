@@ -1,21 +1,23 @@
 ﻿using AutoMapper;
-using Core.DTOs.Admin;
+using Core.DTOs;
 using Core.Interfaces;
 using Core.Sharing;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.Errors;
 using WebAPI.Helpers;
 
-namespace WebAPI.Controllers.Admin
+namespace WebAPI.Controllers
 {
     [Route("api/admin")]
     [ApiController]
-    public class ManageStaffController : ControllerBase
+    [Authorize(Roles = "Admin")]
+    public class StaffController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public ManageStaffController(IUnitOfWork unitOfWork, IMapper mapper)
+        public StaffController(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;

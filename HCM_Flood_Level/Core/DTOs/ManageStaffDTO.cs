@@ -4,7 +4,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Core.DTOs.Admin
+namespace Core.DTOs
 {
     public class ManageStaffDTO
     {

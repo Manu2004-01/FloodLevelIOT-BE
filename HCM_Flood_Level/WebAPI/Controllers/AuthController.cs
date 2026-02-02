@@ -1,4 +1,4 @@
-﻿using Core.DTOs.Auth;
+﻿using Core.DTOs;
 using Core.Interfaces;
 using Core.Services;
 using Infrastructure.DBContext;
@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebAPI.Errors;
 
-namespace WebAPI.Controllers.Auth
+namespace WebAPI.Controllers
 {
     [Route("api/auth")]
     [ApiController]
@@ -57,7 +57,7 @@ namespace WebAPI.Controllers.Auth
 
                 var token = _tokenService.CreateToken(log, roleName);
 
-                return Ok(new {token = token});
+                return Ok(new {token});
             }
             catch (Exception ex)
             {

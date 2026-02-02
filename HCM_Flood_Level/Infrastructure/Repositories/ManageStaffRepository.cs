@@ -1,12 +1,10 @@
 ﻿using AutoMapper;
-using Core.DTOs.Admin;
-using Core.DTOs.Sensor;
+using Core.DTOs;
 using Core.Entities;
-using Core.Interfaces.Admin;
+using Core.Interfaces;
 using Core.Services;
 using Core.Sharing;
 using Infrastructure.DBContext;
-using Infrastructure.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using System;
@@ -15,7 +13,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace Infrastructure.Repositories.Admin
+namespace Infrastructure.Repositories
 {
     public class ManageStaffRepository : GenericRepository<Staff>, IManageStaffRepository
     {

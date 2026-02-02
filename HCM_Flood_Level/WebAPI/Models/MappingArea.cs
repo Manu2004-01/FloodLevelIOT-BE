@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Core.DTOs.Area;
+using Core.DTOs;
 using Core.Entities;
 
 namespace WebAPI.Models

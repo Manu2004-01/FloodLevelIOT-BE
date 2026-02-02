@@ -1,5 +1,5 @@
 ﻿using Core.Entities;
-using Core.Interfaces.Admin;
+using Core.Interfaces;
 using Infrastructure.DBContext;
 using System;
 using System.Collections.Generic;

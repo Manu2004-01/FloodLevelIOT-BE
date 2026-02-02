@@ -1,10 +1,7 @@
 ﻿using AutoMapper;
 using Core.Interfaces;
-using Core.Interfaces.Admin;
-using Core.Interfaces.Sensors;
 using Infrastructure.DBContext;
 using Infrastructure.Repositories.Admin;
-using Infrastructure.Repositories.Sensors;
 using Microsoft.Extensions.FileProviders;
 using System;
 using System.Collections.Generic;

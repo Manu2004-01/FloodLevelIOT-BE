@@ -1,38 +1,40 @@
 ﻿using AutoMapper;
-using Core.DTOs.Area;
+using Core.DTOs;
 using Core.Entities;
 using Core.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.Errors;
 
-namespace WebAPI.Controllers.Admin
+namespace WebAPI.Controllers
 {
-    [Route("api/[controller]")]
+    [Route("api/admin")]
     [ApiController]
-    public class AreaController : ControllerBase
+    [Authorize]
+    public class LocationController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
-        public AreaController(IUnitOfWork unitOfWork, IMapper mapper)
+        public LocationController(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
         }
 
-        [HttpGet("areas")]
-        public async Task<ActionResult> GetAllAreas()
+        [HttpGet("locations")]
+        public async Task<ActionResult> GetAllLocations()
         {
             try
             {
-                var areas = await _unitOfWork.AreaRepository.GetAllAsync();
-                if (areas != null)
+                var locations = await _unitOfWork.LocationRepository.GetAllAsync();
+                if (locations != null)
                 {
-                    var result = _mapper.Map<IReadOnlyList<Area>, IReadOnlyList<ManageAreaDTO>>(areas);
+                    var result = _mapper.Map<IReadOnlyList<Location>, IReadOnlyList<ManageLocationDTO>>(locations);
                     return Ok(result);
                 }
-                return NotFound(new BaseCommentResponse(404, "Không tìm thấy khu vực"));
+                return NotFound(new BaseCommentResponse(404, "Không tìm thấy địa điểm"));
             }
             catch (Exception ex)
             {

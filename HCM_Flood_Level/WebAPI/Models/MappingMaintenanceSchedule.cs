@@ -1,5 +1,5 @@
 ﻿using AutoMapper;
-using Core.DTOs.Admin;
+using Core.DTOs;
 using Core.Entities;
 
 namespace WebAPI.Models
@@ -17,6 +17,10 @@ namespace WebAPI.Models
                 .ForMember(a => a.AssignedStaffId, a => a.MapFrom(b => b.AssignedStaffId))
                 .ForMember(a => a.Note, a => a.MapFrom(b => b.Note))
                 .ReverseMap();
+
+            CreateMap<MaintenanceSchedule, MaintenanceScheduleDTO>()
+                .ForMember(a => a.SensorName, a => a.MapFrom(b => b.Sensor.SensorName))
+                .ForMember(a => a.AssignedStaff, a => a.MapFrom(b => b.AssignedStaff.FullName));
         }
     }
 }
