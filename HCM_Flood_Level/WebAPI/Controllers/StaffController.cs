@@ -10,9 +10,9 @@ using WebAPI.Helpers;
 
 namespace WebAPI.Controllers
 {
-    [Route("api/admin")]
+    [Route("api/staff")]
     [ApiController]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Staff")]
     public class StaffController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -23,7 +23,7 @@ namespace WebAPI.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("staffs")]
+        [HttpGet("users")]
         public async Task<ActionResult> GetAllAcc([FromQuery] int pagenumber = 1, [FromQuery] int pazesize = 10, [FromQuery] string? search = null, [FromQuery] int? roleid = null)
         {
             try
@@ -31,7 +31,7 @@ namespace WebAPI.Controllers
                 if (pagenumber <= 0 || pazesize <= 0)
                     return BadRequest(new BaseCommentResponse(400, "Số trang và kích thước trang phải lớn hơn 0"));
 
-                var acc = await _unitOfWork.ManageStaffRepository.GetAllStaffAsync(new EntityParam
+                var acc = await _unitOfWork.ManageUserRepository.GetAllStaffAsync(new EntityParam
                 {
                     Pagenumber = pagenumber,
                     Pagesize = pazesize,
@@ -39,11 +39,11 @@ namespace WebAPI.Controllers
                     RoleId = roleid
                 });
 
-                var total = await _unitOfWork.ManageStaffRepository.CountAsync();
+                var total = await _unitOfWork.ManageUserRepository.CountAsync();
 
-                var result = _mapper.Map<List<ManageStaffDTO>>(acc);
+                var result = _mapper.Map<List<ManageUserDTO>>(acc);
 
-                return Ok(new Pagination<ManageStaffDTO>(pazesize, pagenumber, total, result));
+                return Ok(new Pagination<ManageUserDTO>(pazesize, pagenumber, total, result));
             }
             catch (Exception ex)
             {
@@ -51,7 +51,7 @@ namespace WebAPI.Controllers
             }
         }
 
-        [HttpGet("staffs/{id}")]
+        [HttpGet("users/{id}")]
         public async Task<ActionResult> GetAccById(int id)
         {
             try
@@ -59,11 +59,11 @@ namespace WebAPI.Controllers
                 if (id <= 0)
                     return BadRequest(new BaseCommentResponse(400, "ID người dùng không hợp lệ"));
 
-                var acc = await _unitOfWork.ManageStaffRepository.GetByIdAsync(id, u => u.Role);
+                var acc = await _unitOfWork.ManageUserRepository.GetByIdAsync(id, u => u.Role);
                 if (acc == null)
                     return NotFound(new BaseCommentResponse(404, "Không tìm thấy tài khoản"));
 
-                var result = _mapper.Map<StaffDTO>(acc);
+                var result = _mapper.Map<UserDTO>(acc);
                 return Ok(result);
             }
             catch (Exception ex)
@@ -72,8 +72,8 @@ namespace WebAPI.Controllers
             }
         }
 
-        [HttpPost("staffs")]
-        public async Task<ActionResult> CreateAcc([FromQuery] CreateStaffDTO dto)
+        [HttpPost("users")]
+        public async Task<ActionResult> CreateAcc([FromQuery] CreateUserDTO dto)
         {
             try
             {
@@ -83,7 +83,7 @@ namespace WebAPI.Controllers
                 if (dto == null)
                     return BadRequest(new BaseCommentResponse(400, "Dữ liệu người dùng là bắt buộc"));
 
-                var result = await _unitOfWork.ManageStaffRepository.AddNewStaffAsync(dto);
+                var result = await _unitOfWork.ManageUserRepository.AddNewStaffAsync(dto);
 
                 if (!result)
                     return BadRequest(new BaseCommentResponse(400, "Tạo tài khoản không thành công"));
@@ -96,8 +96,8 @@ namespace WebAPI.Controllers
             }
         }
 
-        [HttpPut("staffs/{id}")]
-        public async Task<ActionResult> UpdateAcc(int id, [FromQuery] UpdateStaffDTO dto)
+        [HttpPut("users/{id}")]
+        public async Task<ActionResult> UpdateAcc(int id, [FromQuery] UpdateUserDTO dto)
         {
             try
             {
@@ -110,7 +110,7 @@ namespace WebAPI.Controllers
                 if (!dto.RoleId.HasValue && !dto.Status.HasValue)
                     return BadRequest(new BaseCommentResponse(400, "Cần cung cấp ít nhất một trường để cập nhật"));
                 
-                var result = await _unitOfWork.ManageStaffRepository.UpdateStaffAsync(id, dto);
+                var result = await _unitOfWork.ManageUserRepository.UpdateStaffAsync(id, dto);
 
                 if (result == false)
                     return NotFound(new BaseCommentResponse(404, "Không tìm thấy người dùng"));
@@ -123,7 +123,7 @@ namespace WebAPI.Controllers
             }
         }
 
-        [HttpDelete("staffs/{id}")]
+        [HttpDelete("users/{id}")]
         public async Task<ActionResult> DeleteAcc(int id)
         {
             try
@@ -131,7 +131,7 @@ namespace WebAPI.Controllers
                 if(id <= 0)
                     return BadRequest(new BaseCommentResponse(400, "ID người dùng không hợp lệ"));
 
-                var result = await _unitOfWork.ManageStaffRepository.DeleteStaffAsync(id);
+                var result = await _unitOfWork.ManageUserRepository.DeleteStaffAsync(id);
 
                 if (result == false)
                     return NotFound(new BaseCommentResponse(404, "Không tìm thấy người dùng"));

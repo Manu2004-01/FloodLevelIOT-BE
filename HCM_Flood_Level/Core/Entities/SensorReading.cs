@@ -10,10 +10,11 @@ namespace Core.Entities
     {
         public long ReadingId { get; set; }
         public int SensorId { get; set; }
-        public string Status { get; set; }
-        public double WaterLevel { get; set; }
-        public int Battery { get; set; }
+        public Sensor Sensor { get; set; }
+        public string Status { get; set; } = "Offline";
+        public float WaterLevelCm { get; set; }
+        public int BatteryPercent { get; set; }
         public string SignalStrength { get; set; }
-        public DateTime RecordAt { get; set; }
+        public DateTime RecordedAt { get; set; }
     }
 }

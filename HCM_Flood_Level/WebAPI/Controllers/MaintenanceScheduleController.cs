@@ -10,9 +10,9 @@ using WebAPI.Helpers;
 
 namespace WebAPI.Controllers
 {
-    [Route("api/admin")]
+    [Route("api/staff")]
     [ApiController]
-    [Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Staff")]
     public class MaintenanceScheduleController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;

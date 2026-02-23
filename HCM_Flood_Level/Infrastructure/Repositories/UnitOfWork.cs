@@ -18,7 +18,7 @@ namespace Infrastructure.Repositories
         private readonly IFileProvider _fileProvider;
         private readonly IMapper _mapper;
 
-        public IManageStaffRepository ManageStaffRepository{ get;  }
+        public IManageUserRepository ManageUserRepository{ get;  }
 
         public IManageSensorRepository ManageSensorRepository { get; }
 
@@ -34,7 +34,7 @@ namespace Infrastructure.Repositories
             _eventsContext = eventsContext;
             _fileProvider = fileProvider;
             _mapper = mapper;
-            ManageStaffRepository = new ManageStaffRepository(_context, _fileProvider, _mapper);
+            ManageUserRepository = new ManageUserRepository(_context, _fileProvider, _mapper);
             ManageSensorRepository = new ManageSensorRepository(_context, _eventsContext, _fileProvider, _mapper);
             ManageMaintenanceScheduleRepository = new MaintenanceScheduleRepository(_context, _fileProvider, _mapper);
             LocationRepository = new LocationRepository(_context);

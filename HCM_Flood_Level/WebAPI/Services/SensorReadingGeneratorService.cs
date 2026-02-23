@@ -87,10 +87,10 @@ namespace WebAPI.Services
                 {
                     SensorId = sensorId,
                     Status = status,
-                    WaterLevel = waterLevel,
-                    Battery = battery,
+                    WaterLevelCm = (float)waterLevel,
+                    BatteryPercent = (int)battery,
                     SignalStrength = signal,
-                    RecordAt = DateTime.UtcNow
+                    RecordedAt = DateTime.UtcNow
                 };
 
                 await uow.ManageSensorRepository.AddSensorReadingAsync(reading);
@@ -100,14 +100,14 @@ namespace WebAPI.Services
 
                 // check flood event highest level
                 var existingMax = await uow.ManageSensorRepository.GetMaxFloodEventLevelForSensorAsync(sensorId);
-                if (!existingMax.HasValue || reading.WaterLevel > existingMax.Value)
+                if (!existingMax.HasValue || reading.WaterLevelCm > existingMax.Value)
                 {
                     var floodEvent = new FloodEvent
                     {
                         SensorId = sensorId,
                         LocationId = sensor?.LocationId ?? 0,
-                        StartTime = reading.RecordAt,
-                        MaxWaterLevel = (float)reading.WaterLevel,
+                        StartTime = reading.RecordedAt,
+                        MaxWaterLevel = reading.WaterLevelCm,
                         Severity = "Unknown"
                     };
 

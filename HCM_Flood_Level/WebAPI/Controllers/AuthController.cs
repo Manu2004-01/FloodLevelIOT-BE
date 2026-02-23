@@ -37,15 +37,15 @@ namespace WebAPI.Controllers
                 if (login == null)
                     return BadRequest(new BaseCommentResponse(400, "Thiếu thông tin đăng nhập"));
 
-                if (string.IsNullOrWhiteSpace(login.Username))
-                    return BadRequest(new BaseCommentResponse(400, "Tên đăng nhập là bắt buộc"));
+                if (string.IsNullOrWhiteSpace(login.Email))
+                    return BadRequest(new BaseCommentResponse(400, "Email là bắt buộc"));
 
                 if (string.IsNullOrWhiteSpace(login.Password))
                     return BadRequest(new BaseCommentResponse(400, "Mật khẩu là bắt buộc"));
 
-                var log = await _context.Staffs
-                    .Include(l => l.Role)
-                    .FirstOrDefaultAsync(l => l.StaffAccName == login.Username);
+                var log = await _context.Users
+                    .Include(u => u.Role)
+                    .FirstOrDefaultAsync(u => u.Email == login.Email);
 
                 if (log == null)
                     return Unauthorized(new BaseCommentResponse(401, "Tên đăng nhập hoặc mật khẩu không đúng"));
@@ -53,8 +53,7 @@ namespace WebAPI.Controllers
                 if(!PasswordHelper.VerifyPassword(login.Password, log.PasswordHash))
                     return Unauthorized(new BaseCommentResponse(401, "Mật khẩu không đúng"));
                 
-                var roleName = log.Role?.RoleName ?? string.Empty; 
-
+                var roleName = log.Role?.RoleName ?? string.Empty;
                 var token = _tokenService.CreateToken(log, roleName);
 
                 return Ok(new {token});

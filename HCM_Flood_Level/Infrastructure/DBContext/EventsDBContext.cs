@@ -27,6 +27,19 @@ namespace Infrastructure.DBContext
             modelBuilder.Entity<FloodEvent>().ToTable("floodevents");
             modelBuilder.Entity<Sensor>().ToTable("sensors");
 
+            // In the events database we only care about sensor metadata and readings.
+            // Ignore maintenance- and management-related navigations to avoid pulling
+            // those entities (and their complex relationships) into this model.
+            modelBuilder.Entity<Sensor>(entity =>
+            {
+                entity.Ignore(s => s.Location);
+                entity.Ignore(s => s.Technician);
+                entity.Ignore(s => s.MaintenanceRequests);
+                entity.Ignore(s => s.MaintenanceSchedules);
+                entity.Ignore(s => s.MaintenanceTasks);
+                entity.Ignore(s => s.SensorReadings);
+            });
+
             // Link SensorReading -> Sensor (application-level FK mapping)
             modelBuilder.Entity<SensorReading>()
                 .HasOne<Sensor>()
@@ -50,10 +63,10 @@ namespace Infrastructure.DBContext
                 entity.Property(e => e.ReadingId).HasColumnName("reading_id");
                 entity.Property(e => e.SensorId).HasColumnName("sensor_id");
                 entity.Property(e => e.Status).HasColumnName("status");
-                entity.Property(e => e.WaterLevel).HasColumnName("water_level_cm");
-                entity.Property(e => e.Battery).HasColumnName("battery_percent");
+                entity.Property(e => e.WaterLevelCm).HasColumnName("water_level_cm");
+                entity.Property(e => e.BatteryPercent).HasColumnName("battery_percent");
                 entity.Property(e => e.SignalStrength).HasColumnName("signal_strength");
-                entity.Property(e => e.RecordAt).HasColumnName("recorded_at");
+                entity.Property(e => e.RecordedAt).HasColumnName("recorded_at");
             });
 
             modelBuilder.Entity<Alert>(entity =>
@@ -73,7 +86,7 @@ namespace Infrastructure.DBContext
                 entity.Property(e => e.AlertId).HasColumnName("alert_id");
                 entity.Property(e => e.Channel).HasColumnName("channel");
                 entity.Property(e => e.SentAt).HasColumnName("sent_at");
-                entity.Property(e => e.LogStatus).HasColumnName("status");
+                entity.Property(e => e.Status).HasColumnName("status");
             });
 
             modelBuilder.Entity<FloodEvent>(entity =>
@@ -93,7 +106,6 @@ namespace Infrastructure.DBContext
             {
                 entity.Property(e => e.SensorId).HasColumnName("sensor_id");
                 entity.Property(e => e.LocationId).HasColumnName("location_id");
-                entity.Property(e => e.InstalledBy).HasColumnName("installed_by");
                 entity.Property(e => e.SensorCode).HasColumnName("sensor_code");
                 entity.Property(e => e.SensorName).HasColumnName("sensor_name");
                 entity.Property(e => e.SensorType).HasColumnName("sensor_type");

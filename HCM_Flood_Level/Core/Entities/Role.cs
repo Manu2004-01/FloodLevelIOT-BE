@@ -10,5 +10,7 @@ namespace Core.Entities
     {
         public int RoleId { get; set; }
         public string RoleName { get; set; }
+        // Navigation property for Users
+        public ICollection<User> Users { get; set; }
     }
 }

@@ -10,6 +10,7 @@ namespace Core.Entities
     {
         public int AreaId { get; set; }
         public string AreaName { get; set; }
-        // Description removed to match DB schema (only AreaId, AreaName)
+        // Navigation property
+        public ICollection<Location> Locations { get; set; }
     }
 }

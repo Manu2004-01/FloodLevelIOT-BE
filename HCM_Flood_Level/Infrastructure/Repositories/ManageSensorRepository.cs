@@ -76,10 +76,10 @@ namespace Infrastructure.Repositories
             {
                 SensorId = sensor.SensorId,
                 Status = "Offline",
-                WaterLevel = 0,
+                WaterLevelCm = 0,
                 SignalStrength = "Không kết nối",
-                Battery = 100,
-                RecordAt = DateTime.UtcNow
+                BatteryPercent = 100,
+                RecordedAt = DateTime.UtcNow
             };
             await AddSensorReadingAsync(defaultReading);
 
@@ -112,15 +112,7 @@ namespace Infrastructure.Repositories
                 sensor.LocationId = dto.LocationId.Value;
             }
 
-            // InstalledBy change: validate staff exists
-            if (dto.InstalledBy.HasValue)
-            {
-                var staffExists = await _context.Staffs.AnyAsync(s => s.StaffId == dto.InstalledBy.Value);
-                if (!staffExists)
-                    return false;
-
-                sensor.InstalledBy = dto.InstalledBy.Value;
-            }
+            // No InstalledBy property in Sensor, so skip this block
 
             if (!string.IsNullOrEmpty(dto.Specification))
                 sensor.Specification = dto.Specification;
@@ -145,10 +137,10 @@ namespace Infrastructure.Repositories
                 sensor.SensorType = dto.SensorType;
 
             if (dto.MinThreshold.HasValue)
-                sensor.WarningThreshold = dto.MinThreshold.Value;
+                sensor.WarningThreshold = (float?)dto.MinThreshold.Value;
 
             if (dto.MaxThreshold.HasValue)
-                sensor.DangerThreshold = dto.MaxThreshold.Value;
+                sensor.DangerThreshold = (float?)dto.MaxThreshold.Value;
 
             if (dto.MaxLevel.HasValue)
                 sensor.MaxLevel = dto.MaxLevel.Value;
@@ -176,7 +168,7 @@ namespace Infrastructure.Repositories
             var latest = await _eventsContext.SensorReadings
                 .Where(r => ids.Contains(r.SensorId))
                 .GroupBy(r => r.SensorId)
-                .Select(g => g.OrderByDescending(r => r.RecordAt).FirstOrDefault())
+                .Select(g => g.OrderByDescending(r => r.RecordedAt).FirstOrDefault())
                 .ToListAsync();
 
             return latest.Where(r => r != null)!;
@@ -198,7 +190,7 @@ namespace Infrastructure.Repositories
         {
             var readings = await _eventsContext.SensorReadings
                 .Where(r => r.SensorId == sensorId)
-                .OrderByDescending(r => r.RecordAt)
+                .OrderByDescending(r => r.RecordedAt)
                 .ToListAsync();
 
             if (readings.Count <= maxEntries) return;

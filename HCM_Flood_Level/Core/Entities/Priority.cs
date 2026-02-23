@@ -10,5 +10,8 @@ namespace Core.Entities
     {
         public int PriorityId { get; set; }
         public string DisplayName { get; set; }
+        // Navigation property
+        public ICollection<MaintenanceRequest> MaintenanceRequests { get; set; }
+        public ICollection<MaintenanceTask> MaintenanceTasks { get; set; }
     }
 }

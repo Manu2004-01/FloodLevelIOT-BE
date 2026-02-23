@@ -14,13 +14,13 @@ namespace WebAPI.Models
                 .ForMember(a => a.ScheduleMode, a => a.MapFrom(b => b.ScheduleMode))
                 .ForMember(a => a.StartDate, a => a.MapFrom(b => b.StartDate))
                 .ForMember(a => a.EndDate, a => a.MapFrom(b => b.EndDate))
-                .ForMember(a => a.AssignedStaffId, a => a.MapFrom(b => b.AssignedStaffId))
+                .ForMember(a => a.AssignedTechnicianId, a => a.MapFrom(b => b.AssignedStaffId))
                 .ForMember(a => a.Note, a => a.MapFrom(b => b.Note))
                 .ReverseMap();
 
             CreateMap<MaintenanceSchedule, MaintenanceScheduleDTO>()
                 .ForMember(a => a.SensorName, a => a.MapFrom(b => b.Sensor.SensorName))
-                .ForMember(a => a.AssignedStaff, a => a.MapFrom(b => b.AssignedStaff.FullName));
+                .ForMember(a => a.AssignedStaff, a => a.MapFrom(b => b.AssignedTechnician.FullName));
         }
     }
 }

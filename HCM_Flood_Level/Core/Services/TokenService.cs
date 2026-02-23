@@ -18,19 +18,19 @@ namespace Core.Services
 
         public TokenService(IConfiguration config) => _config = config;
 
-        public string CreateToken(Core.Entities.Staff user, string roleName)
+        public string CreateToken(User user, string roleName)
         {
             var jwt = _config.GetSection("Jwt");
             var keyBytes = Encoding.UTF8.GetBytes(jwt["Key"] ?? throw new ArgumentNullException("Jwt:Key"));
             var key = new SymmetricSecurityKey(keyBytes);
             var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
 
-            var claims = new List<System.Security.Claims.Claim>
+            var claims = new List<Claim>
             {
-                new System.Security.Claims.Claim(JwtRegisteredClaimNames.Sub, user.StaffId.ToString()),
-                new System.Security.Claims.Claim(JwtRegisteredClaimNames.Email, user.Email ?? string.Empty),
-                new System.Security.Claims.Claim(ClaimTypes.Name, user.FullName ?? string.Empty),
-                new System.Security.Claims.Claim(ClaimTypes.Role, roleName ?? string.Empty)
+                new Claim(JwtRegisteredClaimNames.Sub, user.UserId.ToString()),
+                new Claim(JwtRegisteredClaimNames.Email, user.Email ?? string.Empty),
+                new Claim(ClaimTypes.Name, user.FullName ?? string.Empty),
+                new Claim(ClaimTypes.Role, roleName ?? string.Empty)
             };
 
             var token = new JwtSecurityToken(

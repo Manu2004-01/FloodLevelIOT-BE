@@ -9,7 +9,7 @@ using WebAPI.Helpers;
 
 namespace WebAPI.Controllers
 {
-    [Route("api/admin")]
+    [Route("api/staff")]
     [ApiController]
     public class SensorController : ControllerBase
     {
@@ -76,7 +76,7 @@ namespace WebAPI.Controllers
                 var sensor = await _unitOfWork.ManageSensorRepository.GetByIdAsync(id,
                     s => s.Location,
                     s => s.Location.Area,
-                    s => s.InstalledByStaff);
+                    s => s.Technician);
 
                 if (sensor == null)
                     return NotFound(new BaseCommentResponse(404, "Không tìm thấy thiết bị"));

@@ -9,7 +9,7 @@ using WebAPI.Errors;
 
 namespace WebAPI.Controllers
 {
-    [Route("api/admin")]
+    [Route("api/staff")]
     [ApiController]
     [Authorize]
     public class AreaController : ControllerBase

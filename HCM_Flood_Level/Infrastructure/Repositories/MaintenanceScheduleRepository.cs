@@ -46,7 +46,7 @@ namespace Infrastructure.Repositories
         {
             var query = _context.MaintenanceSchedules
                 .Include(u => u.Sensor)
-                .Include(u => u.AssignedStaff)
+                .Include(u => u.AssignedTechnician)
                 .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(entityParam.ScheduleStatus))

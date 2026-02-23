@@ -24,7 +24,7 @@ namespace WebAPI.Models
                 .ForMember(d => d.WaterLevel, opt => opt.MapFrom((src, dest, destMember, ctx) =>
                 {
                     if (ctx.Items.TryGetValue("LatestReadings", out var obj) && obj is System.Collections.Generic.Dictionary<int, SensorReading> dict && dict.TryGetValue(src.SensorId, out var rd))
-                        return rd?.WaterLevel;
+                        return rd?.WaterLevelCm;
                     return null;
                 }))
                 .ForMember(d => d.SignalStrength, opt => opt.MapFrom((src, dest, destMember, ctx) =>
@@ -46,17 +46,17 @@ namespace WebAPI.Models
                 .ForMember(d => d.Battery, opt => opt.MapFrom((src, dest, destMember, ctx) =>
                 {
                     if (ctx.Items.TryGetValue("LatestReadings", out var obj) && obj is System.Collections.Generic.Dictionary<int, SensorReading> dict && dict.TryGetValue(src.SensorId, out var rd))
-                        return rd?.Battery;
+                        return rd?.BatteryPercent;
                     return null;
                 }))
                 .ForMember(a => a.InstalledAt, a => a.MapFrom(b => b.InstalledAt ?? b.CreatedAt))
                 .ForMember(a => a.CommissionedAt, a => a.MapFrom(b => b.CreatedAt))
-                .ForMember(a => a.InstalledByStaff, a => a.MapFrom(b => b.InstalledBy != null ? b.InstalledByStaff.FullName : string.Empty))
+                .ForMember(a => a.InstalledByStaff, a => a.MapFrom(b => b.Technician != null ? b.Technician.FullName : string.Empty))
                 .ForMember(a => a.Location, a => a.MapFrom(b => b.Location))
                 .ForMember(d => d.WaterLevel, opt => opt.MapFrom((src, dest, destMember, ctx) =>
                 {
                     if (ctx.Items.TryGetValue("LatestReadings", out var obj) && obj is System.Collections.Generic.Dictionary<int, SensorReading> dict && dict.TryGetValue(src.SensorId, out var rd))
-                        return rd?.WaterLevel;
+                        return rd?.WaterLevelCm;
                     return null;
                 }))
                 .ForMember(d => d.Status, opt => opt.MapFrom((src, dest, destMember, ctx) =>
@@ -68,7 +68,7 @@ namespace WebAPI.Models
                 .ForMember(d => d.RecordAt, opt => opt.MapFrom((src, dest, destMember, ctx) =>
                 {
                     if (ctx.Items.TryGetValue("LatestReadings", out var obj) && obj is System.Collections.Generic.Dictionary<int, SensorReading> dict && dict.TryGetValue(src.SensorId, out var rd))
-                        return rd?.RecordAt;
+                        return rd?.RecordedAt;
                     return null;
                 }));
 
@@ -82,7 +82,7 @@ namespace WebAPI.Models
 
             CreateMap<CreateSensorDTO, Sensor>()
                 .ForMember(a => a.LocationId, a => a.MapFrom(b => b.LocationId))
-                .ForMember(a => a.InstalledBy, a => a.MapFrom(b => b.InstalledBy))
+                // .ForMember(a => a.InstalledBy, a => a.MapFrom(b => b.InstalledBy)) // No InstalledBy property in Sensor
                 .ForMember(a => a.Specification, a => a.MapFrom(b => b.Specification))
                 .ForMember(a => a.SensorCode, a => a.MapFrom(b => b.SensorCode))
                 .ForMember(a => a.SensorName, a => a.MapFrom(b => b.SensorName))
@@ -100,7 +100,7 @@ namespace WebAPI.Models
                 .ForMember(a => a.SensorName, a => a.MapFrom(b => b.SensorName))
                 .ForMember(a => a.Protocol, a => a.MapFrom(b => b.Protocol))
                 .ForMember(a => a.SensorType, a => a.MapFrom(b => b.SensorType))
-                .ForMember(a => a.InstalledBy, a => a.MapFrom(b => b.InstalledBy))
+                // .ForMember(a => a.InstalledBy, a => a.MapFrom(b => b.InstalledBy)) // No InstalledBy property in Sensor
                 .ForMember(a => a.Specification, a => a.MapFrom(b => b.Specification))
                 .ForMember(a => a.WarningThreshold, a => a.MapFrom(b => b.MinThreshold))
                 .ForMember(a => a.DangerThreshold, a => a.MapFrom(b => b.MaxThreshold))
