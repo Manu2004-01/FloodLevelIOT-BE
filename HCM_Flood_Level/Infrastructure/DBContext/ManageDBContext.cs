@@ -58,6 +58,7 @@ namespace Infrastructure.DBContext
                 .HasOne(s => s.Technician)
                 .WithMany(u => u.SensorsMaintained)
                 .HasForeignKey(s => s.TechnicianId)
+                .IsRequired(false)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<MaintenanceRequest>()

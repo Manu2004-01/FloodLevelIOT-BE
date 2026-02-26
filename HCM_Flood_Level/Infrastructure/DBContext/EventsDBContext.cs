@@ -40,16 +40,16 @@ namespace Infrastructure.DBContext
                 entity.Ignore(s => s.SensorReadings);
             });
 
-            // Link SensorReading -> Sensor (application-level FK mapping)
+            // Link SensorReading -> Sensor: use navigation so EF binds FK to SensorId (no shadow)
             modelBuilder.Entity<SensorReading>()
-                .HasOne<Sensor>()
+                .HasOne(sr => sr.Sensor)
                 .WithMany()
                 .HasForeignKey(sr => sr.SensorId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<AlertLog>()
                 .HasOne(al => al.Alert)
-                .WithMany()
+                .WithMany(a => a.AlertLogs)
                 .HasForeignKey(al => al.AlertId)
                 .OnDelete(DeleteBehavior.Cascade);
         }

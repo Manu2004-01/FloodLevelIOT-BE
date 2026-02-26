@@ -3,8 +3,16 @@
   "WorkspaceRootPath": "D:\\FPTU\\FloodLevelIOT-BE\\HCM_Flood_Level\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{E0705B8D-A8BA-4818-A9B5-F64473F23E9A}|WebAPI\\WebAPI.csproj|d:\\fptu\\floodleveliot-be\\hcm_flood_level\\webapi\\controllers\\areacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E0705B8D-A8BA-4818-A9B5-F64473F23E9A}|WebAPI\\WebAPI.csproj|solutionrelative:webapi\\controllers\\areacontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{E0705B8D-A8BA-4818-A9B5-F64473F23E9A}|WebAPI\\WebAPI.csproj|d:\\fptu\\floodleveliot-be\\hcm_flood_level\\webapi\\controllers\\sensorreadingcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E0705B8D-A8BA-4818-A9B5-F64473F23E9A}|WebAPI\\WebAPI.csproj|solutionrelative:webapi\\controllers\\sensorreadingcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E0705B8D-A8BA-4818-A9B5-F64473F23E9A}|WebAPI\\WebAPI.csproj|d:\\fptu\\floodleveliot-be\\hcm_flood_level\\webapi\\controllers\\sensorcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E0705B8D-A8BA-4818-A9B5-F64473F23E9A}|WebAPI\\WebAPI.csproj|solutionrelative:webapi\\controllers\\sensorcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3D73A4B9-1067-4E8D-B10E-77B202CAA7BC}|Core\\Core.csproj|d:\\fptu\\floodleveliot-be\\hcm_flood_level\\core\\dtos\\managesensordto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3D73A4B9-1067-4E8D-B10E-77B202CAA7BC}|Core\\Core.csproj|solutionrelative:core\\dtos\\managesensordto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -31,15 +39,39 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
-              "Title": "AreaController.cs",
-              "DocumentMoniker": "D:\\FPTU\\FloodLevelIOT-BE\\HCM_Flood_Level\\WebAPI\\Controllers\\AreaController.cs",
-              "RelativeDocumentMoniker": "WebAPI\\Controllers\\AreaController.cs",
-              "ToolTip": "D:\\FPTU\\FloodLevelIOT-BE\\HCM_Flood_Level\\WebAPI\\Controllers\\AreaController.cs",
-              "RelativeToolTip": "WebAPI\\Controllers\\AreaController.cs",
-              "ViewState": "AgIAABEAAAAAAAAAAAAAwAsAAAAVAAAAAAAAAA==",
+              "Title": "SensorReadingController.cs",
+              "DocumentMoniker": "D:\\FPTU\\FloodLevelIOT-BE\\HCM_Flood_Level\\WebAPI\\Controllers\\SensorReadingController.cs",
+              "RelativeDocumentMoniker": "WebAPI\\Controllers\\SensorReadingController.cs",
+              "ToolTip": "D:\\FPTU\\FloodLevelIOT-BE\\HCM_Flood_Level\\WebAPI\\Controllers\\SensorReadingController.cs",
+              "RelativeToolTip": "WebAPI\\Controllers\\SensorReadingController.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACIAAABLAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-02-23T07:04:30.994Z",
+              "WhenOpened": "2026-02-23T07:46:09.958Z",
               "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "ManageSensorDTO.cs",
+              "DocumentMoniker": "D:\\FPTU\\FloodLevelIOT-BE\\HCM_Flood_Level\\Core\\DTOs\\ManageSensorDTO.cs",
+              "RelativeDocumentMoniker": "Core\\DTOs\\ManageSensorDTO.cs",
+              "ToolTip": "D:\\FPTU\\FloodLevelIOT-BE\\HCM_Flood_Level\\Core\\DTOs\\ManageSensorDTO.cs",
+              "RelativeToolTip": "Core\\DTOs\\ManageSensorDTO.cs",
+              "ViewState": "AgIAADAAAAAAAAAAAAA6wAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-23T07:20:41.287Z"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "SensorController.cs",
+              "DocumentMoniker": "D:\\FPTU\\FloodLevelIOT-BE\\HCM_Flood_Level\\WebAPI\\Controllers\\SensorController.cs",
+              "RelativeDocumentMoniker": "WebAPI\\Controllers\\SensorController.cs",
+              "ToolTip": "D:\\FPTU\\FloodLevelIOT-BE\\HCM_Flood_Level\\WebAPI\\Controllers\\SensorController.cs",
+              "RelativeToolTip": "WebAPI\\Controllers\\SensorController.cs",
+              "ViewState": "AgIAAGEAAAAAAAAAAAAgwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-23T07:12:10.247Z"
             }
           ]
         },

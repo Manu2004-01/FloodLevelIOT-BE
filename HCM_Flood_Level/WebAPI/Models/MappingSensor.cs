@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Core.DTOs;
 using Core.Entities;
 using System;
@@ -82,7 +82,7 @@ namespace WebAPI.Models
 
             CreateMap<CreateSensorDTO, Sensor>()
                 .ForMember(a => a.LocationId, a => a.MapFrom(b => b.LocationId))
-                // .ForMember(a => a.InstalledBy, a => a.MapFrom(b => b.InstalledBy)) // No InstalledBy property in Sensor
+                .ForMember(a => a.TechnicianId, a => a.MapFrom(b => b.InstalledBy))
                 .ForMember(a => a.Specification, a => a.MapFrom(b => b.Specification))
                 .ForMember(a => a.SensorCode, a => a.MapFrom(b => b.SensorCode))
                 .ForMember(a => a.SensorName, a => a.MapFrom(b => b.SensorName))
@@ -100,7 +100,7 @@ namespace WebAPI.Models
                 .ForMember(a => a.SensorName, a => a.MapFrom(b => b.SensorName))
                 .ForMember(a => a.Protocol, a => a.MapFrom(b => b.Protocol))
                 .ForMember(a => a.SensorType, a => a.MapFrom(b => b.SensorType))
-                // .ForMember(a => a.InstalledBy, a => a.MapFrom(b => b.InstalledBy)) // No InstalledBy property in Sensor
+                .ForMember(a => a.TechnicianId, a => a.MapFrom(b => b.InstalledBy))
                 .ForMember(a => a.Specification, a => a.MapFrom(b => b.Specification))
                 .ForMember(a => a.WarningThreshold, a => a.MapFrom(b => b.MinThreshold))
                 .ForMember(a => a.DangerThreshold, a => a.MapFrom(b => b.MaxThreshold))

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -11,7 +11,8 @@ namespace Core.Entities
         public int SensorId { get; set; }
         public int LocationId { get; set; }
         public Location Location { get; set; }
-        public int TechnicianId { get; set; }
+        /// <summary>Optional: technician responsible for this sensor. Null if not assigned.</summary>
+        public int? TechnicianId { get; set; }
         public User Technician { get; set; }
         public string SensorCode { get; set; }
         public string SensorName { get; set; }
