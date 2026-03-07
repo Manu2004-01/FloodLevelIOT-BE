@@ -1,13 +1,13 @@
-﻿using Core.Interfaces;
+using Core.Interfaces;
 using Core.Services;
 using Infrastructure;
+using Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using WebAPI.Extensions;
 using WebAPI.Middleware;
-using Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -99,6 +99,10 @@ builder.Services
             NameClaimType = System.Security.Claims.ClaimTypes.Name
         };
     });
+
+builder.Services.AddScoped<IEmailProvider, SmtpEmailProvider>();
+builder.Services.AddScoped<ISmsProvider, TwilioSmsProvider>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
 
 var app = builder.Build();
 
