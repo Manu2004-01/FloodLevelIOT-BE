@@ -22,6 +22,7 @@ namespace Infrastructure.DBContext
         public virtual DbSet<MaintenanceRequest> MaintenanceRequests { get; set; }
         public virtual DbSet<MaintenanceTask> MaintenanceTasks { get; set; }
         public virtual DbSet<MaintenanceSchedule> MaintenanceSchedules { get; set; }
+        public virtual DbSet<Report> Reports { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -33,9 +34,39 @@ namespace Infrastructure.DBContext
             modelBuilder.Entity<Location>().ToTable("locations");
             modelBuilder.Entity<Sensor>().ToTable("sensors");
             modelBuilder.Entity<Priority>().ToTable("priorities");
-            modelBuilder.Entity<MaintenanceRequest>().ToTable("maintenancerequests");
-            modelBuilder.Entity<MaintenanceTask>().ToTable("maintenancetasks");
-            modelBuilder.Entity<MaintenanceSchedule>().ToTable("maintenanceschedules");
+            modelBuilder.Entity<MaintenanceRequest>().ToTable(
+                "maintenancerequests",
+                t => t.HasCheckConstraint(
+                    "CK_MaintenanceRequests_Status",
+                    "\"status\" IN ('Pending','Assigned','InProgress','Completed','Cancelled')"
+                )
+            );
+            modelBuilder.Entity<MaintenanceTask>().ToTable(
+                "maintenancetasks",
+                t => t.HasCheckConstraint(
+                    "CK_MaintenanceTasks_Status",
+                    "\"status\" IN ('Assigned','In Progress','Completed','Overdue','Paused')"
+                )
+            );
+            modelBuilder.Entity<MaintenanceSchedule>().ToTable(
+                "maintenanceschedules",
+                t =>
+                {
+                    t.HasCheckConstraint(
+                        "CK_MaintenanceSchedules_ScheduleType",
+                        "\"schedule_type\" IN ('Weekly','Monthly','Quarterly')"
+                    );
+                    t.HasCheckConstraint(
+                        "CK_MaintenanceSchedules_ScheduleMode",
+                        "\"schedule_mode\" IN ('Manual','Auto')"
+                    );
+                    t.HasCheckConstraint(
+                        "CK_MaintenanceSchedules_Status",
+                        "\"status\" IN ('Scheduled','Active','Paused','Completed','Overdue')"
+                    );
+                }
+            );
+            modelBuilder.Entity<Report>().ToTable("report");
 
             modelBuilder.Entity<Sensor>()
                 .HasIndex(s => s.SensorCode)
@@ -244,6 +275,15 @@ namespace Infrastructure.DBContext
                 entity.Property(e => e.AssignedTechnicianId).HasColumnName("assigned_technician_id");
                 entity.Property(e => e.Note).HasColumnName("note");
                 entity.Property(e => e.Status).HasColumnName("status");
+                entity.Property(e => e.CreatedAt).HasColumnName("created_at");
+            });
+
+            modelBuilder.Entity<Report>(entity =>
+            {
+                entity.HasKey(e => e.ReportId);
+                entity.Property(e => e.ReportId).HasColumnName("report_id");
+                entity.Property(e => e.LocationId).HasColumnName("location_id");
+                entity.Property(e => e.Description).HasColumnName("description");
                 entity.Property(e => e.CreatedAt).HasColumnName("created_at");
             });
         }

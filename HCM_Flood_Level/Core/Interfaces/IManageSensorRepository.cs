@@ -1,4 +1,4 @@
-﻿using Core.DTOs;
+using Core.DTOs;
 using Core.Entities;
 using Core.Sharing;
 using System;
@@ -16,8 +16,8 @@ namespace Core.Interfaces
         Task<IEnumerable<int>> GetAllSensorIdsAsync();
         Task AddSensorReadingAsync(SensorReading reading);
         Task PruneSensorReadingsAsync(int sensorId, int maxEntries);
-        Task<double?> GetMaxFloodEventLevelForSensorAsync(int sensorId);
-        Task AddFloodEventAsync(FloodEvent floodEvent);
+        Task<double?> GetMaxHistoryLevelForSensorAsync(int sensorId);
+        Task AddHistoryAsync(History history);
         Task<bool> AddNewSensorAsync(CreateSensorDTO dto);
         Task<bool> LocationExistsAsync(int locationId);
         Task<bool> LocationHasSensorAsync(int locationId);

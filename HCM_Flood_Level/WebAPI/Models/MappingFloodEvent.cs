@@ -4,13 +4,12 @@ using Core.Entities;
 
 namespace WebAPI.Models
 {
-    public class MappingFloodEvent : Profile
+    public class MappingHistory : Profile
     {
-        public MappingFloodEvent()
+        public MappingHistory()
         {
-            CreateMap<FloodEvent, FloodEventDTO>()
-                .ForMember(d => d.EventId, o => o.MapFrom(s => s.EventId))
-                .ForMember(d => d.SensorId, o => o.MapFrom(s => s.SensorId))
+            CreateMap<History, HistoryDTO>()
+                .ForMember(d => d.HistoryId, o => o.MapFrom(s => s.HistoryId))
                 .ForMember(d => d.LocationId, o => o.MapFrom(s => s.LocationId))
                 .ForMember(d => d.StartTime, o => o.MapFrom(s => s.StartTime))
                 .ForMember(d => d.EndTime, o => o.MapFrom(s => s.EndTime))

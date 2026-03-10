@@ -9,12 +9,12 @@ namespace WebAPI.Controllers
 {
     [Route("api/staff")]
     [ApiController]
-    public class FloodEventController : ControllerBase
+    public class HistoryController : ControllerBase
     {
         private readonly EventsDBContext _eventsContext;
         private readonly IMapper _mapper;
 
-        public FloodEventController(EventsDBContext eventsContext, IMapper mapper)
+        public HistoryController(EventsDBContext eventsContext, IMapper mapper)
         {
             _eventsContext = eventsContext;
             _mapper = mapper;
@@ -23,16 +23,16 @@ namespace WebAPI.Controllers
         /// <summary>
         /// GET /api/staff/flood-events - Xem toàn bộ sự kiện ngập
         /// </summary>
-        [HttpGet("flood-events")]
-        public async Task<ActionResult<List<FloodEventDTO>>> GetAllFloodEvents()
+        [HttpGet("history")]
+        public async Task<ActionResult<List<HistoryDTO>>> GetAllHistories()
         {
             try
             {
-                var events = await _eventsContext.FloodEvents
+                var histories = await _eventsContext.Histories
                     .OrderByDescending(e => e.StartTime)
                     .ToListAsync();
 
-                var result = _mapper.Map<List<FloodEventDTO>>(events);
+                var result = _mapper.Map<List<HistoryDTO>>(histories);
                 return Ok(result);
             }
             catch (Exception)

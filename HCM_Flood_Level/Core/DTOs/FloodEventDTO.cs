@@ -3,12 +3,11 @@ using System;
 namespace Core.DTOs
 {
     /// <summary>
-    /// DTO trả về cho API danh sách / chi tiết sự kiện ngập.
+    /// DTO trả về cho API danh sách / chi tiết bản ghi history (sự kiện ngập).
     /// </summary>
-    public class FloodEventDTO
+    public class HistoryDTO
     {
-        public int EventId { get; set; }
-        public int SensorId { get; set; }
+        public int HistoryId { get; set; }
         public int LocationId { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime? EndTime { get; set; }

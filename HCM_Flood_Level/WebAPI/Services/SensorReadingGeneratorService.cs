@@ -98,20 +98,19 @@ namespace WebAPI.Services
                 // prune to max entries
                 await uow.ManageSensorRepository.PruneSensorReadingsAsync(sensorId, _maxReadingsPerSensor);
 
-                // check flood event highest level
-                var existingMax = await uow.ManageSensorRepository.GetMaxFloodEventLevelForSensorAsync(sensorId);
+                // check history (flood) highest level
+                var existingMax = await uow.ManageSensorRepository.GetMaxHistoryLevelForSensorAsync(sensorId);
                 if (!existingMax.HasValue || reading.WaterLevelCm > existingMax.Value)
                 {
-                    var floodEvent = new FloodEvent
+                    var history = new History
                     {
-                        SensorId = sensorId,
                         LocationId = sensor?.LocationId ?? 0,
                         StartTime = reading.RecordedAt,
                         MaxWaterLevel = reading.WaterLevelCm,
                         Severity = "Unknown"
                     };
 
-                    await uow.ManageSensorRepository.AddFloodEventAsync(floodEvent);
+                    await uow.ManageSensorRepository.AddHistoryAsync(history);
                 }
             }
         }

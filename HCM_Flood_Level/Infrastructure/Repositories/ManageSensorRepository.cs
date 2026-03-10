@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Core.DTOs;
 using Core.Entities;
 using Core.Interfaces;
@@ -200,21 +200,29 @@ namespace Infrastructure.Repositories
             await _eventsContext.SaveChangesAsync();
         }
 
-        public async Task<double?> GetMaxFloodEventLevelForSensorAsync(int sensorId)
+        public async Task<double?> GetMaxHistoryLevelForSensorAsync(int sensorId)
         {
-            var evt = await _eventsContext.FloodEvents
-                .Where(f => f.SensorId == sensorId)
+            var locationId = await _context.Sensors
+                .Where(s => s.SensorId == sensorId)
+                .Select(s => (int?)s.LocationId)
+                .FirstOrDefaultAsync();
+
+            if (locationId == null)
+                return null;
+
+            var history = await _eventsContext.Histories
+                .Where(f => f.LocationId == locationId.Value)
                 .OrderByDescending(f => f.MaxWaterLevel)
                 .FirstOrDefaultAsync();
 
-            return evt?.MaxWaterLevel;
+            return history?.MaxWaterLevel;
         }
 
-        public async Task AddFloodEventAsync(FloodEvent floodEvent)
+        public async Task AddHistoryAsync(History history)
         {
-            if (floodEvent == null) return;
-            floodEvent.CreatedAt = DateTime.UtcNow;
-            await _eventsContext.FloodEvents.AddAsync(floodEvent);
+            if (history == null) return;
+            history.CreatedAt = DateTime.UtcNow;
+            await _eventsContext.Histories.AddAsync(history);
             await _eventsContext.SaveChangesAsync();
         }
     }

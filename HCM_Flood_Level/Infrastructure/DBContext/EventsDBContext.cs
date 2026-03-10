@@ -10,9 +10,8 @@ namespace Infrastructure.DBContext
         }
 
         public virtual DbSet<SensorReading> SensorReadings { get; set; }
-        public virtual DbSet<Alert> Alerts { get; set; }
-        public virtual DbSet<AlertLog> AlertLogs { get; set; }
-        public virtual DbSet<FloodEvent> FloodEvents { get; set; }
+        public virtual DbSet<History> Histories { get; set; }
+        public virtual DbSet<Report> Reports { get; set; }
         public virtual DbSet<Sensor> Sensors { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -22,9 +21,8 @@ namespace Infrastructure.DBContext
             ConfigureColumnNames(modelBuilder);
 
             modelBuilder.Entity<SensorReading>().ToTable("sensorreadings");
-            modelBuilder.Entity<Alert>().ToTable("alerts");
-            modelBuilder.Entity<AlertLog>().ToTable("alertlogs");
-            modelBuilder.Entity<FloodEvent>().ToTable("floodevents");
+            modelBuilder.Entity<History>().ToTable("history");
+            modelBuilder.Entity<Report>().ToTable("report");
             modelBuilder.Entity<Sensor>().ToTable("sensors");
 
             // In the events database we only care about sensor metadata and readings.
@@ -40,18 +38,17 @@ namespace Infrastructure.DBContext
                 entity.Ignore(s => s.SensorReadings);
             });
 
-            // Link SensorReading -> Sensor: use navigation so EF binds FK to SensorId (no shadow)
-            modelBuilder.Entity<SensorReading>()
-                .HasOne(sr => sr.Sensor)
-                .WithMany()
-                .HasForeignKey(sr => sr.SensorId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<AlertLog>()
-                .HasOne(al => al.Alert)
-                .WithMany(a => a.AlertLogs)
-                .HasForeignKey(al => al.AlertId)
-                .OnDelete(DeleteBehavior.Cascade);
+            // History table only stores scalar data; do not pull management entities into this context.
+            modelBuilder.Entity<History>(entity =>
+            {
+                entity.Ignore(h => h.Location);
+            });
+            
+            // SensorReading only stores raw data columns; do not model FK to Sensor here
+            modelBuilder.Entity<SensorReading>(entity =>
+            {
+                entity.Ignore(sr => sr.Sensor);
+            });
         }
 
         private static void ConfigureColumnNames(ModelBuilder modelBuilder)
@@ -69,36 +66,24 @@ namespace Infrastructure.DBContext
                 entity.Property(e => e.RecordedAt).HasColumnName("recorded_at");
             });
 
-            modelBuilder.Entity<Alert>(entity =>
+            modelBuilder.Entity<History>(entity =>
             {
-                entity.HasKey(e => e.AlertId);
-                entity.Property(e => e.AlertId).HasColumnName("alert_id");
-                entity.Property(e => e.LocationId).HasColumnName("location_id");
-                entity.Property(e => e.LevelId).HasColumnName("level_id");
-                entity.Property(e => e.AlertMessage).HasColumnName("alert_message");
-                entity.Property(e => e.IssuedAt).HasColumnName("issued_at");
-            });
-
-            modelBuilder.Entity<AlertLog>(entity =>
-            {
-                entity.HasKey(e => e.LogId);
-                entity.Property(e => e.LogId).HasColumnName("log_id");
-                entity.Property(e => e.AlertId).HasColumnName("alert_id");
-                entity.Property(e => e.Channel).HasColumnName("channel");
-                entity.Property(e => e.SentAt).HasColumnName("sent_at");
-                entity.Property(e => e.Status).HasColumnName("status");
-            });
-
-            modelBuilder.Entity<FloodEvent>(entity =>
-            {
-                entity.HasKey(e => e.EventId);
-                entity.Property(e => e.EventId).HasColumnName("event_id");
-                entity.Property(e => e.SensorId).HasColumnName("sensor_id");
+                entity.HasKey(e => e.HistoryId);
+                entity.Property(e => e.HistoryId).HasColumnName("history_id");
                 entity.Property(e => e.LocationId).HasColumnName("location_id");
                 entity.Property(e => e.StartTime).HasColumnName("start_time");
                 entity.Property(e => e.EndTime).HasColumnName("end_time");
                 entity.Property(e => e.MaxWaterLevel).HasColumnName("max_water_level");
                 entity.Property(e => e.Severity).HasColumnName("severity");
+                entity.Property(e => e.CreatedAt).HasColumnName("created_at");
+            });
+
+            modelBuilder.Entity<Report>(entity =>
+            {
+                entity.HasKey(e => e.ReportId);
+                entity.Property(e => e.ReportId).HasColumnName("report_id");
+                entity.Property(e => e.LocationId).HasColumnName("location_id");
+                entity.Property(e => e.Description).HasColumnName("description");
                 entity.Property(e => e.CreatedAt).HasColumnName("created_at");
             });
 
