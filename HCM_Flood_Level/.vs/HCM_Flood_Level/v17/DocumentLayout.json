@@ -3,6 +3,10 @@
   "WorkspaceRootPath": "D:\\FPTU\\FloodLevelIOT-BE\\HCM_Flood_Level\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{E0705B8D-A8BA-4818-A9B5-F64473F23E9A}|WebAPI\\WebAPI.csproj|d:\\fptu\\floodleveliot-be\\hcm_flood_level\\webapi\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{E0705B8D-A8BA-4818-A9B5-F64473F23E9A}|WebAPI\\WebAPI.csproj|solutionrelative:webapi\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{E0705B8D-A8BA-4818-A9B5-F64473F23E9A}|WebAPI\\WebAPI.csproj|d:\\fptu\\floodleveliot-be\\hcm_flood_level\\webapi\\controllers\\mapscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E0705B8D-A8BA-4818-A9B5-F64473F23E9A}|WebAPI\\WebAPI.csproj|solutionrelative:webapi\\controllers\\mapscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -39,6 +43,19 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "appsettings.json",
+              "DocumentMoniker": "D:\\FPTU\\FloodLevelIOT-BE\\HCM_Flood_Level\\WebAPI\\appsettings.json",
+              "RelativeDocumentMoniker": "WebAPI\\appsettings.json",
+              "ToolTip": "D:\\FPTU\\FloodLevelIOT-BE\\HCM_Flood_Level\\WebAPI\\appsettings.json",
+              "RelativeToolTip": "WebAPI\\appsettings.json",
+              "ViewState": "AgIAAAoAAAAAAAAAAAAAABIAAAADAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
+              "WhenOpened": "2026-03-14T10:33:53.995Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
               "Title": "MapsController.cs",
               "DocumentMoniker": "D:\\FPTU\\FloodLevelIOT-BE\\HCM_Flood_Level\\WebAPI\\Controllers\\MapsController.cs",
               "RelativeDocumentMoniker": "WebAPI\\Controllers\\MapsController.cs",
@@ -51,7 +68,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 2,
               "Title": "MapsSearchDTO.cs",
               "DocumentMoniker": "D:\\FPTU\\FloodLevelIOT-BE\\HCM_Flood_Level\\Core\\DTOs\\MapsSearchDTO.cs",
               "RelativeDocumentMoniker": "Core\\DTOs\\MapsSearchDTO.cs",
@@ -59,12 +76,11 @@
               "RelativeToolTip": "Core\\DTOs\\MapsSearchDTO.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAWAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-14T10:15:15.493Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-14T10:15:15.493Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 2,
+              "DocumentIndex": 3,
               "Title": "AuthController.cs",
               "DocumentMoniker": "D:\\FPTU\\FloodLevelIOT-BE\\HCM_Flood_Level\\WebAPI\\Controllers\\AuthController.cs",
               "RelativeDocumentMoniker": "WebAPI\\Controllers\\AuthController.cs",
@@ -72,8 +88,7 @@
               "RelativeToolTip": "WebAPI\\Controllers\\AuthController.cs",
               "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-14T10:02:08.262Z",
-              "EditorCaption": ""
+              "WhenOpened": "2026-03-14T10:02:08.262Z"
             }
           ]
         },
