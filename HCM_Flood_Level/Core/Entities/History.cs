@@ -5,7 +5,7 @@ namespace Core.Entities
     public class History
     {
         public int HistoryId { get; set; }
-        public int LocationId { get; set; }
+        public string LocationId { get; set; }
         public Location Location { get; set; }
         public DateTime StartTime { get; set; }
         public DateTime? EndTime { get; set; }
@@ -14,5 +14,3 @@ namespace Core.Entities
         public DateTime CreatedAt { get; set; }
     }
 }
-
-

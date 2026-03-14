@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -8,17 +8,10 @@ namespace Core.DTOs
 {
     public class ManageLocationDTO
     {
-        public int LocationId { get; set; }
-        public string LocationName { get; set; }
-    }
-
-    public class LocationDetailDTO
-    {
-        public int LocationId { get; set; }
-        public string LocationName { get; set; }
+        public string PlaceId { get; set; }
+        public string Title { get; set; }
         public double Latitude { get; set; }
         public double Longitude { get; set; }
-        public int AreaId { get; set; }
-        public string AreaName { get; set; }
+        public string Address { get; set; }
     }
 }

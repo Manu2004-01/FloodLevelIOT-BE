@@ -18,6 +18,9 @@ namespace Infrastructure.DBContext
         {
             base.OnModelCreating(modelBuilder);
 
+            // Globally ignore Location in this context as it's a management entity.
+            modelBuilder.Ignore<Location>();
+
             ConfigureColumnNames(modelBuilder);
 
             modelBuilder.Entity<SensorReading>().ToTable("sensorreadings");
@@ -30,18 +33,11 @@ namespace Infrastructure.DBContext
             // those entities (and their complex relationships) into this model.
             modelBuilder.Entity<Sensor>(entity =>
             {
-                entity.Ignore(s => s.Location);
                 entity.Ignore(s => s.Technician);
                 entity.Ignore(s => s.MaintenanceRequests);
                 entity.Ignore(s => s.MaintenanceSchedules);
                 entity.Ignore(s => s.MaintenanceTasks);
                 entity.Ignore(s => s.SensorReadings);
-            });
-
-            // History table only stores scalar data; do not pull management entities into this context.
-            modelBuilder.Entity<History>(entity =>
-            {
-                entity.Ignore(h => h.Location);
             });
             
             // SensorReading only stores raw data columns; do not model FK to Sensor here
@@ -90,7 +86,7 @@ namespace Infrastructure.DBContext
             modelBuilder.Entity<Sensor>(entity =>
             {
                 entity.Property(e => e.SensorId).HasColumnName("sensor_id");
-                entity.Property(e => e.LocationId).HasColumnName("location_id");
+                entity.Property(e => e.PlaceId).HasColumnName("place_id");
                 entity.Property(e => e.SensorCode).HasColumnName("sensor_code");
                 entity.Property(e => e.SensorName).HasColumnName("sensor_name");
                 entity.Property(e => e.SensorType).HasColumnName("sensor_type");

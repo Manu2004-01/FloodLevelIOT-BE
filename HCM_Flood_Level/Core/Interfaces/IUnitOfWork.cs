@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -12,6 +12,5 @@ namespace Core.Interfaces
         IManageSensorRepository ManageSensorRepository { get; }
         IMaintenanceScheduleRepository ManageMaintenanceScheduleRepository { get; }
         ILocationRepository LocationRepository { get; }
-        IAreaRepository AreaRepository { get; }
     }
 }

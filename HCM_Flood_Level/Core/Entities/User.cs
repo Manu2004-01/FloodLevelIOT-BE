@@ -13,6 +13,8 @@ namespace Core.Entities
         public int RoleId { get; set; }
         public Role Role { get; set; }
         public bool IsActive { get; set; } = true;
+        public string? EmailOtpHash { get; set; }
+        public DateTime? EmailOtpExpiredAt { get; set; }
         public DateTime CreatedAt { get; set; }
 
         // Navigation properties

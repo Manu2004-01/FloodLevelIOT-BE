@@ -20,20 +20,21 @@ namespace Infrastructure.Repositories
         private readonly EventsDBContext _eventsContext;
         private readonly IFileProvider _fileProvider;
         private readonly IMapper _mapper;
+        private readonly IMapsService _mapsService;
 
-        public ManageSensorRepository(ManageDBContext context, EventsDBContext eventsContext, IFileProvider fileProvider, IMapper mapper) : base(context)
+        public ManageSensorRepository(ManageDBContext context, EventsDBContext eventsContext, IFileProvider fileProvider, IMapper mapper, IMapsService mapsService) : base(context)
         {
             _context = context;
             _eventsContext = eventsContext;
             _fileProvider = fileProvider;
             _mapper = mapper;
+            _mapsService = mapsService;
         }
 
         public async Task<IEnumerable<Sensor>> GetAllSensorsAsync(EntityParam param)
         {
             var query = _context.Sensors
                 .Include(s => s.Location)
-                    .ThenInclude(l => l.Area)
                 .AsQueryable();
 
             if (!string.IsNullOrWhiteSpace(param.Search))
@@ -42,7 +43,7 @@ namespace Infrastructure.Repositories
                     s.SensorCode.Contains(param.Search) ||
                     s.SensorName.Contains(param.Search) ||
                     s.SensorType.Contains(param.Search) ||
-                    s.Location.LocationName.Contains(param.Search)
+                    s.Location.Title.Contains(param.Search)
                 );
             }
 
@@ -55,14 +56,48 @@ namespace Infrastructure.Repositories
 
         public async Task<bool> AddNewSensorAsync(CreateSensorDTO dto)
         {
-            var locationExists = await _context.Locations.AnyAsync(l => l.LocationId == dto.LocationId);
-            if (!locationExists)
-                return false;
+            // 1. Check if location exists, if not create it
+            var location = await _context.Locations.FindAsync(dto.PlaceId);
+            if (location == null)
+            {
+                // If DTO lacks title/lat/lng, fetch from SerpApi
+                if (string.IsNullOrEmpty(dto.Title) || dto.Latitude == 0 || dto.Longitude == 0)
+                {
+                    var details = await _mapsService.GetPlaceDetailsAsync(dto.PlaceId);
+                    if (details != null)
+                    {
+                        // Parse detail fields safely without using dynamic keyword which can cause RuntimeBinderException
+                        var json = System.Text.Json.JsonSerializer.Serialize(details);
+                        var doc = System.Text.Json.JsonDocument.Parse(json);
+                        var root = doc.RootElement;
 
-            var duplicateLocation = await _context.Sensors.AnyAsync(s => s.LocationId == dto.LocationId);
+                        if (root.TryGetProperty("title", out var t)) dto.Title = t.GetString();
+                        if (root.TryGetProperty("address", out var a)) dto.Address = a.GetString();
+                        if (root.TryGetProperty("lat", out var lat) && lat.ValueKind != System.Text.Json.JsonValueKind.Null) 
+                            dto.Latitude = (decimal)lat.GetDouble();
+                        if (root.TryGetProperty("lng", out var lng) && lng.ValueKind != System.Text.Json.JsonValueKind.Null) 
+                            dto.Longitude = (decimal)lng.GetDouble();
+                    }
+                }
+
+                location = new Location
+                {
+                    PlaceId = dto.PlaceId,
+                    Title = dto.Title ?? "Unknown",
+                    Address = dto.Address ?? "Unknown",
+                    Latitude = dto.Latitude,
+                    Longitude = dto.Longitude
+                };
+                await _context.Locations.AddAsync(location);
+                await _context.SaveChangesAsync();
+            }
+
+            // 2. Prevent duplicate sensor for same location
+            var duplicateLocation = await _context.Sensors.AnyAsync(s => s.PlaceId == dto.PlaceId);
             if (duplicateLocation)
                 return false;
 
+            // 3. Create sensor
             var sensor = _mapper.Map<Sensor>(dto);
 
             sensor.InstalledAt = DateTime.UtcNow;
@@ -71,7 +106,7 @@ namespace Infrastructure.Repositories
             await _context.Sensors.AddAsync(sensor);
             await _context.SaveChangesAsync();
 
-            // Sau khi tạo sensor, tạo bản ghi SensorReading mặc định
+            // 4. Default reading
             var defaultReading = new SensorReading
             {
                 SensorId = sensor.SensorId,
@@ -86,14 +121,14 @@ namespace Infrastructure.Repositories
             return true;
         }
 
-        public async Task<bool> LocationExistsAsync(int locationId)
+        public async Task<bool> LocationExistsAsync(string placeId)
         {
-            return await _context.Locations.AnyAsync(l => l.LocationId == locationId);
+            return await _context.Locations.AnyAsync(l => l.PlaceId == placeId);
         }
 
-        public async Task<bool> LocationHasSensorAsync(int locationId)
+        public async Task<bool> LocationHasSensorAsync(string placeId)
         {
-            return await _context.Sensors.AnyAsync(s => s.LocationId == locationId);
+            return await _context.Sensors.AnyAsync(s => s.PlaceId == placeId);
         }
 
         public async Task<bool> UpdateSensorAsync(int id, UpdateSensorDTO dto)
@@ -103,16 +138,19 @@ namespace Infrastructure.Repositories
             if (sensor == null)
                 return false;
 
-            if (dto.LocationId.HasValue)
+            if (!string.IsNullOrEmpty(dto.PlaceId))
             {
-                var locationExists = await _context.Locations.AnyAsync(l => l.LocationId == dto.LocationId.Value);
+                var locationExists = await _context.Locations.AnyAsync(l => l.PlaceId == dto.PlaceId);
                 if (!locationExists)
                     return false;
 
-                sensor.LocationId = dto.LocationId.Value;
+                sensor.PlaceId = dto.PlaceId;
             }
 
-            // No InstalledBy property in Sensor, so skip this block
+            if (dto.TechnicianId.HasValue)
+            {
+                sensor.TechnicianId = dto.TechnicianId.Value;
+            }
 
             if (!string.IsNullOrEmpty(dto.Specification))
                 sensor.Specification = dto.Specification;
@@ -136,11 +174,11 @@ namespace Infrastructure.Repositories
             if (!string.IsNullOrEmpty(dto.SensorType))
                 sensor.SensorType = dto.SensorType;
 
-            if (dto.MinThreshold.HasValue)
-                sensor.WarningThreshold = (float?)dto.MinThreshold.Value;
+            if (dto.WarningThreshold.HasValue)
+                sensor.WarningThreshold = (float?)dto.WarningThreshold.Value;
 
-            if (dto.MaxThreshold.HasValue)
-                sensor.DangerThreshold = (float?)dto.MaxThreshold.Value;
+            if (dto.DangerThreshold.HasValue)
+                sensor.DangerThreshold = (float?)dto.DangerThreshold.Value;
 
             if (dto.MaxLevel.HasValue)
                 sensor.MaxLevel = dto.MaxLevel.Value;
@@ -152,6 +190,7 @@ namespace Infrastructure.Repositories
         public async Task<bool> DeleteSensorAsync(int id)
         {
             var sensor = await _context.Sensors.FindAsync(id);
+            if (sensor == null) return false;
 
             _context.Sensors.Remove(sensor);
             await _context.SaveChangesAsync();
@@ -202,26 +241,19 @@ namespace Infrastructure.Repositories
 
         public async Task<double?> GetMaxHistoryLevelForSensorAsync(int sensorId)
         {
-            var locationId = await _context.Sensors
-                .Where(s => s.SensorId == sensorId)
-                .Select(s => (int?)s.LocationId)
-                .FirstOrDefaultAsync();
+            var sensor = await _context.Sensors.FindAsync(sensorId);
+            if (sensor == null || string.IsNullOrEmpty(sensor.PlaceId)) return null;
 
-            if (locationId == null)
-                return null;
+            var maxLevel = await _eventsContext.Histories
+                .Where(h => h.LocationId == sensor.PlaceId)
+                .MaxAsync(h => (float?)h.MaxWaterLevel);
 
-            var history = await _eventsContext.Histories
-                .Where(f => f.LocationId == locationId.Value)
-                .OrderByDescending(f => f.MaxWaterLevel)
-                .FirstOrDefaultAsync();
-
-            return history?.MaxWaterLevel;
+            return maxLevel;
         }
 
         public async Task AddHistoryAsync(History history)
         {
             if (history == null) return;
-            history.CreatedAt = DateTime.UtcNow;
             await _eventsContext.Histories.AddAsync(history);
             await _eventsContext.SaveChangesAsync();
         }

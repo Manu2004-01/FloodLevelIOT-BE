@@ -58,6 +58,20 @@ builder.Services.AddSwaggerGen(options =>
 builder.Services.InfrastructureConfiguration(builder.Configuration);
 
 // Register application services
+// Configure HttpClient with SSL bypass for development if needed
+builder.Services.AddHttpClient("SerpApiClient")
+    .ConfigurePrimaryHttpMessageHandler(() =>
+    {
+        var handler = new HttpClientHandler();
+        if (builder.Environment.IsDevelopment())
+        {
+            handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
+        }
+        return handler;
+    });
+
+builder.Services.AddHttpClient();
+builder.Services.AddScoped<IMapsService, SerpApiMapsService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 
 builder.Services.AddHttpContextAccessor();
@@ -101,7 +115,6 @@ builder.Services
     });
 
 builder.Services.AddScoped<IEmailProvider, SmtpEmailProvider>();
-builder.Services.AddScoped<ISmsProvider, TwilioSmsProvider>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 
 var app = builder.Build();

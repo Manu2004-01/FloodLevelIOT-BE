@@ -1,7 +1,6 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Core.Interfaces;
 using Infrastructure.DBContext;
-using Infrastructure.Repositories.Admin;
 using Microsoft.Extensions.FileProviders;
 using System;
 using System.Collections.Generic;
@@ -17,6 +16,7 @@ namespace Infrastructure.Repositories
         private readonly EventsDBContext _eventsContext;
         private readonly IFileProvider _fileProvider;
         private readonly IMapper _mapper;
+        private readonly IMapsService _mapsService;
 
         public IManageUserRepository ManageUserRepository{ get;  }
 
@@ -26,19 +26,17 @@ namespace Infrastructure.Repositories
 
         public ILocationRepository LocationRepository { get; }
 
-        public IAreaRepository AreaRepository { get; }
-
-        public UnitOfWork(ManageDBContext context, EventsDBContext eventsContext, IFileProvider fileProvider, IMapper mapper)
+        public UnitOfWork(ManageDBContext context, EventsDBContext eventsContext, IFileProvider fileProvider, IMapper mapper, IMapsService mapsService)
         {
             _context = context;
             _eventsContext = eventsContext;
             _fileProvider = fileProvider;
             _mapper = mapper;
+            _mapsService = mapsService;
             ManageUserRepository = new ManageUserRepository(_context, _fileProvider, _mapper);
-            ManageSensorRepository = new ManageSensorRepository(_context, _eventsContext, _fileProvider, _mapper);
+            ManageSensorRepository = new ManageSensorRepository(_context, _eventsContext, _fileProvider, _mapper, _mapsService);
             ManageMaintenanceScheduleRepository = new MaintenanceScheduleRepository(_context, _fileProvider, _mapper);
             LocationRepository = new LocationRepository(_context);
-            AreaRepository = new AreaRepository(_context);
         }
     }
 }

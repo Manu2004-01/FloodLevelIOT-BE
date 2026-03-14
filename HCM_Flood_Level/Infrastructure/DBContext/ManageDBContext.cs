@@ -15,7 +15,6 @@ namespace Infrastructure.DBContext
         }
         public virtual DbSet<User> Users { get; set; }
         public virtual DbSet<Role> Roles { get; set; }
-        public virtual DbSet<Area> Areas { get; set; }
         public virtual DbSet<Location> Locations { get; set; }
         public virtual DbSet<Sensor> Sensors { get; set; }
         public virtual DbSet<Priority> Priorities { get; set; }
@@ -30,7 +29,6 @@ namespace Infrastructure.DBContext
 
             modelBuilder.Entity<User>().ToTable("users");
             modelBuilder.Entity<Role>().ToTable("roles");
-            modelBuilder.Entity<Area>().ToTable("areas");
             modelBuilder.Entity<Location>().ToTable("locations");
             modelBuilder.Entity<Sensor>().ToTable("sensors");
             modelBuilder.Entity<Priority>().ToTable("priorities");
@@ -72,17 +70,11 @@ namespace Infrastructure.DBContext
                 .HasIndex(s => s.SensorCode)
                 .IsUnique();
 
-            // Configure relationships BEFORE ConfigureColumnNames so navigations are bound to FKs first
-            modelBuilder.Entity<Location>()
-                .HasOne(l => l.Area)
-                .WithMany(a => a.Locations)
-                .HasForeignKey(l => l.AreaId)
-                .OnDelete(DeleteBehavior.Restrict);
-
+            // Configure relationships
             modelBuilder.Entity<Sensor>()
                 .HasOne(s => s.Location)
                 .WithMany(l => l.Sensors)
-                .HasForeignKey(s => s.LocationId)
+                .HasForeignKey(s => s.PlaceId)
                 .OnDelete(DeleteBehavior.Restrict);
 
             modelBuilder.Entity<Sensor>()
@@ -187,6 +179,8 @@ namespace Infrastructure.DBContext
                 entity.Property(e => e.PasswordHash).HasColumnName("password_hash");
                 entity.Property(e => e.RoleId).HasColumnName("role_id");
                 entity.Property(e => e.IsActive).HasColumnName("is_active");
+                entity.Property(e => e.EmailOtpHash).HasColumnName("email_otp_hash");
+                entity.Property(e => e.EmailOtpExpiredAt).HasColumnName("email_otp_expired_at");
                 entity.Property(e => e.CreatedAt).HasColumnName("created_at");
             });
             modelBuilder.Entity<Role>(entity =>
@@ -196,26 +190,20 @@ namespace Infrastructure.DBContext
             });
 
 
-            modelBuilder.Entity<Area>(entity =>
-            {
-                entity.Property(e => e.AreaId).HasColumnName("area_id");
-                entity.Property(e => e.AreaName).HasColumnName("area_name");
-            });
-
             modelBuilder.Entity<Location>(entity =>
             {
-                entity.Property(e => e.LocationId).HasColumnName("location_id");
-                entity.Property(e => e.AreaId).HasColumnName("area_id");
-                entity.Property(e => e.LocationName).HasColumnName("location_name");
+                entity.HasKey(e => e.PlaceId);
+                entity.Property(e => e.PlaceId).HasColumnName("place_id");
+                entity.Property(e => e.Title).HasColumnName("title");
+                entity.Property(e => e.Address).HasColumnName("address");
                 entity.Property(e => e.Latitude).HasColumnName("latitude");
                 entity.Property(e => e.Longitude).HasColumnName("longitude");
-                entity.Property(e => e.RoadName).HasColumnName("road_name");
             });
 
             modelBuilder.Entity<Sensor>(entity =>
             {
                 entity.Property(e => e.SensorId).HasColumnName("sensor_id");
-                entity.Property(e => e.LocationId).HasColumnName("location_id");
+                entity.Property(e => e.PlaceId).HasColumnName("place_id");
                 entity.Property(e => e.TechnicianId).HasColumnName("technician_id");
                 entity.Property(e => e.SensorCode).HasColumnName("sensor_code");
                 entity.Property(e => e.SensorName).HasColumnName("sensor_name");

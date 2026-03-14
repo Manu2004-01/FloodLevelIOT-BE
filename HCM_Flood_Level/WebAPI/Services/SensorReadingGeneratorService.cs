@@ -14,21 +14,17 @@ namespace WebAPI.Services
     public class SensorReadingGeneratorService : BackgroundService
     {
         private readonly IServiceProvider _services;
-        private readonly ILogger<SensorReadingGeneratorService> _logger;
         private readonly TimeSpan _interval = TimeSpan.FromMinutes(30);
         private readonly int _maxReadingsPerSensor = 200;
         private readonly Random _rnd = new Random();
 
-        public SensorReadingGeneratorService(IServiceProvider services, ILogger<SensorReadingGeneratorService> logger)
+        public SensorReadingGeneratorService(IServiceProvider services)
         {
             _services = services;
-            _logger = logger;
         }
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _logger.LogInformation("SensorReadingGeneratorService started");
-
             // run immediately once, then wait interval
             while (!stoppingToken.IsCancellationRequested)
             {
@@ -36,15 +32,13 @@ namespace WebAPI.Services
                 {
                     await GenerateOnce(stoppingToken);
                 }
-                catch (Exception ex)
+                catch (Exception)
                 {
-                    _logger.LogError(ex, "Error while generating sensor readings");
+                    // Error while generating sensor readings
                 }
 
                 await Task.Delay(_interval, stoppingToken);
             }
-
-            _logger.LogInformation("SensorReadingGeneratorService stopped");
         }
 
         private async Task GenerateOnce(CancellationToken ct)
@@ -104,7 +98,7 @@ namespace WebAPI.Services
                 {
                     var history = new History
                     {
-                        LocationId = sensor?.LocationId ?? 0,
+                        LocationId = sensor?.PlaceId ?? string.Empty,
                         StartTime = reading.RecordedAt,
                         MaxWaterLevel = reading.WaterLevelCm,
                         Severity = "Unknown"

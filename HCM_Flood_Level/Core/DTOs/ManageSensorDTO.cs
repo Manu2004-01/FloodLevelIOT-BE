@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,8 +10,7 @@ namespace Core.DTOs
     {
         public int SensorId { get; set; }
         public string SensorName { get; set; }
-        public string LocationName { get; set; }
-        public string AreaName { get; set; }
+        public string Title { get; set; }
         public DateTime InstalledAt { get; set; }
         public string? Status { get; set; }
         public double? WaterLevel { get; set; }
@@ -34,7 +33,7 @@ namespace Core.DTOs
         public DateTime InstalledAt { get; set; } // ngay lap dat
         public DateTime CommissionedAt { get; set; } // ngay van hanh
         public string InstalledByStaff { get; set; }
-        public LocationDetailDTO Location { get; set; }
+        public ManageLocationDTO Location { get; set; }
         //Bao tri & trang thai
         public double? WaterLevel { get; set; }
         public string? Status { get; set; }
@@ -43,29 +42,36 @@ namespace Core.DTOs
 
     public class CreateSensorDTO
     {
-        public int LocationId { get; set; }
-        public int InstalledBy { get; set; }
+        // Location Info from Map
+        public string PlaceId { get; set; }
+        public string? Title { get; set; }
+        public string? Address { get; set; }
+        public decimal Latitude { get; set; }
+        public decimal Longitude { get; set; }
+
+        // Sensor Details
+        public int TechnicianId { get; set; }
         public string Specification { get; set; }
         public string SensorCode { get; set; }
         public string SensorName { get; set; }
         public string Protocol { get; set; }
         public string SensorType { get; set; }
-        public double MinThreshold { get; set; }
-        public double MaxThreshold { get; set; }
+        public double WarningThreshold { get; set; }
+        public double DangerThreshold { get; set; }
         public int MaxLevel { get; set; } 
     }
 
     public class UpdateSensorDTO
     {
-        public int? LocationId { get; set; }
-        public int? InstalledBy { get; set; }
+        public string? PlaceId { get; set; }
+        public int? TechnicianId { get; set; }
         public string? Specification { get; set; }
         public string? SensorCode { get; set; }
         public string? SensorName { get; set; }
         public string? Protocol { get; set; }
         public string? SensorType { get; set; }
-        public double? MinThreshold { get; set; }
-        public double? MaxThreshold { get; set; }
+        public double? WarningThreshold { get; set; }
+        public double? DangerThreshold { get; set; }
         public int? MaxLevel { get; set; }
     }
 }

@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Core.DTOs;
 using Core.Entities;
 using Core.Interfaces;
@@ -58,7 +58,7 @@ namespace WebAPI.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new BaseCommentResponse(500, "Đã xảy ra lỗi máy chủ nội bộ!!!"));
+                return StatusCode(500, new BaseCommentResponse(500, $"Đã xảy ra lỗi máy chủ nội bộ: {ex.Message}"));
             }
         }
 
@@ -75,7 +75,6 @@ namespace WebAPI.Controllers
 
                 var sensor = await _unitOfWork.ManageSensorRepository.GetByIdAsync(id,
                     s => s.Location,
-                    s => s.Location.Area,
                     s => s.Technician);
 
                 if (sensor == null)
@@ -96,7 +95,7 @@ namespace WebAPI.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new BaseCommentResponse(500, "Đã xảy ra lỗi máy chủ nội bộ!!!"));
+                return StatusCode(500, new BaseCommentResponse(500, $"Đã xảy ra lỗi máy chủ nội bộ: {ex.Message}"));
             }
         }
 
@@ -124,16 +123,11 @@ namespace WebAPI.Controllers
                 if (string.IsNullOrWhiteSpace(dto.SensorType))
                     return BadRequest(new BaseCommentResponse(400, "Loại thiết bị là bắt buộc"));
 
-                if (dto.LocationId <= 0)
+                if (string.IsNullOrWhiteSpace(dto.PlaceId))
                     return BadRequest(new BaseCommentResponse(400, "Vị trí lắp đặt là bắt buộc"));
 
-                // Controller-level validation: ensure location exists
-                var locationExists = await _unitOfWork.ManageSensorRepository.LocationExistsAsync(dto.LocationId);
-                if (!locationExists)
-                    return BadRequest(new BaseCommentResponse(400, "Vị trí lắp đặt không tồn tại"));
-
                 // Controller-level validation: prevent duplicate sensor for same location
-                var locationHasSensor = await _unitOfWork.ManageSensorRepository.LocationHasSensorAsync(dto.LocationId);
+                var locationHasSensor = await _unitOfWork.ManageSensorRepository.LocationHasSensorAsync(dto.PlaceId);
                 if (locationHasSensor)
                     return BadRequest(new BaseCommentResponse(400, "Vị trí này đã có thiết bị, không thể tạo thêm"));
 
@@ -146,7 +140,7 @@ namespace WebAPI.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new BaseCommentResponse(500, "Đã xảy ra lỗi máy chủ nội bộ!!!"));
+                return StatusCode(500, new BaseCommentResponse(500, $"Đã xảy ra lỗi máy chủ nội bộ: {ex.Message}"));
             }
         }
 
@@ -165,15 +159,15 @@ namespace WebAPI.Controllers
                     return BadRequest(new BaseCommentResponse(400, "Cần cập nhật dữ liệu"));
 
                 // Check if at least one updatable field is provided
-                if (!dto.LocationId.HasValue &&
-                    !dto.InstalledBy.HasValue &&
+                if (string.IsNullOrEmpty(dto.PlaceId) &&
+                    !dto.TechnicianId.HasValue &&
                     string.IsNullOrEmpty(dto.Specification) &&
                     string.IsNullOrEmpty(dto.SensorCode) &&
                     string.IsNullOrEmpty(dto.SensorName) &&
                     string.IsNullOrEmpty(dto.Protocol) &&
                     string.IsNullOrEmpty(dto.SensorType) &&
-                    !dto.MinThreshold.HasValue &&
-                    !dto.MaxThreshold.HasValue &&
+                    !dto.WarningThreshold.HasValue &&
+                    !dto.DangerThreshold.HasValue &&
                     !dto.MaxLevel.HasValue)
                 {
                     return BadRequest(new BaseCommentResponse(400, "Cần cung cấp ít nhất một trường để cập nhật"));
@@ -193,7 +187,7 @@ namespace WebAPI.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new BaseCommentResponse(500, "Đã xảy ra lỗi máy chủ nội bộ!!!"));
+                return StatusCode(500, new BaseCommentResponse(500, $"Đã xảy ra lỗi máy chủ nội bộ: {ex.Message}"));
             }
         }
 
@@ -217,7 +211,7 @@ namespace WebAPI.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new BaseCommentResponse(500, "Đã xảy ra lỗi máy chủ nội bộ!!!"));
+                return StatusCode(500, new BaseCommentResponse(500, $"Đã xảy ra lỗi máy chủ nội bộ: {ex.Message}"));
             }
         }
     }
