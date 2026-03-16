@@ -72,7 +72,7 @@ namespace WebAPI.Models
                 }));
 
             CreateMap<CreateSensorDTO, Sensor>()
-                .ForMember(a => a.PlaceId, a => a.MapFrom(b => b.PlaceId))
+                .ForMember(a => a.PlaceId, a => a.Ignore())
                 .ForMember(a => a.TechnicianId, a => a.MapFrom(b => b.TechnicianId))
                 .ForMember(a => a.Specification, a => a.MapFrom(b => b.Specification))
                 .ForMember(a => a.SensorCode, a => a.MapFrom(b => b.SensorCode))

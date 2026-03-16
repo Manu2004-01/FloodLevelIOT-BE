@@ -11,9 +11,10 @@ namespace Core.Interfaces
 {
     public interface IManageUserRepository : IGenericRepository<User>
     {
-        Task<IEnumerable<User>> GetAllStaffAsync(EntityParam entityParam);
+        Task<IEnumerable<User>> GetAllUserAsync(EntityParam entityParam);
         Task<bool> AddNewStaffAsync(CreateUserDTO dto);
         Task<bool> DeleteStaffAsync(int id);
         Task<bool> UpdateStaffAsync(int id, UpdateUserDTO dto);
+        Task<bool> UpdateProfileAsync(int id, UpdateProfileDTO dto);
     }
 }

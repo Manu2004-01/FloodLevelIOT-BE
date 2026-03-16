@@ -98,10 +98,11 @@ namespace WebAPI.Services
                 {
                     var history = new History
                     {
-                        LocationId = sensor?.PlaceId ?? string.Empty,
+                        LocationId = sensor?.PlaceId ?? 0,
                         StartTime = reading.RecordedAt,
                         MaxWaterLevel = reading.WaterLevelCm,
-                        Severity = "Unknown"
+                        Severity = "Unknown",
+                        CreatedAt = DateTime.UtcNow
                     };
 
                     await uow.ManageSensorRepository.AddHistoryAsync(history);

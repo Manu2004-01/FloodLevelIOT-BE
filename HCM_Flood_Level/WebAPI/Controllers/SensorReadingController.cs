@@ -1,6 +1,7 @@
 using AutoMapper;
 using Core.DTOs;
 using Infrastructure.DBContext;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebAPI.Errors;
@@ -9,6 +10,7 @@ namespace WebAPI.Controllers
 {
     [Route("api/staff")]
     [ApiController]
+    [Authorize]
     public class SensorReadingController : ControllerBase
     {
         private readonly EventsDBContext _eventsContext;
@@ -20,9 +22,6 @@ namespace WebAPI.Controllers
             _mapper = mapper;
         }
 
-        /// <summary>
-        /// GET /api/staff/sensor-readings - Xem toàn bộ dữ liệu đo cảm biến
-        /// </summary>
         [HttpGet("sensor-readings")]
         public async Task<ActionResult<List<SensorReadingDTO>>> GetAllSensorReadings()
         {

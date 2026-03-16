@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Linq.Expressions;
@@ -25,5 +25,6 @@ namespace Core.Interfaces
         Task DeleteAsync(int id);
 
         Task<int> CountAsync();
+        Task<int> CountAsync(Expression<Func<T, bool>> predicate);
     }
 }

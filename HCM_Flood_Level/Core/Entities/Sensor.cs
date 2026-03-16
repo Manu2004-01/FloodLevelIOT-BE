@@ -9,7 +9,7 @@ namespace Core.Entities
     public class Sensor
     {
         public int SensorId { get; set; }
-        public string PlaceId { get; set; }
+        public int PlaceId { get; set; }
         public Location Location { get; set; }
         /// <summary>Optional: technician responsible for this sensor. Null if not assigned.</summary>
         public int? TechnicianId { get; set; }

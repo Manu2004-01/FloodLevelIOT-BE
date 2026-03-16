@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Core.DTOs;
 using Core.Interfaces;
 using Core.Sharing;

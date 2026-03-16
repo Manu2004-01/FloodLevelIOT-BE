@@ -3,6 +3,7 @@ using Core.DTOs;
 using Core.Entities;
 using Core.Interfaces;
 using Core.Sharing;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using WebAPI.Errors;
 using WebAPI.Helpers;
@@ -11,6 +12,7 @@ namespace WebAPI.Controllers
 {
     [Route("api/staff")]
     [ApiController]
+    [Authorize]
     public class SensorController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
@@ -22,9 +24,6 @@ namespace WebAPI.Controllers
             _mapper = mapper;
         }
 
-        /// <summary>
-        /// GET /api/admin/devices - Lấy danh sách thiết bị
-        /// </summary>
         [HttpGet("devices")]
         public async Task<ActionResult> GetAllDevices(
             [FromQuery] int pagenumber = 1,
@@ -62,9 +61,6 @@ namespace WebAPI.Controllers
             }
         }
 
-        /// <summary>
-        /// GET /api/admin/devices/{id} - Xem chi tiết thiết bị
-        /// </summary>
         [HttpGet("devices/{id}")]
         public async Task<ActionResult> GetDeviceById(int id)
         {
@@ -80,9 +76,6 @@ namespace WebAPI.Controllers
                 if (sensor == null)
                     return NotFound(new BaseCommentResponse(404, "Không tìm thấy thiết bị"));
 
-                
-
-                // Fetch latest reading for this sensor and pass to AutoMapper via context
                 var latestReadings = await _unitOfWork.ManageSensorRepository.GetLatestReadingsForSensorIdsAsync(new List<int> { sensor.SensorId });
                 var readingsBySensor = latestReadings.Where(r => r != null).ToDictionary(r => r.SensorId, r => r);
 
@@ -99,9 +92,6 @@ namespace WebAPI.Controllers
             }
         }
 
-        /// <summary>
-        /// POST /api/admin/devices - Thêm mới thiết bị
-        /// </summary>
         [HttpPost("devices")]
         public async Task<ActionResult> CreateDevice([FromQuery] CreateSensorDTO dto)
         {
@@ -113,7 +103,6 @@ namespace WebAPI.Controllers
                 if (dto == null)
                     return BadRequest(new BaseCommentResponse(400, "Dữ liệu thiết bị là bắt buộc"));
 
-                // Validation
                 if (string.IsNullOrWhiteSpace(dto.SensorCode))
                     return BadRequest(new BaseCommentResponse(400, "Mã thiết bị là bắt buộc"));
 
@@ -123,13 +112,8 @@ namespace WebAPI.Controllers
                 if (string.IsNullOrWhiteSpace(dto.SensorType))
                     return BadRequest(new BaseCommentResponse(400, "Loại thiết bị là bắt buộc"));
 
-                if (string.IsNullOrWhiteSpace(dto.PlaceId))
-                    return BadRequest(new BaseCommentResponse(400, "Vị trí lắp đặt là bắt buộc"));
-
-                // Controller-level validation: prevent duplicate sensor for same location
-                var locationHasSensor = await _unitOfWork.ManageSensorRepository.LocationHasSensorAsync(dto.PlaceId);
-                if (locationHasSensor)
-                    return BadRequest(new BaseCommentResponse(400, "Vị trí này đã có thiết bị, không thể tạo thêm"));
+                if (dto.Latitude == 0 || dto.Longitude == 0)
+                    return BadRequest(new BaseCommentResponse(400, "Vĩ độ và kinh độ là bắt buộc"));
 
                 var result = await _unitOfWork.ManageSensorRepository.AddNewSensorAsync(dto);
 
@@ -144,9 +128,6 @@ namespace WebAPI.Controllers
             }
         }
 
-        /// <summary>
-        /// PUT /api/admin/devices/{id} - Cập nhật thông tin thiết bị
-        /// </summary>
         [HttpPut("devices/{id}")]
         public async Task<ActionResult> UpdateDevice(int id, [FromQuery] UpdateSensorDTO dto)
         {
@@ -158,8 +139,7 @@ namespace WebAPI.Controllers
                 if (dto == null)
                     return BadRequest(new BaseCommentResponse(400, "Cần cập nhật dữ liệu"));
 
-                // Check if at least one updatable field is provided
-                if (string.IsNullOrEmpty(dto.PlaceId) &&
+                if (!dto.PlaceId.HasValue &&
                     !dto.TechnicianId.HasValue &&
                     string.IsNullOrEmpty(dto.Specification) &&
                     string.IsNullOrEmpty(dto.SensorCode) &&
@@ -173,7 +153,6 @@ namespace WebAPI.Controllers
                     return BadRequest(new BaseCommentResponse(400, "Cần cung cấp ít nhất một trường để cập nhật"));
                 }
 
-                // Verify sensor exists first to return 404 when appropriate
                 var existing = await _unitOfWork.ManageSensorRepository.GetByIdAsync(id);
                 if (existing == null)
                     return NotFound(new BaseCommentResponse(404, "Không tìm thấy thiết bị"));
@@ -191,9 +170,6 @@ namespace WebAPI.Controllers
             }
         }
 
-        /// <summary>
-        /// DELETE /api/admin/devices/{id} - Gỡ thiết bị khỏi hệ thống
-        /// </summary>
         [HttpDelete("devices/{id}")]
         public async Task<ActionResult> DeleteDevice(int id)
         {

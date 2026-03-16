@@ -14,7 +14,7 @@ namespace WebAPI.Models
                 .ForMember(a => a.ScheduleMode, a => a.MapFrom(b => b.ScheduleMode))
                 .ForMember(a => a.StartDate, a => a.MapFrom(b => b.StartDate))
                 .ForMember(a => a.EndDate, a => a.MapFrom(b => b.EndDate))
-                .ForMember(a => a.AssignedTechnicianId, a => a.MapFrom(b => b.AssignedStaffId))
+                .ForMember(a => a.AssignedTechnicianId, a => a.MapFrom(b => b.AssignedTechnicianId))
                 .ForMember(a => a.Note, a => a.MapFrom(b => b.Note))
                 .ReverseMap();
 

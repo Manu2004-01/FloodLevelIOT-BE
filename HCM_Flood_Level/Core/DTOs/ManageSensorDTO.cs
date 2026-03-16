@@ -43,7 +43,6 @@ namespace Core.DTOs
     public class CreateSensorDTO
     {
         // Location Info from Map
-        public string PlaceId { get; set; }
         public string? Title { get; set; }
         public string? Address { get; set; }
         public decimal Latitude { get; set; }
@@ -63,7 +62,7 @@ namespace Core.DTOs
 
     public class UpdateSensorDTO
     {
-        public string? PlaceId { get; set; }
+        public int? PlaceId { get; set; }
         public int? TechnicianId { get; set; }
         public string? Specification { get; set; }
         public string? SensorCode { get; set; }

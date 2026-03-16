@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Core.DTOs;
 using Core.Entities;
 using Core.Interfaces;
@@ -37,6 +37,7 @@ namespace Infrastructure.Repositories
                 acc.PasswordHash = PasswordHelper.HashPassword(dto.Password);
             }
             
+            acc.RoleId = 2;
             acc.IsActive = true;
             acc.CreatedAt = DateTime.UtcNow;
 
@@ -54,10 +55,11 @@ namespace Infrastructure.Repositories
             return true;
         }
 
-        public async Task<IEnumerable<User>> GetAllStaffAsync(EntityParam entityParam)
+        public async Task<IEnumerable<User>> GetAllUserAsync(EntityParam entityParam)
         {
             var query = _context.Users
                 .Include(u => u.Role)
+                .Where(u => u.RoleId != 1) // Exclude users with RoleId = 1
                 .AsQueryable();
 
             if (!string.IsNullOrEmpty(entityParam.Search))
@@ -80,6 +82,18 @@ namespace Infrastructure.Repositories
             return await query.ToListAsync();
         }
 
+        public async Task<bool> UpdateProfileAsync(int id, UpdateProfileDTO dto)
+        {
+            var currentUser = _context.Users.Find(id);
+            if (currentUser == null) return false;
+            if (!string.IsNullOrEmpty(dto.FullName))
+                currentUser.FullName = dto.FullName;
+            if (!string.IsNullOrEmpty(dto.PhoneNumber))
+                currentUser.PhoneNumber = dto.PhoneNumber;
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
         public async Task<bool> UpdateStaffAsync(int id, UpdateUserDTO dto)
         {
             var currentUser = await _context.Users.FindAsync(id);
@@ -89,9 +103,7 @@ namespace Infrastructure.Repositories
 
             // Only update fields that are provided (partial update)
             if (dto.RoleId.HasValue)
-            {
                 currentUser.RoleId = dto.RoleId.Value;
-            }
 
             if (dto.Status.HasValue)
                 currentUser.IsActive = dto.Status.Value;

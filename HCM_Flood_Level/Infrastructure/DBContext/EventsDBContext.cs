@@ -59,7 +59,7 @@ namespace Infrastructure.DBContext
                 entity.Property(e => e.WaterLevelCm).HasColumnName("water_level_cm");
                 entity.Property(e => e.BatteryPercent).HasColumnName("battery_percent");
                 entity.Property(e => e.SignalStrength).HasColumnName("signal_strength");
-                entity.Property(e => e.RecordedAt).HasColumnName("recorded_at");
+                entity.Property(e => e.RecordedAt).HasColumnName("recorded_at").ValueGeneratedOnAdd();
             });
 
             modelBuilder.Entity<History>(entity =>
@@ -71,7 +71,7 @@ namespace Infrastructure.DBContext
                 entity.Property(e => e.EndTime).HasColumnName("end_time");
                 entity.Property(e => e.MaxWaterLevel).HasColumnName("max_water_level");
                 entity.Property(e => e.Severity).HasColumnName("severity");
-                entity.Property(e => e.CreatedAt).HasColumnName("created_at");
+                entity.Property(e => e.CreatedAt).HasColumnName("created_at").ValueGeneratedOnAdd();
             });
 
             modelBuilder.Entity<Report>(entity =>
@@ -80,7 +80,7 @@ namespace Infrastructure.DBContext
                 entity.Property(e => e.ReportId).HasColumnName("report_id");
                 entity.Property(e => e.LocationId).HasColumnName("location_id");
                 entity.Property(e => e.Description).HasColumnName("description");
-                entity.Property(e => e.CreatedAt).HasColumnName("created_at");
+                entity.Property(e => e.CreatedAt).HasColumnName("created_at").ValueGeneratedOnAdd();
             });
 
             modelBuilder.Entity<Sensor>(entity =>

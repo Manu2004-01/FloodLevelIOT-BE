@@ -1,14 +1,16 @@
 
-using System.Threading.Tasks;
 using Core.DTOs;
 using Core.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Threading.Tasks;
 using WebAPI.Errors;
 
 namespace WebAPI.Controllers
 {
     [Route("api/maps")]
     [ApiController]
+    [Authorize]
     public class MapsController : ControllerBase
     {
         private readonly IMapsService _mapsService;

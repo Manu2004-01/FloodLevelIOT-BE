@@ -11,8 +11,6 @@ namespace Core.Entities
         public string ScheduleMode { get; set; } // Manual | Auto
         public DateTime? StartDate { get; set; }
         public DateTime? EndDate { get; set; }
-        public int CreatedByStaffId { get; set; }
-        public User CreatedByStaff { get; set; }
         public int AssignedTechnicianId { get; set; }
         public User AssignedTechnician { get; set; }
         public string Note { get; set; }

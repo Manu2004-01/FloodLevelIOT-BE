@@ -20,9 +20,6 @@ namespace WebAPI.Controllers
             _mapper = mapper;
         }
 
-        /// <summary>
-        /// GET /api/staff/flood-events - Xem toàn bộ sự kiện ngập
-        /// </summary>
         [HttpGet("history")]
         public async Task<ActionResult<List<HistoryDTO>>> GetAllHistories()
         {

@@ -1,18 +1,30 @@
 {
   "Version": 1,
-  "WorkspaceRootPath": "D:\\FPTU\\FloodLevelIOT-BE\\HCM_Flood_Level\\",
+  "WorkspaceRootPath": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\",
   "Documents": [
     {
-      "AbsoluteMoniker": "D:0:0:{E0705B8D-A8BA-4818-A9B5-F64473F23E9A}|WebAPI\\WebAPI.csproj|d:\\fptu\\floodleveliot-be\\hcm_flood_level\\webapi\\controllers\\mapscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E0705B8D-A8BA-4818-A9B5-F64473F23E9A}|WebAPI\\WebAPI.csproj|solutionrelative:webapi\\controllers\\mapscontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{E0705B8D-A8BA-4818-A9B5-F64473F23E9A}|WebAPI\\WebAPI.csproj|d:\\floodleveliot-be\\hcm_flood_level\\webapi\\controllers\\staffcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E0705B8D-A8BA-4818-A9B5-F64473F23E9A}|WebAPI\\WebAPI.csproj|solutionrelative:webapi\\controllers\\staffcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{3D73A4B9-1067-4E8D-B10E-77B202CAA7BC}|Core\\Core.csproj|d:\\fptu\\floodleveliot-be\\hcm_flood_level\\core\\dtos\\mapssearchdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{3D73A4B9-1067-4E8D-B10E-77B202CAA7BC}|Core\\Core.csproj|solutionrelative:core\\dtos\\mapssearchdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{E0705B8D-A8BA-4818-A9B5-F64473F23E9A}|WebAPI\\WebAPI.csproj|d:\\floodleveliot-be\\hcm_flood_level\\webapi\\controllers\\citizencontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E0705B8D-A8BA-4818-A9B5-F64473F23E9A}|WebAPI\\WebAPI.csproj|solutionrelative:webapi\\controllers\\citizencontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E0705B8D-A8BA-4818-A9B5-F64473F23E9A}|WebAPI\\WebAPI.csproj|d:\\fptu\\floodleveliot-be\\hcm_flood_level\\webapi\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E0705B8D-A8BA-4818-A9B5-F64473F23E9A}|WebAPI\\WebAPI.csproj|solutionrelative:webapi\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{3D73A4B9-1067-4E8D-B10E-77B202CAA7BC}|Core\\Core.csproj|d:\\floodleveliot-be\\hcm_flood_level\\core\\interfaces\\imanageuserrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3D73A4B9-1067-4E8D-B10E-77B202CAA7BC}|Core\\Core.csproj|solutionrelative:core\\interfaces\\imanageuserrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E0705B8D-A8BA-4818-A9B5-F64473F23E9A}|WebAPI\\WebAPI.csproj|d:\\floodleveliot-be\\hcm_flood_level\\webapi\\models\\mappinguser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E0705B8D-A8BA-4818-A9B5-F64473F23E9A}|WebAPI\\WebAPI.csproj|solutionrelative:webapi\\models\\mappinguser.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{34A3E703-B133-440D-A8E4-9E6583E657CC}|Infrastructure\\Infrastructure.csproj|d:\\floodleveliot-be\\hcm_flood_level\\infrastructure\\repositories\\manageuserrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{34A3E703-B133-440D-A8E4-9E6583E657CC}|Infrastructure\\Infrastructure.csproj|solutionrelative:infrastructure\\repositories\\manageuserrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3D73A4B9-1067-4E8D-B10E-77B202CAA7BC}|Core\\Core.csproj|d:\\floodleveliot-be\\hcm_flood_level\\core\\dtos\\manageuserdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3D73A4B9-1067-4E8D-B10E-77B202CAA7BC}|Core\\Core.csproj|solutionrelative:core\\dtos\\manageuserdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     }
   ],
   "DocumentGroupContainers": [
@@ -22,8 +34,47 @@
       "DocumentGroups": [
         {
           "DockedWidth": 200,
-          "SelectedChildIndex": 3,
+          "SelectedChildIndex": 0,
           "Children": [
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "StaffController.cs",
+              "DocumentMoniker": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\WebAPI\\Controllers\\StaffController.cs",
+              "RelativeDocumentMoniker": "WebAPI\\Controllers\\StaffController.cs",
+              "ToolTip": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\WebAPI\\Controllers\\StaffController.cs",
+              "RelativeToolTip": "WebAPI\\Controllers\\StaffController.cs",
+              "ViewState": "AgIAAHUAAAAAAAAAAAAuwH0AAAAgAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-16T04:31:37.688Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "CitizenController.cs",
+              "DocumentMoniker": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\WebAPI\\Controllers\\CitizenController.cs",
+              "RelativeDocumentMoniker": "WebAPI\\Controllers\\CitizenController.cs",
+              "ToolTip": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\WebAPI\\Controllers\\CitizenController.cs",
+              "RelativeToolTip": "WebAPI\\Controllers\\CitizenController.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAABkAAABIAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-16T04:31:25.568Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "MappingUser.cs",
+              "DocumentMoniker": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\WebAPI\\Models\\MappingUser.cs",
+              "RelativeDocumentMoniker": "WebAPI\\Models\\MappingUser.cs",
+              "ToolTip": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\WebAPI\\Models\\MappingUser.cs",
+              "RelativeToolTip": "WebAPI\\Models\\MappingUser.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAB0AAAAoAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-16T04:29:57.089Z",
+              "EditorCaption": ""
+            },
             {
               "$type": "Bookmark",
               "Name": "ST:0:0:{3ae79031-e1bc-11d0-8f78-00a0c9110057}"
@@ -38,41 +89,41 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "MapsController.cs",
-              "DocumentMoniker": "D:\\FPTU\\FloodLevelIOT-BE\\HCM_Flood_Level\\WebAPI\\Controllers\\MapsController.cs",
-              "RelativeDocumentMoniker": "WebAPI\\Controllers\\MapsController.cs",
-              "ToolTip": "D:\\FPTU\\FloodLevelIOT-BE\\HCM_Flood_Level\\WebAPI\\Controllers\\MapsController.cs",
-              "RelativeToolTip": "WebAPI\\Controllers\\MapsController.cs",
-              "ViewState": "AgIAABAAAAAAAAAAAAAQwBMAAAAAAAAAAAAAAA==",
+              "DocumentIndex": 4,
+              "Title": "ManageUserRepository.cs",
+              "DocumentMoniker": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Infrastructure\\Repositories\\ManageUserRepository.cs",
+              "RelativeDocumentMoniker": "Infrastructure\\Repositories\\ManageUserRepository.cs",
+              "ToolTip": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Infrastructure\\Repositories\\ManageUserRepository.cs",
+              "RelativeToolTip": "Infrastructure\\Repositories\\ManageUserRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAF0AAAAYAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-14T10:15:58.188Z",
-              "EditorCaption": ""
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
-              "Title": "MapsSearchDTO.cs",
-              "DocumentMoniker": "D:\\FPTU\\FloodLevelIOT-BE\\HCM_Flood_Level\\Core\\DTOs\\MapsSearchDTO.cs",
-              "RelativeDocumentMoniker": "Core\\DTOs\\MapsSearchDTO.cs",
-              "ToolTip": "D:\\FPTU\\FloodLevelIOT-BE\\HCM_Flood_Level\\Core\\DTOs\\MapsSearchDTO.cs",
-              "RelativeToolTip": "Core\\DTOs\\MapsSearchDTO.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAUAAAAWAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-14T10:15:15.493Z",
+              "WhenOpened": "2026-03-16T04:27:39.882Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
               "DocumentIndex": 2,
-              "Title": "AuthController.cs",
-              "DocumentMoniker": "D:\\FPTU\\FloodLevelIOT-BE\\HCM_Flood_Level\\WebAPI\\Controllers\\AuthController.cs",
-              "RelativeDocumentMoniker": "WebAPI\\Controllers\\AuthController.cs",
-              "ToolTip": "D:\\FPTU\\FloodLevelIOT-BE\\HCM_Flood_Level\\WebAPI\\Controllers\\AuthController.cs",
-              "RelativeToolTip": "WebAPI\\Controllers\\AuthController.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Title": "IManageUserRepository.cs",
+              "DocumentMoniker": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Core\\Interfaces\\IManageUserRepository.cs",
+              "RelativeDocumentMoniker": "Core\\Interfaces\\IManageUserRepository.cs",
+              "ToolTip": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Core\\Interfaces\\IManageUserRepository.cs",
+              "RelativeToolTip": "Core\\Interfaces\\IManageUserRepository.cs",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-14T10:02:08.262Z",
+              "WhenOpened": "2026-03-16T04:26:18.596Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "ManageUserDTO.cs",
+              "DocumentMoniker": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Core\\DTOs\\ManageUserDTO.cs",
+              "RelativeDocumentMoniker": "Core\\DTOs\\ManageUserDTO.cs",
+              "ToolTip": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Core\\DTOs\\ManageUserDTO.cs",
+              "RelativeToolTip": "Core\\DTOs\\ManageUserDTO.cs",
+              "ViewState": "AgIAACgAAAAAAAAAAAAowC8AAAAWAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-16T04:23:29.882Z",
               "EditorCaption": ""
             }
           ]

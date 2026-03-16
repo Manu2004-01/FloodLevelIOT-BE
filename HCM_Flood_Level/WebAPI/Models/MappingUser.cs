@@ -21,13 +21,17 @@ namespace WebAPI.Models
                 .ForMember(a => a.Username, a => a.MapFrom(b => b.FullName));
 
             CreateMap<CreateUserDTO, User>()
-                .ForMember(a => a.RoleId, a => a.MapFrom(b => b.RoleId))
                 .ForMember(a => a.PasswordHash, a => a.Ignore()) 
                 .ForMember(a => a.FullName, a => a.MapFrom(b => b.FullName))
                 .ReverseMap();
 
             CreateMap<UpdateUserDTO, User>()
                 .ForMember(a => a.RoleId, a => a.MapFrom(b => b.RoleId))
+                .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
+
+            CreateMap<UpdateProfileDTO, User>()
+                .ForMember(a => a.FullName, a => a.MapFrom(b => b.FullName))
+                .ForMember(a => a.PhoneNumber, a => a.MapFrom(b => b.PhoneNumber))
                 .ForAllMembers(opts => opts.Condition((src, dest, srcMember) => srcMember != null));
         }
     }

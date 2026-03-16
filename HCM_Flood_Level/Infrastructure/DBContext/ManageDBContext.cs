@@ -124,13 +124,6 @@ namespace Infrastructure.DBContext
                 .OnDelete(DeleteBehavior.Restrict)
                 .HasConstraintName("FK_MaintenanceSchedule_AssignedTechnician");
 
-            modelBuilder.Entity<MaintenanceSchedule>()
-                .HasOne(s => s.CreatedByStaff)
-                .WithMany(u => u.MaintenanceSchedulesCreated)
-                .HasForeignKey(s => s.CreatedByStaffId)
-                .OnDelete(DeleteBehavior.Restrict)
-                .HasConstraintName("FK_MaintenanceSchedule_CreatedByStaff");
-
             // Ensure SensorReading has key if mapped in this context
             if (modelBuilder.Model.GetEntityTypes().Any(e => e.ClrType == typeof(Core.Entities.SensorReading)))
             {
@@ -181,7 +174,7 @@ namespace Infrastructure.DBContext
                 entity.Property(e => e.IsActive).HasColumnName("is_active");
                 entity.Property(e => e.EmailOtpHash).HasColumnName("email_otp_hash");
                 entity.Property(e => e.EmailOtpExpiredAt).HasColumnName("email_otp_expired_at");
-                entity.Property(e => e.CreatedAt).HasColumnName("created_at");
+                entity.Property(e => e.CreatedAt).HasColumnName("created_at").ValueGeneratedOnAdd();
             });
             modelBuilder.Entity<Role>(entity =>
             {
@@ -214,7 +207,7 @@ namespace Infrastructure.DBContext
                 entity.Property(e => e.WarningThreshold).HasColumnName("warning_threshold");
                 entity.Property(e => e.DangerThreshold).HasColumnName("danger_threshold");
                 entity.Property(e => e.MaxLevel).HasColumnName("max_level");
-                entity.Property(e => e.CreatedAt).HasColumnName("created_at");
+                entity.Property(e => e.CreatedAt).HasColumnName("created_at").ValueGeneratedOnAdd();
             });
 
             modelBuilder.Entity<MaintenanceRequest>(entity =>
@@ -231,7 +224,7 @@ namespace Infrastructure.DBContext
                 entity.Property(e => e.Status).HasColumnName("status");
                 entity.Property(e => e.AssignedAt).HasColumnName("assigned_at");
                 entity.Property(e => e.ResolvedAt).HasColumnName("resolved_at");
-                entity.Property(e => e.CreatedAt).HasColumnName("created_at");
+                entity.Property(e => e.CreatedAt).HasColumnName("created_at").ValueGeneratedOnAdd();
             });
 
             modelBuilder.Entity<MaintenanceTask>(entity =>
@@ -247,7 +240,7 @@ namespace Infrastructure.DBContext
                 entity.Property(e => e.Status).HasColumnName("status");
                 entity.Property(e => e.StartedAt).HasColumnName("started_at");
                 entity.Property(e => e.CompletedAt).HasColumnName("completed_at");
-                entity.Property(e => e.CreatedAt).HasColumnName("created_at");
+                entity.Property(e => e.CreatedAt).HasColumnName("created_at").ValueGeneratedOnAdd();
             });
 
             modelBuilder.Entity<MaintenanceSchedule>(entity =>
@@ -259,11 +252,10 @@ namespace Infrastructure.DBContext
                 entity.Property(e => e.ScheduleMode).HasColumnName("schedule_mode");
                 entity.Property(e => e.StartDate).HasColumnName("start_date");
                 entity.Property(e => e.EndDate).HasColumnName("end_date");
-                entity.Property(e => e.CreatedByStaffId).HasColumnName("created_by_staff_id");
                 entity.Property(e => e.AssignedTechnicianId).HasColumnName("assigned_technician_id");
                 entity.Property(e => e.Note).HasColumnName("note");
                 entity.Property(e => e.Status).HasColumnName("status");
-                entity.Property(e => e.CreatedAt).HasColumnName("created_at");
+                entity.Property(e => e.CreatedAt).HasColumnName("created_at").ValueGeneratedOnAdd();
             });
 
             modelBuilder.Entity<Report>(entity =>
@@ -272,7 +264,7 @@ namespace Infrastructure.DBContext
                 entity.Property(e => e.ReportId).HasColumnName("report_id");
                 entity.Property(e => e.LocationId).HasColumnName("location_id");
                 entity.Property(e => e.Description).HasColumnName("description");
-                entity.Property(e => e.CreatedAt).HasColumnName("created_at");
+                entity.Property(e => e.CreatedAt).HasColumnName("created_at").ValueGeneratedOnAdd();
             });
         }
     }

@@ -8,7 +8,7 @@ namespace Core.DTOs
 {
     public class ManageLocationDTO
     {
-        public string PlaceId { get; set; }
+        public int PlaceId { get; set; }
         public string Title { get; set; }
         public double Latitude { get; set; }
         public double Longitude { get; set; }

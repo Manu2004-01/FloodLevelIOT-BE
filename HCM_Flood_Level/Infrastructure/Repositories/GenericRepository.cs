@@ -1,4 +1,4 @@
-﻿using Core.Interfaces;
+using Core.Interfaces;
 using Infrastructure.DBContext;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -25,6 +25,11 @@ namespace Infrastructure.Repositories
         }
 
         public async Task<int> CountAsync() => await _context.Set<T>().CountAsync();
+
+        public async Task<int> CountAsync(Expression<Func<T, bool>> predicate)
+        {
+            return await _context.Set<T>().CountAsync(predicate);
+        }
 
         public async Task DeleteAsync(int id)
         {

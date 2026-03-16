@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Core.DTOs;
 using Core.Entities;
 using Core.Interfaces;
@@ -56,12 +56,12 @@ namespace Infrastructure.Repositories
 
             if (!string.IsNullOrWhiteSpace(entityParam.ScheduleType))
             {
-                query = query.Where(s => s.Status.ToLower() == entityParam.ScheduleType.ToLower());
+                query = query.Where(s => s.ScheduleType.ToLower() == entityParam.ScheduleType.ToLower());
             }
 
             if (!string.IsNullOrWhiteSpace(entityParam.ScheduleMode))
             {
-                query = query.Where(s => s.Status.ToLower() == entityParam.ScheduleMode.ToLower());
+                query = query.Where(s => s.ScheduleMode.ToLower() == entityParam.ScheduleMode.ToLower());
             }
 
             query = query.OrderByDescending(s => s.CreatedAt)

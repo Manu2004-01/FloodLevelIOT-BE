@@ -31,7 +31,7 @@ namespace WebAPI.Controllers
                 if (pagenumber <= 0 || pazesize <= 0)
                     return BadRequest(new BaseCommentResponse(400, "Số trang và kích thước trang phải lớn hơn 0"));
 
-                var acc = await _unitOfWork.ManageUserRepository.GetAllStaffAsync(new EntityParam
+                var acc = await _unitOfWork.ManageUserRepository.GetAllUserAsync(new EntityParam
                 {
                     Pagenumber = pagenumber,
                     Pagesize = pazesize,
@@ -39,7 +39,7 @@ namespace WebAPI.Controllers
                     RoleId = roleid
                 });
 
-                var total = await _unitOfWork.ManageUserRepository.CountAsync();
+                var total = await _unitOfWork.ManageUserRepository.CountAsync(u => u.RoleId != 1);
 
                 var result = _mapper.Map<List<ManageUserDTO>>(acc);
 
@@ -72,7 +72,7 @@ namespace WebAPI.Controllers
             }
         }
 
-        [HttpPost("users")]
+        [HttpPost("technicians")]
         public async Task<ActionResult> CreateAcc([FromQuery] CreateUserDTO dto)
         {
             try
@@ -96,7 +96,7 @@ namespace WebAPI.Controllers
             }
         }
 
-        [HttpPut("users/{id}")]
+        [HttpPut("technicians/{id}")]
         public async Task<ActionResult> UpdateAcc(int id, [FromQuery] UpdateUserDTO dto)
         {
             try
@@ -123,7 +123,7 @@ namespace WebAPI.Controllers
             }
         }
 
-        [HttpDelete("users/{id}")]
+        [HttpDelete("technicians/{id}")]
         public async Task<ActionResult> DeleteAcc(int id)
         {
             try
