@@ -136,6 +136,9 @@ namespace WebAPI.Controllers
                 if (result == false)
                     return NotFound(new BaseCommentResponse(404, "Không tìm thấy người dùng"));
 
+                if (!result)
+                    return BadRequest(new BaseCommentResponse(400, "Xóa người dùng không thành công"));
+
                 return Ok(new BaseCommentResponse(200, "Đã xóa người dùng thành công"));
             }
             catch (Exception ex)

@@ -18,7 +18,6 @@ namespace Core.Entities
         public DateTime CreatedAt { get; set; }
 
         // Navigation properties
-        public ICollection<MaintenanceRequest> MaintenanceRequestsCreated { get; set; }
         public ICollection<MaintenanceRequest> MaintenanceRequestsAssigned { get; set; }
         public ICollection<MaintenanceSchedule> MaintenanceSchedulesAssigned { get; set; }
         public ICollection<Sensor> SensorsMaintained { get; set; }

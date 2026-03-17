@@ -13,13 +13,11 @@ namespace Core.Entities
         public Sensor Sensor { get; set; }
         public int PriorityId { get; set; }
         public Priority Priority { get; set; }
-        public string Description { get; set; }
+        public string? Description { get; set; }
         public DateTime? Deadline { get; set; }
         public int? AssignedTechnicianTo { get; set; }
         public User AssignedTechnician { get; set; }
-        public int CreatedByStaffId { get; set; }
-        public User CreatedByStaff { get; set; }
-        public string Note { get; set; }
+        public string? Note { get; set; }
         public string Status { get; set; } = "Pending";
         public DateTime? AssignedAt { get; set; }
         public DateTime? ResolvedAt { get; set; }

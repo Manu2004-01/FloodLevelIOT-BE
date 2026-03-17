@@ -34,6 +34,7 @@ namespace Infrastructure.Repositories
 
             var schedule = _mapper.Map<MaintenanceSchedule>(dto);
 
+            schedule.ScheduleMode = "Manual";
             schedule.Status = "Scheduled";
             schedule.CreatedAt = DateTime.UtcNow;
 
@@ -42,8 +43,36 @@ namespace Infrastructure.Repositories
             return true;
         }
 
+        public async Task<bool> AddAutoScheduleAsync(int sensorId)
+        {
+            var sensorIdExist = await _context.MaintenanceSchedules.AnyAsync(s => s.SensorId == sensorId);
+            if (sensorIdExist) return false;
+
+            var schedule = new MaintenanceSchedule
+            {
+                SensorId = sensorId,
+                ScheduleMode = "Auto",
+                Status = "Scheduled",
+                CreatedAt = DateTime.UtcNow
+            };
+
+            await _context.MaintenanceSchedules.AddAsync(schedule);
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
         public async Task<IEnumerable<MaintenanceSchedule>> GetAllSchedulesAsync(EntityParam entityParam)
         {
+            var overdueSchedules = await _context.MaintenanceSchedules
+                .Where(s => s.EndDate.HasValue && s.EndDate.Value < DateTime.UtcNow && s.Status != "Completed")
+                .ToListAsync();
+
+            foreach (var schedule in overdueSchedules)
+            {
+                schedule.Status = "Overdue";
+            }
+            await _context.SaveChangesAsync();
+            
             var query = _context.MaintenanceSchedules
                 .Include(u => u.Sensor)
                 .Include(u => u.AssignedTechnician)
@@ -64,11 +93,93 @@ namespace Infrastructure.Repositories
                 query = query.Where(s => s.ScheduleMode.ToLower() == entityParam.ScheduleMode.ToLower());
             }
 
-            query = query.OrderByDescending(s => s.CreatedAt)
+            query = query.OrderBy(s => s.Status == "Scheduled" ? 0 : s.Status == "Active" ? 1 : s.Status == "Completed" ? 2 : s.Status == "Paused" ? 3 : s.Status == "Overdue" ? 4 : 5)
+                         .ThenByDescending(s => s.CreatedAt)
                          .Skip((entityParam.Pagenumber - 1) * entityParam.Pagesize)
                          .Take(entityParam.Pagesize);
 
             return await query.ToListAsync();
+        }
+
+        public async Task<IEnumerable<MaintenanceSchedule>> GetSchedulesByTechnicianAsync(int technicianId, EntityParam entityParam)
+        {
+            var overdueSchedules = await _context.MaintenanceSchedules
+                .Where(s => s.AssignedTechnicianId == technicianId && s.EndDate.HasValue && s.EndDate.Value < DateTime.UtcNow && s.Status != "Completed")
+                .ToListAsync();
+
+            foreach (var schedule in overdueSchedules)
+            {
+                schedule.Status = "Overdue";
+            }
+            await _context.SaveChangesAsync();
+
+            var query = _context.MaintenanceSchedules
+                .Include(u => u.Sensor)
+                .Where(s => s.AssignedTechnicianId == technicianId)
+                .AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(entityParam.ScheduleStatus))
+            {
+                query = query.Where(s => s.Status.ToLower() == entityParam.ScheduleStatus.ToLower());
+            }
+
+            if (!string.IsNullOrWhiteSpace(entityParam.ScheduleType))
+            {
+                query = query.Where(s => s.ScheduleType.ToLower() == entityParam.ScheduleType.ToLower());
+            }
+
+            query = query.OrderBy(s => s.Status == "Scheduled" ? 0 : s.Status == "Active" ? 1 : s.Status == "Completed" ? 2 : s.Status == "Paused" ? 3 : s.Status == "Overdue" ? 4 : 5)
+                         .ThenByDescending(s => s.CreatedAt)
+                         .Skip((entityParam.Pagenumber - 1) * entityParam.Pagesize)
+                         .Take(entityParam.Pagesize);
+
+            return await query.ToListAsync();
+        }
+
+        public async Task<bool> UpdateScheduleAsync(int id, UpdateMaintenanceScheduleDTO dto)
+        {
+            var schedule = await _context.MaintenanceSchedules.FindAsync(id);
+            if (schedule == null) return false;
+
+            if (!string.IsNullOrEmpty(dto.ScheduleType))
+                schedule.ScheduleType = dto.ScheduleType;
+
+            if (dto.StartDate.HasValue)
+                schedule.StartDate = DateTime.SpecifyKind(dto.StartDate.Value, DateTimeKind.Utc);
+
+            if (dto.EndDate.HasValue)
+                schedule.EndDate = DateTime.SpecifyKind(dto.EndDate.Value, DateTimeKind.Utc);
+
+            if (dto.AssignedTechnicianId.HasValue)
+                schedule.AssignedTechnicianId = dto.AssignedTechnicianId.Value;
+
+            if (!string.IsNullOrEmpty(dto.Note))
+                schedule.Note = dto.Note;
+
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> UpdateScheduleStatusAsync(int id, string status)
+        {
+            var schedule = await _context.MaintenanceSchedules.FindAsync(id);
+            if (schedule == null) return false;
+
+            // Define valid statuses based on DB schema CHECK constraint
+            var validStatuses = new[] { "Scheduled", "Active", "Paused", "Completed", "Overdue" };
+            if (!validStatuses.Contains(status)) return false;
+
+            schedule.Status = status;
+            await _context.SaveChangesAsync();
+            return true;
+        }
+
+        public async Task<bool> DeleteScheduleAsync(int id)
+        {
+            var schedule = _context.MaintenanceSchedules.Find(id);
+            _context.MaintenanceSchedules.Remove(schedule);
+            await _context.SaveChangesAsync();
+            return true;
         }
     }
 }

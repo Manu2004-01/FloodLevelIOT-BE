@@ -37,7 +37,7 @@ namespace WebAPI.Controllers
 
                 var result = await _unitOfWork.ManageMaintenanceScheduleRepository.AddNewScheduleAsync(dto);
 
-                if (!result) 
+                if (!result)
                     return BadRequest(new BaseCommentResponse(400, "Tạo lịch bảo trì không thành công"));
 
                 return Ok(new BaseCommentResponse(200, "Tạo lịch bảo trì thành công"));
@@ -67,6 +67,48 @@ namespace WebAPI.Controllers
                 var result = _mapper.Map<List<MaintenanceScheduleDTO>>(schedules);
 
                 return Ok(new Pagination<MaintenanceScheduleDTO>(pazesize, pagenumber, total, result));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new BaseCommentResponse(500, "Đã xảy ra lỗi máy chủ nội bộ!!!"));
+            }
+        }
+
+        [HttpPut("schedules/{id}")]
+        public async Task<ActionResult> UpdateSchedule(int id, [FromQuery] UpdateMaintenanceScheduleDTO dto)
+        {
+            try
+            {
+                if (!ModelState.IsValid)
+                    return BadRequest(new BaseCommentResponse(400, "Dữ liệu đầu vào không hợp lệ"));
+                if (dto == null)
+                    return BadRequest(new BaseCommentResponse(400, "Dữ liệu lịch bảo trì là bắt buộc"));
+                var result = await _unitOfWork.ManageMaintenanceScheduleRepository.UpdateScheduleAsync(id, dto);
+                if (!result)
+                    return BadRequest(new BaseCommentResponse(400, "Cập nhật lịch bảo trì không thành công"));
+                if (result == false)
+                    return NotFound(new BaseCommentResponse(404, "Không tìm thấy lịch bảo trì"));
+                return Ok(new BaseCommentResponse(200, "Cập nhật lịch bảo trì thành công"));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new BaseCommentResponse(500, "Đã xảy ra lỗi máy chủ nội bộ!!!"));
+            }
+        }
+
+        [HttpDelete("schedules/{id}")]
+        public async Task<ActionResult> DeleteSchedule(int id)
+        {
+            try
+            {
+                if (id <= 0)
+                    return BadRequest(new BaseCommentResponse(400, "ID người dùng không hợp lệ"));
+                var result = await _unitOfWork.ManageMaintenanceScheduleRepository.DeleteScheduleAsync(id);
+                if (!result)
+                    return BadRequest(new BaseCommentResponse(400, "Xóa lịch bảo trì không thành công"));
+                if (result == false)
+                    return NotFound(new BaseCommentResponse(404, "Không tìm thấy lịch bảo trì"));
+                return Ok(new BaseCommentResponse(200, "Xóa lịch bảo trì thành công"));
             }
             catch (Exception ex)
             {

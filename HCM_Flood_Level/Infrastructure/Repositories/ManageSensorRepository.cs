@@ -21,14 +21,16 @@ namespace Infrastructure.Repositories
         private readonly IFileProvider _fileProvider;
         private readonly IMapper _mapper;
         private readonly IMapsService _mapsService;
+        private readonly IMaintenanceScheduleRepository _maintenanceScheduleRepository;
 
-        public ManageSensorRepository(ManageDBContext context, EventsDBContext eventsContext, IFileProvider fileProvider, IMapper mapper, IMapsService mapsService) : base(context)
+        public ManageSensorRepository(ManageDBContext context, EventsDBContext eventsContext, IFileProvider fileProvider, IMapper mapper, IMapsService mapsService, IMaintenanceScheduleRepository maintenanceScheduleRepository) : base(context)
         {
             _context = context;
             _eventsContext = eventsContext;
             _fileProvider = fileProvider;
             _mapper = mapper;
             _mapsService = mapsService;
+            _maintenanceScheduleRepository = maintenanceScheduleRepository;
         }
 
         public async Task<IEnumerable<Sensor>> GetAllSensorsAsync(EntityParam param)
@@ -88,7 +90,10 @@ namespace Infrastructure.Repositories
             await _context.Sensors.AddAsync(sensor);
             await _context.SaveChangesAsync();
 
-            // 4. Default reading
+            // 4. Create Auto Schedule
+            await _maintenanceScheduleRepository.AddAutoScheduleAsync(sensor.SensorId);
+
+            // 5. Default reading
             var defaultReading = new SensorReading
             {
                 SensorId = sensor.SensorId,

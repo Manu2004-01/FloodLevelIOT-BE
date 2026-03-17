@@ -34,8 +34,8 @@ namespace Infrastructure.Repositories
             _mapper = mapper;
             _mapsService = mapsService;
             ManageUserRepository = new ManageUserRepository(_context, _fileProvider, _mapper);
-            ManageSensorRepository = new ManageSensorRepository(_context, _eventsContext, _fileProvider, _mapper, _mapsService);
             ManageMaintenanceScheduleRepository = new MaintenanceScheduleRepository(_context, _fileProvider, _mapper);
+            ManageSensorRepository = new ManageSensorRepository(_context, _eventsContext, _fileProvider, _mapper, _mapsService, ManageMaintenanceScheduleRepository);
             LocationRepository = new LocationRepository(_context);
         }
     }

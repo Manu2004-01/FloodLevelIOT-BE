@@ -93,13 +93,6 @@ namespace Infrastructure.DBContext
                 .HasConstraintName("FK_MaintenanceRequest_AssignedTechnician");
 
             modelBuilder.Entity<MaintenanceRequest>()
-                .HasOne(m => m.CreatedByStaff)
-                .WithMany(u => u.MaintenanceRequestsCreated)
-                .HasForeignKey(m => m.CreatedByStaffId)
-                .OnDelete(DeleteBehavior.Restrict)
-                .HasConstraintName("FK_MaintenanceRequest_CreatedByStaff");
-
-            modelBuilder.Entity<MaintenanceRequest>()
                 .HasOne(m => m.Priority)
                 .WithMany(p => p.MaintenanceRequests)
                 .HasForeignKey(m => m.PriorityId)
@@ -219,7 +212,6 @@ namespace Infrastructure.DBContext
                 entity.Property(e => e.Description).HasColumnName("description");
                 entity.Property(e => e.Deadline).HasColumnName("deadline");
                 entity.Property(e => e.AssignedTechnicianTo).HasColumnName("assigned_technician_to");
-                entity.Property(e => e.CreatedByStaffId).HasColumnName("created_by_staff_id");
                 entity.Property(e => e.Note).HasColumnName("note");
                 entity.Property(e => e.Status).HasColumnName("status");
                 entity.Property(e => e.AssignedAt).HasColumnName("assigned_at");
