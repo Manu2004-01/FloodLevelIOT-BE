@@ -7,7 +7,7 @@ using WebAPI.Errors;
 
 namespace WebAPI.Controllers
 {
-    [Route("api/staff")]
+    [Route("api/[controller]")]
     [ApiController]
     public class HistoryController : ControllerBase
     {
@@ -20,7 +20,7 @@ namespace WebAPI.Controllers
             _mapper = mapper;
         }
 
-        [HttpGet("history")]
+        [HttpGet("histories")]
         public async Task<ActionResult<List<HistoryDTO>>> GetAllHistories()
         {
             try

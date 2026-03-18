@@ -10,7 +10,7 @@ using WebAPI.Helpers;
 
 namespace WebAPI.Controllers
 {
-    [Route("api/staff")]
+    [Route("api/[controller]")]
     [ApiController]
     [Authorize]
     public class SensorController : ControllerBase

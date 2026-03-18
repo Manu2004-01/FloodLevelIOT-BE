@@ -8,7 +8,7 @@ namespace WebAPI.Models
     {
         public MappingLocation()
         {
-            CreateMap<Location, ManageLocationDTO>()
+            CreateMap<Location, LocationDTO>()
                 .ForMember(a => a.PlaceId, a => a.MapFrom(b => b.PlaceId))
                 .ForMember(a => a.Title, a => a.MapFrom(b => b.Title))
                 .ForMember(a => a.Latitude, a => a.MapFrom(b => b.Latitude))

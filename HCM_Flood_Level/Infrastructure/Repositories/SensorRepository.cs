@@ -14,16 +14,16 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
 {
-    public class ManageSensorRepository : GenericRepository<Sensor>, IManageSensorRepository
+    public class SensorRepository : GenericRepository<Sensor>, ISensorRepository
     {
         private readonly ManageDBContext _context;
         private readonly EventsDBContext _eventsContext;
         private readonly IFileProvider _fileProvider;
         private readonly IMapper _mapper;
         private readonly IMapsService _mapsService;
-        private readonly IMaintenanceScheduleRepository _maintenanceScheduleRepository;
+        private readonly IScheduleRepository _maintenanceScheduleRepository;
 
-        public ManageSensorRepository(ManageDBContext context, EventsDBContext eventsContext, IFileProvider fileProvider, IMapper mapper, IMapsService mapsService, IMaintenanceScheduleRepository maintenanceScheduleRepository) : base(context)
+        public SensorRepository(ManageDBContext context, EventsDBContext eventsContext, IFileProvider fileProvider, IMapper mapper, IMapsService mapsService, IScheduleRepository maintenanceScheduleRepository) : base(context)
         {
             _context = context;
             _eventsContext = eventsContext;

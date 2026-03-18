@@ -8,7 +8,7 @@ using WebAPI.Errors;
 
 namespace WebAPI.Controllers
 {
-    [Route("api/maps")]
+    [Route("api/[controller]")]
     [ApiController]
     [Authorize]
     public class MapsController : ControllerBase
@@ -20,7 +20,7 @@ namespace WebAPI.Controllers
             _mapsService = mapsService;
         }
 
-        [HttpGet("search")]
+        [HttpGet("search-map")]
         public async Task<IActionResult> Search([FromQuery] MapsSearchDTO dto)
         {
             try

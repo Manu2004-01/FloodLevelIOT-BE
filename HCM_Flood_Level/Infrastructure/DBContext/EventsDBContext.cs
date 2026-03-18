@@ -36,7 +36,6 @@ namespace Infrastructure.DBContext
                 entity.Ignore(s => s.Technician);
                 entity.Ignore(s => s.MaintenanceRequests);
                 entity.Ignore(s => s.MaintenanceSchedules);
-                entity.Ignore(s => s.MaintenanceTasks);
                 entity.Ignore(s => s.SensorReadings);
             });
             

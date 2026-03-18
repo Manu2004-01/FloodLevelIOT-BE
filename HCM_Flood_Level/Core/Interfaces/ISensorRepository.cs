@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Core.Interfaces
 {
-    public interface IManageSensorRepository : IGenericRepository<Sensor>
+    public interface ISensorRepository : IGenericRepository<Sensor>
     {
         Task<IEnumerable<Sensor>> GetAllSensorsAsync(EntityParam param);
         Task<IEnumerable<SensorReading>> GetLatestReadingsForSensorIdsAsync(IEnumerable<int> sensorIds);

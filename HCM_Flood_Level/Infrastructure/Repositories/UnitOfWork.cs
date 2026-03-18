@@ -18,13 +18,15 @@ namespace Infrastructure.Repositories
         private readonly IMapper _mapper;
         private readonly IMapsService _mapsService;
 
-        public IManageUserRepository ManageUserRepository{ get;  }
+        public IUserRepository ManageUserRepository{ get;  }
 
-        public IManageSensorRepository ManageSensorRepository { get; }
+        public ISensorRepository ManageSensorRepository { get; }
 
-        public IMaintenanceScheduleRepository ManageMaintenanceScheduleRepository { get; }
+        public IScheduleRepository ManageMaintenanceScheduleRepository { get; }
 
         public ILocationRepository LocationRepository { get; }
+
+        public IRequestRepository ManageRequestRepository { get; }
 
         public UnitOfWork(ManageDBContext context, EventsDBContext eventsContext, IFileProvider fileProvider, IMapper mapper, IMapsService mapsService)
         {
@@ -33,10 +35,11 @@ namespace Infrastructure.Repositories
             _fileProvider = fileProvider;
             _mapper = mapper;
             _mapsService = mapsService;
-            ManageUserRepository = new ManageUserRepository(_context, _fileProvider, _mapper);
-            ManageMaintenanceScheduleRepository = new MaintenanceScheduleRepository(_context, _fileProvider, _mapper);
-            ManageSensorRepository = new ManageSensorRepository(_context, _eventsContext, _fileProvider, _mapper, _mapsService, ManageMaintenanceScheduleRepository);
+            ManageUserRepository = new UserRepository(_context, _fileProvider, _mapper);
+            ManageMaintenanceScheduleRepository = new ScheduleRepository(_context, _fileProvider, _mapper);
+            ManageSensorRepository = new SensorRepository(_context, _eventsContext, _fileProvider, _mapper, _mapsService, ManageMaintenanceScheduleRepository);
             LocationRepository = new LocationRepository(_context);
+            ManageRequestRepository = new RequestRepository(_context, _fileProvider, _mapper);
         }
     }
 }

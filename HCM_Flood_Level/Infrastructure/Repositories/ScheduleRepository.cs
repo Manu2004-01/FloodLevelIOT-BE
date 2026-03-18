@@ -14,13 +14,13 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
 {
-    public class MaintenanceScheduleRepository : GenericRepository<MaintenanceSchedule>, IMaintenanceScheduleRepository
+    public class ScheduleRepository : GenericRepository<MaintenanceSchedule>, IScheduleRepository
     {
         private readonly ManageDBContext _context;
         private readonly IFileProvider _fileProvider;
         private readonly IMapper _mapper;
 
-        public MaintenanceScheduleRepository(ManageDBContext context, IFileProvider fileProvider, IMapper mapper) : base(context)
+        public ScheduleRepository(ManageDBContext context, IFileProvider fileProvider, IMapper mapper) : base(context)
         {
             _context = context;
             _fileProvider = fileProvider;
@@ -160,23 +160,28 @@ namespace Infrastructure.Repositories
             return true;
         }
 
-        public async Task<bool> UpdateScheduleStatusAsync(int id, string status)
+        public async Task<bool> UpdateScheduleStatusAsync(int id, UpdateScheduleStatusDTO dto)
         {
             var schedule = await _context.MaintenanceSchedules.FindAsync(id);
             if (schedule == null) return false;
 
             // Define valid statuses based on DB schema CHECK constraint
             var validStatuses = new[] { "Scheduled", "Active", "Paused", "Completed", "Overdue" };
-            if (!validStatuses.Contains(status)) return false;
+            if (!validStatuses.Contains(dto.Status)) return false;
 
-            schedule.Status = status;
+            schedule.Status = dto.Status;
             await _context.SaveChangesAsync();
             return true;
         }
 
         public async Task<bool> DeleteScheduleAsync(int id)
         {
-            var schedule = _context.MaintenanceSchedules.Find(id);
+            var schedule = await _context.MaintenanceSchedules.FindAsync(id);
+            if (schedule == null) return false;
+
+            if (schedule.Status != "Completed")
+                return false;
+
             _context.MaintenanceSchedules.Remove(schedule);
             await _context.SaveChangesAsync();
             return true;

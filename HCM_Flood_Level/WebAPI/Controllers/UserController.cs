@@ -10,14 +10,14 @@ using WebAPI.Helpers;
 
 namespace WebAPI.Controllers
 {
-    [Route("api/staff")]
+    [Route("api/[controller]")]
     [ApiController]
     [Authorize(Roles = "Staff")]
-    public class StaffController : ControllerBase
+    public class UserController : ControllerBase
     {
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
-        public StaffController(IUnitOfWork unitOfWork, IMapper mapper)
+        public UserController(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
             _mapper = mapper;
@@ -41,9 +41,9 @@ namespace WebAPI.Controllers
 
                 var total = await _unitOfWork.ManageUserRepository.CountAsync(u => u.RoleId != 1);
 
-                var result = _mapper.Map<List<ManageUserDTO>>(acc);
+                var result = _mapper.Map<List<UserDTO>>(acc);
 
-                return Ok(new Pagination<ManageUserDTO>(pazesize, pagenumber, total, result));
+                return Ok(new Pagination<UserDTO>(pazesize, pagenumber, total, result));
             }
             catch (Exception ex)
             {

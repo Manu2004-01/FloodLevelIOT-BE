@@ -4,9 +4,9 @@ using Core.Entities;
 
 namespace WebAPI.Models
 {
-    public class MappingMaintenanceSchedule : Profile
+    public class MappingSchedule : Profile
     {
-        public MappingMaintenanceSchedule() 
+        public MappingSchedule() 
         {
             CreateMap<CreateMaintenanceScheduleDTO, MaintenanceSchedule>()
                 .ForMember(a => a.SensorId, a => a.MapFrom(b => b.SensorId))
@@ -17,7 +17,8 @@ namespace WebAPI.Models
                 .ForMember(a => a.Note, a => a.MapFrom(b => b.Note))
                 .ReverseMap();
 
-            CreateMap<MaintenanceSchedule, MaintenanceScheduleDTO>()
+            CreateMap<MaintenanceSchedule, ScheduleDTO>()
+                .ForMember(a => a.ScheduleId, a => a.MapFrom(b => b.ScheduleId))
                 .ForMember(a => a.SensorName, a => a.MapFrom(b => b.Sensor != null ? b.Sensor.SensorName : string.Empty))
                 .ForMember(a => a.AssignedStaff, a => a.MapFrom(b => b.AssignedTechnician != null ? b.AssignedTechnician.FullName : string.Empty));
 

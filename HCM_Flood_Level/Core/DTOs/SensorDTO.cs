@@ -11,7 +11,7 @@ namespace Core.DTOs
         public int SensorId { get; set; }
         public string SensorName { get; set; }
         public string Title { get; set; }
-        public DateTime InstalledAt { get; set; }
+        public DateTime? InstalledAt { get; set; }
         public string? Status { get; set; }
         public double? WaterLevel { get; set; }
         public string? SignalStrength { get; set; }
@@ -22,6 +22,7 @@ namespace Core.DTOs
         //Thong so ky thuat
         public int SensorId { get; set; }
         public string SensorCode { get; set; }
+        public string SensorName { get; set; }
         public string Protocol { get; set; }
         public DateTime WarrantyDate { get; set; }
         public string SensorType { get; set; }
@@ -30,10 +31,10 @@ namespace Core.DTOs
         public int? MaxLevel { get; set; }
         public int? Battery { get; set; }
         // Lich su & Vi tri
-        public DateTime InstalledAt { get; set; } // ngay lap dat
+        public DateTime? InstalledAt { get; set; } // ngay lap dat
         public DateTime CommissionedAt { get; set; } // ngay van hanh
         public string InstalledByStaff { get; set; }
-        public ManageLocationDTO Location { get; set; }
+        public LocationDTO Location { get; set; }
         //Bao tri & trang thai
         public double? WaterLevel { get; set; }
         public string? Status { get; set; }

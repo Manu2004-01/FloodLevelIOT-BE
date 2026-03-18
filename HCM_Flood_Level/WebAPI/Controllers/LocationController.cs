@@ -9,7 +9,7 @@ using WebAPI.Errors;
 
 namespace WebAPI.Controllers
 {
-    [Route("api/staff")]
+    [Route("api/[controller]")]
     [ApiController]
     [Authorize]
     public class LocationController : ControllerBase
@@ -31,7 +31,7 @@ namespace WebAPI.Controllers
                 var locations = await _unitOfWork.LocationRepository.GetAllAsync();
                 if (locations != null)
                 {
-                    var result = _mapper.Map<IReadOnlyList<Location>, IReadOnlyList<ManageLocationDTO>>(locations);
+                    var result = _mapper.Map<IReadOnlyList<Location>, IReadOnlyList<LocationDTO>>(locations);
                     return Ok(result);
                 }
                 return NotFound(new BaseCommentResponse(404, "Không tìm thấy địa điểm"));

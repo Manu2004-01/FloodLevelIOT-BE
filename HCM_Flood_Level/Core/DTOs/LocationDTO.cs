@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace Core.DTOs
 {
-    public class ManageLocationDTO
+    public class LocationDTO
     {
         public int PlaceId { get; set; }
         public string Title { get; set; }

@@ -8,7 +8,7 @@ using WebAPI.Errors;
 
 namespace WebAPI.Controllers
 {
-    [Route("api/staff")]
+    [Route("api/[controller]")]
     [ApiController]
     [Authorize]
     public class SensorReadingController : ControllerBase

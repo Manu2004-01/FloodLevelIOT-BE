@@ -9,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace Core.Interfaces
 {
-    public interface IManageUserRepository : IGenericRepository<User>
+    public interface IUserRepository : IGenericRepository<User>
     {
         Task<IEnumerable<User>> GetAllUserAsync(EntityParam entityParam);
         Task<bool> AddNewStaffAsync(CreateUserDTO dto);

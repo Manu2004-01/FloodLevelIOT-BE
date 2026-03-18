@@ -16,6 +16,8 @@ namespace Core.Sharing
         public string? ScheduleStatus { get; set; }
         public string? ScheduleType { get; set; }
         public string? ScheduleMode { get; set; }
+        public string? RequestStatus { get; set; }
+        public string RequestPriority { get; set; }
 
         //Page size
         public int maxpagesize { get; set; } = 100;

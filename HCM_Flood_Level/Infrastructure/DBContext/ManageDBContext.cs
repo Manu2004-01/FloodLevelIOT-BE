@@ -19,7 +19,6 @@ namespace Infrastructure.DBContext
         public virtual DbSet<Sensor> Sensors { get; set; }
         public virtual DbSet<Priority> Priorities { get; set; }
         public virtual DbSet<MaintenanceRequest> MaintenanceRequests { get; set; }
-        public virtual DbSet<MaintenanceTask> MaintenanceTasks { get; set; }
         public virtual DbSet<MaintenanceSchedule> MaintenanceSchedules { get; set; }
         public virtual DbSet<Report> Reports { get; set; }
 
@@ -37,13 +36,6 @@ namespace Infrastructure.DBContext
                 t => t.HasCheckConstraint(
                     "CK_MaintenanceRequests_Status",
                     "\"status\" IN ('Pending','Assigned','InProgress','Completed','Cancelled')"
-                )
-            );
-            modelBuilder.Entity<MaintenanceTask>().ToTable(
-                "maintenancetasks",
-                t => t.HasCheckConstraint(
-                    "CK_MaintenanceTasks_Status",
-                    "\"status\" IN ('Assigned','In Progress','Completed','Overdue','Paused')"
                 )
             );
             modelBuilder.Entity<MaintenanceSchedule>().ToTable(
@@ -126,30 +118,6 @@ namespace Infrastructure.DBContext
                 });
             }
 
-            modelBuilder.Entity<MaintenanceTask>()
-                .HasOne(t => t.AssignedTechnician)
-                .WithMany()
-                .HasForeignKey(t => t.AssignedTechnicianId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<MaintenanceTask>()
-                .HasOne(t => t.Priority)
-                .WithMany(p => p.MaintenanceTasks)
-                .HasForeignKey(t => t.PriorityId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<MaintenanceTask>()
-                .HasOne(t => t.Request)
-                .WithMany()
-                .HasForeignKey(t => t.RequestId)
-                .OnDelete(DeleteBehavior.Restrict);
-
-            modelBuilder.Entity<MaintenanceTask>()
-                .HasOne(t => t.Sensor)
-                .WithMany(s => s.MaintenanceTasks)
-                .HasForeignKey(t => t.SensorId)
-                .OnDelete(DeleteBehavior.Restrict);
-
             ConfigureColumnNames(modelBuilder);
         }
 
@@ -173,6 +141,12 @@ namespace Infrastructure.DBContext
             {
                 entity.Property(e => e.RoleId).HasColumnName("role_id");
                 entity.Property(e => e.RoleName).HasColumnName("role_name");
+            });
+
+            modelBuilder.Entity<Priority>(entity =>
+            {
+                entity.Property(e => e.PriorityId).HasColumnName("priority_id");
+                entity.Property(e => e.DisplayName).HasColumnName("display_name");
             });
 
 
@@ -216,22 +190,6 @@ namespace Infrastructure.DBContext
                 entity.Property(e => e.Status).HasColumnName("status");
                 entity.Property(e => e.AssignedAt).HasColumnName("assigned_at");
                 entity.Property(e => e.ResolvedAt).HasColumnName("resolved_at");
-                entity.Property(e => e.CreatedAt).HasColumnName("created_at").ValueGeneratedOnAdd();
-            });
-
-            modelBuilder.Entity<MaintenanceTask>(entity =>
-            {
-                entity.HasKey(e => e.TaskId);
-                entity.Property(e => e.TaskId).HasColumnName("task_id");
-                entity.Property(e => e.RequestId).HasColumnName("request_id");
-                entity.Property(e => e.SensorId).HasColumnName("sensor_id");
-                entity.Property(e => e.PriorityId).HasColumnName("priority_id");
-                entity.Property(e => e.Description).HasColumnName("description");
-                entity.Property(e => e.AssignedTechnicianId).HasColumnName("assigned_technician_id");
-                entity.Property(e => e.Deadline).HasColumnName("deadline");
-                entity.Property(e => e.Status).HasColumnName("status");
-                entity.Property(e => e.StartedAt).HasColumnName("started_at");
-                entity.Property(e => e.CompletedAt).HasColumnName("completed_at");
                 entity.Property(e => e.CreatedAt).HasColumnName("created_at").ValueGeneratedOnAdd();
             });
 

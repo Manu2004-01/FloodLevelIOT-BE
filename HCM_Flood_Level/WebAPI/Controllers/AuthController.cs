@@ -11,7 +11,7 @@ using WebAPI.Errors;
 
 namespace WebAPI.Controllers
 {
-    [Route("api/auth")]
+    [Route("api/[controller]")]
     [ApiController]
     public class AuthController : ControllerBase
     {
@@ -130,12 +130,13 @@ namespace WebAPI.Controllers
                 try
                 {
                     var subject = "Mã OTP xác nhận đăng ký";
-                    var body = $@"Xin chào {user.FullName},
+                    var body = 
+$@"Xin chào {user.FullName},
 
-                                Mã OTP của bạn là: {otp}
-                                Mã có hiệu lực trong 10 phút.
+Mã OTP của bạn là: {otp}
+Mã có hiệu lực trong 10 phút.
 
-                                Trân trọng.";
+Trân trọng.";
                     await _notificationService.SendEmailAsync(user.Email!, subject, body);
                 }
                 catch (Exception)
@@ -334,6 +335,25 @@ Trân trọng.";
                 }
 
                 return Ok(new BaseCommentResponse(200, "Đổi mật khẩu thành công."));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new BaseCommentResponse(500, "Đã xảy ra lỗi máy chủ nội bộ!!!"));
+            }
+        }
+
+        [Authorize(Roles = "Citizen")]
+        [HttpPut("profile/{id}")]
+        public async Task<ActionResult> UpdateProfile(int id, [FromQuery] UpdateProfileDTO dto)
+        {
+            try
+            {
+                if (id <= 0)
+                    return BadRequest(new BaseCommentResponse(400, "ID người dùng không hợp lệ"));
+                var result = await _unitOfWork.ManageUserRepository.UpdateProfileAsync(id, dto);
+                if (!result)
+                    return NotFound(new BaseCommentResponse(404, "Không tìm thấy người dùng"));
+                return Ok(new BaseCommentResponse(200, "Cập nhật thông tin cá nhân thành công"));
             }
             catch (Exception ex)
             {

@@ -8,9 +8,10 @@ namespace Core.Interfaces
 {
     public interface IUnitOfWork
     {
-        IManageUserRepository ManageUserRepository { get; }
-        IManageSensorRepository ManageSensorRepository { get; }
-        IMaintenanceScheduleRepository ManageMaintenanceScheduleRepository { get; }
+        IUserRepository ManageUserRepository { get; }
+        ISensorRepository ManageSensorRepository { get; }
+        IScheduleRepository ManageMaintenanceScheduleRepository { get; }
         ILocationRepository LocationRepository { get; }
+        IRequestRepository ManageRequestRepository { get; }
     }
 }

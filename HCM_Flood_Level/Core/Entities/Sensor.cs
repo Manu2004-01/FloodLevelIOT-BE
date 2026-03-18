@@ -27,7 +27,6 @@ namespace Core.Entities
         // Navigation properties
         public ICollection<MaintenanceRequest> MaintenanceRequests { get; set; }
         public ICollection<MaintenanceSchedule> MaintenanceSchedules { get; set; }
-        public ICollection<MaintenanceTask> MaintenanceTasks { get; set; }
         public ICollection<SensorReading> SensorReadings { get; set; }
     }
 }
