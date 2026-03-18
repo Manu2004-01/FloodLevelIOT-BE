@@ -26,7 +26,8 @@ namespace WebAPI.Controllers
             try
             {
                 var histories = await _eventsContext.Histories
-                    .OrderByDescending(e => e.StartTime)
+                    .OrderByDescending(e => e.Severity)
+                    .ThenByDescending(e => e.CreatedAt)
                     .ToListAsync();
 
                 var result = _mapper.Map<List<HistoryDTO>>(histories);

@@ -101,7 +101,7 @@ namespace WebAPI.Services
                         LocationId = sensor?.PlaceId ?? 0,
                         StartTime = reading.RecordedAt,
                         MaxWaterLevel = reading.WaterLevelCm,
-                        Severity = "Unknown",
+                        Severity = Severity.Warning, // Default to Warning for new max levels
                         CreatedAt = DateTime.UtcNow
                     };
 

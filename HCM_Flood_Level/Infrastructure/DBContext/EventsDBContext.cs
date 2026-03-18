@@ -1,9 +1,10 @@
 using Core.Entities;
+using Core.Interfaces;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.DBContext
 {
-    public class EventsDBContext : DbContext
+    public class EventsDBContext : DbContext, IEventsDBContext
     {
         public EventsDBContext(DbContextOptions<EventsDBContext> options) : base(options)
         {
@@ -17,6 +18,7 @@ namespace Infrastructure.DBContext
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            modelBuilder.HasPostgresEnum<Severity>();
 
             // Globally ignore Location in this context as it's a management entity.
             modelBuilder.Ignore<Location>();
@@ -69,7 +71,9 @@ namespace Infrastructure.DBContext
                 entity.Property(e => e.StartTime).HasColumnName("start_time");
                 entity.Property(e => e.EndTime).HasColumnName("end_time");
                 entity.Property(e => e.MaxWaterLevel).HasColumnName("max_water_level");
-                entity.Property(e => e.Severity).HasColumnName("severity");
+                entity.Property(e => e.Severity)
+                    .HasColumnName("severity")
+                    .HasConversion<string>();
                 entity.Property(e => e.CreatedAt).HasColumnName("created_at").ValueGeneratedOnAdd();
             });
 

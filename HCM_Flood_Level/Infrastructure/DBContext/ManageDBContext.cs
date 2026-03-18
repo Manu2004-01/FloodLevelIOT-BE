@@ -21,10 +21,12 @@ namespace Infrastructure.DBContext
         public virtual DbSet<MaintenanceRequest> MaintenanceRequests { get; set; }
         public virtual DbSet<MaintenanceSchedule> MaintenanceSchedules { get; set; }
         public virtual DbSet<Report> Reports { get; set; }
+        public virtual DbSet<History> Histories { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             base.OnModelCreating(modelBuilder);
+            modelBuilder.HasPostgresEnum<Severity>();
 
             modelBuilder.Entity<User>().ToTable("users");
             modelBuilder.Entity<Role>().ToTable("roles");
@@ -57,6 +59,7 @@ namespace Infrastructure.DBContext
                 }
             );
             modelBuilder.Entity<Report>().ToTable("report");
+            modelBuilder.Entity<History>().ToTable("history");
 
             modelBuilder.Entity<Sensor>()
                 .HasIndex(s => s.SensorCode)
@@ -214,6 +217,21 @@ namespace Infrastructure.DBContext
                 entity.Property(e => e.ReportId).HasColumnName("report_id");
                 entity.Property(e => e.LocationId).HasColumnName("location_id");
                 entity.Property(e => e.Description).HasColumnName("description");
+                entity.Property(e => e.CreatedAt).HasColumnName("created_at").ValueGeneratedOnAdd();
+            });
+
+            modelBuilder.Entity<History>(entity =>
+            {
+                entity.HasKey(e => e.HistoryId);
+                entity.Property(e => e.HistoryId).HasColumnName("history_id");
+                entity.Property(e => e.LocationId).HasColumnName("location_id");
+                entity.Property(e => e.StartTime).HasColumnName("start_time");
+                entity.Property(e => e.EndTime).HasColumnName("end_time");
+                entity.Property(e => e.MaxWaterLevel).HasColumnName("max_water_level");
+                entity.Property(e => e.Severity)
+                    .HasColumnName("severity")
+                    .HasDefaultValue(Severity.Safe)
+                    .HasConversion<string>();
                 entity.Property(e => e.CreatedAt).HasColumnName("created_at").ValueGeneratedOnAdd();
             });
         }

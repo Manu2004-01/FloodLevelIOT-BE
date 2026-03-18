@@ -2,6 +2,7 @@ using AutoMapper;
 using Core.DTOs;
 using Infrastructure.DBContext;
 using Microsoft.AspNetCore.Authorization;
+using Core.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebAPI.Errors;
@@ -15,11 +16,13 @@ namespace WebAPI.Controllers
     {
         private readonly EventsDBContext _eventsContext;
         private readonly IMapper _mapper;
+        private readonly IHistoryService _historyService;
 
-        public SensorReadingController(EventsDBContext eventsContext, IMapper mapper)
+        public SensorReadingController(EventsDBContext eventsContext, IMapper mapper, IHistoryService historyService)
         {
             _eventsContext = eventsContext;
             _mapper = mapper;
+            _historyService = historyService;
         }
 
         [HttpGet("sensor-readings")]
@@ -32,6 +35,13 @@ namespace WebAPI.Controllers
                     .ToListAsync();
 
                 var result = _mapper.Map<List<SensorReadingDTO>>(readings);
+
+                // Process each reading through the HistoryService
+                foreach (var reading in readings)
+                {
+                    await _historyService.ProcessSensorReading(reading);
+                }
+
                 return Ok(result);
             }
             catch (Exception)

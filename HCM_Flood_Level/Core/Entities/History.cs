@@ -10,7 +10,7 @@ namespace Core.Entities
         public DateTime StartTime { get; set; }
         public DateTime? EndTime { get; set; }
         public float MaxWaterLevel { get; set; }
-        public string Severity { get; set; }
+        public Severity Severity { get; set; } = Severity.Safe;
         public DateTime CreatedAt { get; set; }
     }
 }

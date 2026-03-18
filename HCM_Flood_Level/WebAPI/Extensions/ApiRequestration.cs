@@ -1,4 +1,7 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Core.Interfaces;
+using Core.Services;
+using Infrastructure.DBContext;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.FileProviders;
 using WebAPI.Errors;
 using WebAPI.Models;
@@ -44,6 +47,9 @@ namespace WebAPI.Extensions
                     return new BadRequestObjectResult(errorReponse);
                 };
             });
+
+            services.AddScoped<IEventsDBContext, EventsDBContext>();
+            services.AddScoped<IHistoryService, HistoryService>();
 
             services.AddCors(opt =>
             {
