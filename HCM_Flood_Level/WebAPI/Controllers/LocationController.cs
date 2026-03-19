@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Core.DTOs;
 using Core.Entities;
 using Core.Interfaces;
@@ -28,8 +28,8 @@ namespace WebAPI.Controllers
         {
             try
             {
-                var locations = await _unitOfWork.LocationRepository.GetAllAsync();
-                if (locations != null)
+                var locations = (await _unitOfWork.LocationRepository.GetAllAsync(l => l.Area)).ToList();
+                if (locations != null && locations.Any())
                 {
                     var result = _mapper.Map<IReadOnlyList<Location>, IReadOnlyList<LocationDTO>>(locations);
                     return Ok(result);

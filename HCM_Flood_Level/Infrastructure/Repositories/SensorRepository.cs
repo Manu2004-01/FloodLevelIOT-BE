@@ -66,6 +66,7 @@ namespace Infrastructure.Repositories
             {
                 location = new Location
                 {
+                    AreaId = dto.AreaId,
                     Title = dto.Title ?? "Unknown",
                     Address = dto.Address ?? "Unknown",
                     Latitude = dto.Latitude,

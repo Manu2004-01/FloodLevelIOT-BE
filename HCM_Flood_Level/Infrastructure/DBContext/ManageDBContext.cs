@@ -22,6 +22,7 @@ namespace Infrastructure.DBContext
         public virtual DbSet<MaintenanceSchedule> MaintenanceSchedules { get; set; }
         public virtual DbSet<Report> Reports { get; set; }
         public virtual DbSet<History> Histories { get; set; }
+        public virtual DbSet<Area> Areas { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -60,12 +61,19 @@ namespace Infrastructure.DBContext
             );
             modelBuilder.Entity<Report>().ToTable("report");
             modelBuilder.Entity<History>().ToTable("history");
+            modelBuilder.Entity<Area>().ToTable("area");
 
             modelBuilder.Entity<Sensor>()
                 .HasIndex(s => s.SensorCode)
                 .IsUnique();
 
             // Configure relationships
+            modelBuilder.Entity<Location>()
+                .HasOne(l => l.Area)
+                .WithMany(a => a.Locations)
+                .HasForeignKey(l => l.AreaId)
+                .OnDelete(DeleteBehavior.Restrict);
+
             modelBuilder.Entity<Sensor>()
                 .HasOne(s => s.Location)
                 .WithMany(l => l.Sensors)
@@ -157,10 +165,18 @@ namespace Infrastructure.DBContext
             {
                 entity.HasKey(e => e.PlaceId);
                 entity.Property(e => e.PlaceId).HasColumnName("place_id");
+                entity.Property(e => e.AreaId).HasColumnName("area_id");
                 entity.Property(e => e.Title).HasColumnName("title");
                 entity.Property(e => e.Address).HasColumnName("address");
                 entity.Property(e => e.Latitude).HasColumnName("latitude");
                 entity.Property(e => e.Longitude).HasColumnName("longitude");
+            });
+
+            modelBuilder.Entity<Area>(entity =>
+            {
+                entity.HasKey(e => e.AreaId);
+                entity.Property(e => e.AreaId).HasColumnName("area_id");
+                entity.Property(e => e.AreaName).HasColumnName("area_name");
             });
 
             modelBuilder.Entity<Sensor>(entity =>
