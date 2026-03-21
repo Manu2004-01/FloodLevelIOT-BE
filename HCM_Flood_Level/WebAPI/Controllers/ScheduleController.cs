@@ -25,6 +25,28 @@ namespace WebAPI.Controllers
         }
 
         [Authorize(Roles = "Staff")]
+        [HttpPost("sensors/auto-schedules/{sensorId}")]
+        public async Task<ActionResult> ExecuteAutoScheduleForSensor(int sensorId)
+        {
+            try
+            {
+                var sensorExists = await _unitOfWork.ManageSensorRepository.GetByIdAsync(sensorId);
+                if (sensorExists == null)
+                    return NotFound(new BaseCommentResponse(404, "Không tìm thấy sensor"));
+
+                var result = await _unitOfWork.ManageMaintenanceScheduleRepository.AddAutoScheduleAsync(sensorId);
+                if (!result)
+                    return BadRequest(new BaseCommentResponse(400, "Sensor này đã có lịch bảo trì auto. Không thể tạo thêm."));
+
+                return Ok(new BaseCommentResponse(200, "Đã tạo lịch bảo trì auto cho sensor thành công"));
+            }
+            catch (Exception)
+            {
+                return StatusCode(500, new BaseCommentResponse(500, "Đã xảy ra lỗi máy chủ nội bộ!!!"));
+            }
+        }
+
+        [Authorize(Roles = "Staff")]
         [HttpPost("schedules")]
         public async Task<ActionResult> CreateSchedule([FromQuery] CreateMaintenanceScheduleDTO dto)
         {
@@ -35,6 +57,10 @@ namespace WebAPI.Controllers
 
                 if (dto == null)
                     return BadRequest(new BaseCommentResponse(400, "Dữ liệu lịch bảo trì là bắt buộc"));
+
+                var scheduleTypeError = ScheduleValidator.ValidateScheduleDates(dto.ScheduleType, dto.StartDate, dto.EndDate);
+                if (scheduleTypeError != null)
+                    return BadRequest(new BaseCommentResponse(400, scheduleTypeError));
 
                 var result = await _unitOfWork.ManageMaintenanceScheduleRepository.AddNewScheduleAsync(dto);
 
@@ -86,11 +112,22 @@ namespace WebAPI.Controllers
                     return BadRequest(new BaseCommentResponse(400, "Dữ liệu đầu vào không hợp lệ"));
                 if (dto == null)
                     return BadRequest(new BaseCommentResponse(400, "Dữ liệu lịch bảo trì là bắt buộc"));
+
+                var existing = await _unitOfWork.ManageMaintenanceScheduleRepository.GetByIdAsync(id);
+                if (existing == null)
+                    return NotFound(new BaseCommentResponse(404, "Không tìm thấy lịch bảo trì"));
+
+                var effectiveType = !string.IsNullOrWhiteSpace(dto.ScheduleType) ? dto.ScheduleType : existing.ScheduleType;
+                var effectiveStart = dto.StartDate ?? existing.StartDate;
+                var effectiveEnd = dto.EndDate ?? existing.EndDate;
+
+                var scheduleTypeError = ScheduleValidator.ValidateScheduleDates(effectiveType, effectiveStart, effectiveEnd);
+                if (scheduleTypeError != null)
+                    return BadRequest(new BaseCommentResponse(400, scheduleTypeError));
+
                 var result = await _unitOfWork.ManageMaintenanceScheduleRepository.UpdateScheduleAsync(id, dto);
                 if (!result)
                     return BadRequest(new BaseCommentResponse(400, "Cập nhật lịch bảo trì không thành công"));
-                if (result == false)
-                    return NotFound(new BaseCommentResponse(404, "Không tìm thấy lịch bảo trì"));
                 return Ok(new BaseCommentResponse(200, "Cập nhật lịch bảo trì thành công"));
             }
             catch (Exception ex)
@@ -155,7 +192,7 @@ namespace WebAPI.Controllers
         }
 
         [Authorize(Roles = "Technician")]
-        [HttpPut("schedules/{id}/status")]
+        [HttpPut("schedules/status/{id}")]
         public async Task<ActionResult> UpdateMyScheduleStatus(int id, [FromBody] UpdateScheduleStatusDTO dto)
         {
             try

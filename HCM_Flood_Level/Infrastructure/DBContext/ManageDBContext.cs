@@ -61,7 +61,7 @@ namespace Infrastructure.DBContext
             );
             modelBuilder.Entity<Report>().ToTable("report");
             modelBuilder.Entity<History>().ToTable("history");
-            modelBuilder.Entity<Area>().ToTable("area");
+            modelBuilder.Entity<Area>().ToTable("areas");
 
             modelBuilder.Entity<Sensor>()
                 .HasIndex(s => s.SensorCode)

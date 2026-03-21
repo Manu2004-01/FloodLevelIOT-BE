@@ -72,7 +72,7 @@ namespace WebAPI.Controllers
         }
 
         [Authorize(Roles = "Technician")]
-        [HttpPut("technician-requests/{id}/status")]
+        [HttpPut("technician-requests/status/{id}")]
         public async Task<IActionResult> TechnicianUpdateStatusAsync(int id, [FromBody] TechnicianUpdateStatusDTO dto)
         {
             try

@@ -13,5 +13,6 @@ namespace Core.Interfaces
         IScheduleRepository ManageMaintenanceScheduleRepository { get; }
         ILocationRepository LocationRepository { get; }
         IRequestRepository ManageRequestRepository { get; }
+        IAreaRepository AreaRepository { get; }
     }
 }

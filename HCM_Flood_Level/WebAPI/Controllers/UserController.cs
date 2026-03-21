@@ -24,17 +24,17 @@ namespace WebAPI.Controllers
         }
 
         [HttpGet("users")]
-        public async Task<ActionResult> GetAllAcc([FromQuery] int pagenumber = 1, [FromQuery] int pazesize = 10, [FromQuery] string? search = null, [FromQuery] int? roleid = null)
+        public async Task<ActionResult> GetAllAcc([FromQuery] int pagenumber = 1, [FromQuery] int pagesize = 10, [FromQuery] string? search = null, [FromQuery] int? roleid = null)
         {
             try
             {
-                if (pagenumber <= 0 || pazesize <= 0)
+                if (pagenumber <= 0 || pagesize <= 0)
                     return BadRequest(new BaseCommentResponse(400, "Số trang và kích thước trang phải lớn hơn 0"));
 
                 var acc = await _unitOfWork.ManageUserRepository.GetAllUserAsync(new EntityParam
                 {
                     Pagenumber = pagenumber,
-                    Pagesize = pazesize,
+                    Pagesize = pagesize,
                     Search = search,
                     RoleId = roleid
                 });
@@ -43,7 +43,7 @@ namespace WebAPI.Controllers
 
                 var result = _mapper.Map<List<UserDTO>>(acc);
 
-                return Ok(new Pagination<UserDTO>(pazesize, pagenumber, total, result));
+                return Ok(new Pagination<UserDTO>(pagesize, pagenumber, total, result));
             }
             catch (Exception ex)
             {

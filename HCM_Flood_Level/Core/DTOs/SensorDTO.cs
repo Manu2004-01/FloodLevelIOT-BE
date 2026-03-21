@@ -75,4 +75,10 @@ namespace Core.DTOs
         public double? DangerThreshold { get; set; }
         public int? MaxLevel { get; set; }
     }
+
+    public class SensorAreaDTO
+    {
+        public int SensorId { get; set; }
+        public string SensorName { get; set; }
+    }
 }

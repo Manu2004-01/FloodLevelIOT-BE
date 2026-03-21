@@ -28,6 +28,8 @@ namespace Infrastructure.Repositories
 
         public IRequestRepository ManageRequestRepository { get; }
 
+        public IAreaRepository AreaRepository { get; }
+
         public UnitOfWork(ManageDBContext context, EventsDBContext eventsContext, IFileProvider fileProvider, IMapper mapper, IMapsService mapsService)
         {
             _context = context;
@@ -40,6 +42,7 @@ namespace Infrastructure.Repositories
             ManageSensorRepository = new SensorRepository(_context, _eventsContext, _fileProvider, _mapper, _mapsService, ManageMaintenanceScheduleRepository);
             LocationRepository = new LocationRepository(_context);
             ManageRequestRepository = new RequestRepository(_context, _fileProvider, _mapper);
+            AreaRepository = new AreaRepository(_context, _eventsContext);
         }
     }
 }

@@ -1,6 +1,7 @@
 using Core.Interfaces;
 using Core.Services;
 using Infrastructure;
+using Infrastructure.Services;
 using Infrastructure.Repositories;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
@@ -63,15 +64,20 @@ builder.Services.AddHttpClient("SerpApiClient")
     .ConfigurePrimaryHttpMessageHandler(() =>
     {
         var handler = new HttpClientHandler();
-        if (builder.Environment.IsDevelopment())
-        {
-            handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
-        }
+        // Bỏ qua kiểm tra chứng chỉ SSL cho SerpApi (phục vụ môi trường dev).
+        // Nếu bạn dùng prod, nên tắt lại và cấu hình trust store đúng chuẩn.
+        handler.ServerCertificateCustomValidationCallback = (message, cert, chain, errors) => true;
+        // É TLS để tránh lỗi handshake do server yêu cầu TLS cụ thể.
+        handler.SslProtocols =
+            System.Security.Authentication.SslProtocols.Tls12 |
+            System.Security.Authentication.SslProtocols.Tls13;
+        handler.CheckCertificateRevocationList = false;
         return handler;
     });
 
 builder.Services.AddHttpClient();
 builder.Services.AddScoped<IMapsService, SerpApiMapsService>();
+builder.Services.AddScoped<IRouteAvoidFloodService, RouteAvoidFloodService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 
 builder.Services.AddHttpContextAccessor();

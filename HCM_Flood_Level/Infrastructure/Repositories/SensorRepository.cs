@@ -91,10 +91,7 @@ namespace Infrastructure.Repositories
             await _context.Sensors.AddAsync(sensor);
             await _context.SaveChangesAsync();
 
-            // 4. Create Auto Schedule
-            await _maintenanceScheduleRepository.AddAutoScheduleAsync(sensor.SensorId);
-
-            // 5. Default reading
+            // 4. Default reading
             var defaultReading = new SensorReading
             {
                 SensorId = sensor.SensorId,

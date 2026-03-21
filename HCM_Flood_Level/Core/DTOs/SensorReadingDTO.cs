@@ -15,4 +15,10 @@ namespace Core.DTOs
         public string SignalStrength { get; set; }
         public DateTime RecordedAt { get; set; }
     }
+
+    public class ReadingAreaDTO
+    {
+        public long ReadingId { get; set; }
+        public float WaterLevelCm { get; set; }
+    }
 }
