@@ -22,6 +22,6 @@ namespace Core.Interfaces
         Task<bool> LocationExistsAsync(int placeId);
         Task<bool> LocationHasSensorAsync(int placeId);
         Task<bool> UpdateSensorAsync(int id, UpdateSensorDTO dto);
-        Task<bool> DeleteSensorAsync(int id);
+        Task<bool?> DeleteSensorAsync(int id);
     }
 }

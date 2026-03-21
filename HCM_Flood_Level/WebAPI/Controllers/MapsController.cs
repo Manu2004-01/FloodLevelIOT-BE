@@ -35,9 +35,6 @@ namespace WebAPI.Controllers
             }
         }
 
-        /// <summary>
-        /// Citizen: đề xuất route tránh ngập lụt + cảnh báo nếu route đi qua khu vực có sensor đang ngập.
-        /// </summary>
         [Authorize(Roles = "Citizen")]
         [HttpPost("route-avoid-flood")]
         public async Task<ActionResult<RouteAvoidFloodResponseDTO>> RouteAvoidFlood([FromQuery] RouteAvoidFloodRequestDTO request)

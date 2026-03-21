@@ -172,10 +172,16 @@ namespace Infrastructure.Repositories
             return true;
         }
 
-        public async Task<bool> DeleteSensorAsync(int id)
+        public async Task<bool?> DeleteSensorAsync(int id)
         {
             var sensor = await _context.Sensors.FindAsync(id);
-            if (sensor == null) return false;
+            if (sensor == null)
+                return null;
+
+            var hasRequests = await _context.MaintenanceRequests.AnyAsync(m => m.SensorId == id);
+            var hasSchedules = await _context.MaintenanceSchedules.AnyAsync(s => s.SensorId == id);
+            if (hasRequests || hasSchedules)
+                return false;
 
             _context.Sensors.Remove(sensor);
             await _context.SaveChangesAsync();

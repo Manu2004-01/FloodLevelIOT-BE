@@ -180,8 +180,11 @@ namespace WebAPI.Controllers
 
                 var result = await _unitOfWork.ManageSensorRepository.DeleteSensorAsync(id);
 
-                if (!result)
+                if (result == null)
                     return NotFound(new BaseCommentResponse(404, "Không tìm thấy thiết bị"));
+
+                if (result == false)
+                    return Conflict(new BaseCommentResponse(409, "Không thể xóa thiết bị vì còn lịch bảo trì hoặc yêu cầu bảo trì liên quan."));
 
                 return Ok(new BaseCommentResponse(200, "Đã gỡ thiết bị khỏi hệ thống thành công"));
             }
