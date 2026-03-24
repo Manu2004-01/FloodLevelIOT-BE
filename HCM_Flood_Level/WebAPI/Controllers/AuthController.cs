@@ -104,27 +104,43 @@ namespace WebAPI.Controllers
 
                 var existedEmail = await _context.Users
                     .FirstOrDefaultAsync(u => u.Email == dto.Email);
-                if (existedEmail != null)
-                    return BadRequest(new BaseCommentResponse(400, "Email đã tồn tại"));
 
                 var defaultRoleId = 3;
                 var otp = OtpHelper.GenerateOtp6();
                 var otpHash = OtpHelper.HashOtpSha256(otp);
+                User user;
 
-                var user = new User
+                if (existedEmail != null)
                 {
-                    FullName = dto.FullName ?? string.Empty,
-                    Email = dto.Email.Trim(),
-                    PhoneNumber = dto.PhoneNumber,
-                    PasswordHash = PasswordHelper.HashPassword(dto.Password),
-                    RoleId = defaultRoleId,
-                    IsActive = false,
-                    EmailOtpHash = otpHash,
-                    EmailOtpExpiredAt = DateTime.UtcNow.AddMinutes(10),
-                    CreatedAt = DateTime.UtcNow
-                };
+                    if (existedEmail.IsActive)
+                        return BadRequest(new BaseCommentResponse(400, "Email đã tồn tại và đã được kích hoạt"));
 
-                _context.Users.Add(user);
+                    // Reuse the existing user if they haven't activated yet
+                    user = existedEmail;
+                    user.FullName = dto.FullName ?? string.Empty;
+                    user.PhoneNumber = dto.PhoneNumber;
+                    user.PasswordHash = PasswordHelper.HashPassword(dto.Password);
+                    user.EmailOtpHash = otpHash;
+                    user.EmailOtpExpiredAt = DateTime.UtcNow.AddMinutes(10);
+                    _context.Users.Update(user);
+                }
+                else
+                {
+                    user = new User
+                    {
+                        FullName = dto.FullName ?? string.Empty,
+                        Email = dto.Email.Trim(),
+                        PhoneNumber = dto.PhoneNumber,
+                        PasswordHash = PasswordHelper.HashPassword(dto.Password),
+                        RoleId = defaultRoleId,
+                        IsActive = false,
+                        EmailOtpHash = otpHash,
+                        EmailOtpExpiredAt = DateTime.UtcNow.AddMinutes(10),
+                        CreatedAt = DateTime.UtcNow
+                    };
+                    _context.Users.Add(user);
+                }
+
                 await _context.SaveChangesAsync();
 
                 try
