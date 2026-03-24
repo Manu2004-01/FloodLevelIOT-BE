@@ -115,7 +115,7 @@ namespace WebAPI.Controllers
                 {
                     FullName = dto.FullName ?? string.Empty,
                     Email = dto.Email.Trim(),
-                    PhoneNumber = null,
+                    PhoneNumber = dto.PhoneNumber,
                     PasswordHash = PasswordHelper.HashPassword(dto.Password),
                     RoleId = defaultRoleId,
                     IsActive = false,
@@ -139,17 +139,18 @@ Mã có hiệu lực trong 10 phút.
 Trân trọng.";
                     await _notificationService.SendEmailAsync(user.Email!, subject, body);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    // Email sending failed
-                    return StatusCode(500, new BaseCommentResponse(500, "Đã xảy ra lỗi khi lấy mã OTP"));
+                    var msg = "Lỗi gửi Mail (SMTP): " + ex.Message;
+                    return StatusCode(500, new BaseCommentResponse(500, msg));
                 }
 
                 return Ok(new BaseCommentResponse(200, "Đăng ký thành công. Vui lòng kiểm tra email để lấy OTP và xác nhận tài khoản."));
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new BaseCommentResponse(500, "Đã xảy ra lỗi máy chủ nội bộ!!!"));
+                var msg = "Đã xảy ra lỗi máy chủ nội bộ: " + ex.Message + (ex.InnerException != null ? " | " + ex.InnerException.Message : "");
+                return StatusCode(500, new BaseCommentResponse(500, msg));
             }
         }
 
@@ -280,10 +281,10 @@ Mật khẩu của bạn đã được đổi thành công.
 Trân trọng.";
                     await _notificationService.SendEmailAsync(user.Email!, subject, body);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    // Email sending failed
-                    return StatusCode(500, new BaseCommentResponse(500, "Đã xảy ra lỗi khi lấy mã OTP"));
+                    var msg = "Lỗi gửi Mail (SMTP): " + ex.Message;
+                    return StatusCode(500, new BaseCommentResponse(500, msg));
                 }
 
                 return Ok(new BaseCommentResponse(200, "Đặt lại mật khẩu thành công."));
@@ -328,10 +329,10 @@ Mật khẩu của bạn đã được thay đổi thành công theo yêu cầu.
 Trân trọng.";
                     await _notificationService.SendEmailAsync(user.Email!, subject, body);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    // Email sending failed
-                    return StatusCode(500, new BaseCommentResponse(500, "Đã xảy ra lỗi khi lấy mã OTP"));
+                    var msg = "Lỗi gửi Mail (SMTP): " + ex.Message;
+                    return StatusCode(500, new BaseCommentResponse(500, msg));
                 }
 
                 return Ok(new BaseCommentResponse(200, "Đổi mật khẩu thành công."));

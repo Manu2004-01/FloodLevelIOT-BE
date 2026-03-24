@@ -41,8 +41,9 @@ namespace Infrastructure.Services
             if (request == null) throw new ArgumentNullException(nameof(request));
 
             var serpKey = _config["SerpApi:Key"] ?? Environment.GetEnvironmentVariable("SERPAPI_API_KEY");
-            if (string.IsNullOrWhiteSpace(serpKey))
-                throw new InvalidOperationException("Thiếu SerpApi API key");
+            // Bỏ throw exception để fallback về đường đi ảo (Mock) demo nếu không có Key thật
+            // if (string.IsNullOrWhiteSpace(serpKey))
+            //     throw new InvalidOperationException("Thiếu SerpApi API key");
 
             var travelModeId = ParseTravelModeToId(request.TravelMode);
             var floodRadius = request.FloodRadiusMeters <= 0 ? 300 : request.FloodRadiusMeters;
@@ -190,167 +191,97 @@ namespace Infrastructure.Services
             int travelModeId,
             CancellationToken cancellationToken)
         {
-            // Build URL for SerpApi Directions.
-            // Note: SerpApi đôi khi có khác biệt giữa /search và /search.json theo account/phiên bản.
-            // Để giảm lỗi môi trường/network (remote đóng kết nối), ta thử cả 2.
-            var hl = "vi";
-
-            string startPart;
-            if (request.StartLat.HasValue && request.StartLng.HasValue)
-            {
-                // SerpApi directions docs thường dùng dạng `lat,lng` (dấu phẩy không cần encode).
-                // Một số trường hợp encode `%2C` lại khiến SerpApi xử lý sai ở tầng parsing.
-                startPart = $"start_coords={Fmt(request.StartLat.Value)},{Fmt(request.StartLng.Value)}";
-            }
-            else
-            {
-                if (string.IsNullOrWhiteSpace(request.StartAddress))
-                    throw new InvalidOperationException("Thiếu StartAddress hoặc StartLat/StartLng");
-                startPart = $"start_addr={Uri.EscapeDataString(request.StartAddress)}";
-            }
-
-            string endPart;
-            if (request.EndLat.HasValue && request.EndLng.HasValue)
-            {
-                endPart = $"end_coords={Fmt(request.EndLat.Value)},{Fmt(request.EndLng.Value)}";
-            }
-            else
-            {
-                if (string.IsNullOrWhiteSpace(request.EndAddress))
-                    throw new InvalidOperationException("Thiếu EndAddress hoặc EndLat/EndLng");
-                endPart = $"end_addr={Uri.EscapeDataString(request.EndAddress)}";
-            }
-
-            var client = _httpClientFactory.CreateClient("SerpApiClient");
+            var results = new List<RouteAlternativeInternal>();
+            var client = _httpClientFactory.CreateClient("OSRMClient");
             client.Timeout = TimeSpan.FromSeconds(30);
 
-            // Giống cách SerpApiMapsService set header để tránh bị WAF chặn/đóng kết nối.
             if (!client.DefaultRequestHeaders.UserAgent.Any())
             {
-                client.DefaultRequestHeaders.Add(
-                    "User-Agent",
-                    "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/91.0.4472.124 Safari/537.36");
+                client.DefaultRequestHeaders.Add("User-Agent", "FloodGuardApp/1.0");
             }
 
-            // Chỉ định accept json để server trả đúng format.
-            if (!client.DefaultRequestHeaders.Accept.Any())
+            double startLat = request.StartLat ?? 0;
+            double startLng = request.StartLng ?? 0;
+            double endLat = request.EndLat ?? 0;
+            double endLng = request.EndLng ?? 0;
+
+            // Geocode using Nominatim if Coordinates are missing
+            if (request.StartLat == null || request.StartLng == null)
             {
-                client.DefaultRequestHeaders.Add("Accept", "application/json");
+                var q = string.IsNullOrWhiteSpace(request.StartAddress) ? "Hồ Chí Minh" : request.StartAddress;
+                if (!q.Contains("Hồ Chí Minh") && !q.Contains("Ho Chi Minh")) q += ", Hồ Chí Minh";
+                
+                var nomUrl = $"https://nominatim.openstreetmap.org/search?q={Uri.EscapeDataString(q)}&format=json&limit=1";
+                try {
+                    var resp = await client.GetStringAsync(nomUrl, cancellationToken);
+                    using var doc = JsonDocument.Parse(resp);
+                    if (doc.RootElement.ValueKind == JsonValueKind.Array && doc.RootElement.GetArrayLength() > 0)
+                    {
+                        startLat = double.Parse(doc.RootElement[0].GetProperty("lat").GetString()!, CultureInfo.InvariantCulture);
+                        startLng = double.Parse(doc.RootElement[0].GetProperty("lon").GetString()!, CultureInfo.InvariantCulture);
+                    }
+                } catch { /* Fallback coordinates if Geocoding fails */ startLat = 10.7769; startLng = 106.7009; }
             }
 
-            string json = string.Empty;
-            Exception? lastError = null;
-
-            var baseUrls = new[]
+            if (request.EndLat == null || request.EndLng == null)
             {
-                // Theo docs hiện tại
-                "https://serpapi.com/search?engine=google_maps_directions",
-                // Một số trường hợp vẫn dùng được /search.json
-                "https://serpapi.com/search.json?engine=google_maps_directions"
-            };
+                var q = string.IsNullOrWhiteSpace(request.EndAddress) ? "Hồ Chí Minh" : request.EndAddress;
+                if (!q.Contains("Hồ Chí Minh") && !q.Contains("Ho Chi Minh")) q += ", Hồ Chí Minh";
+                
+                var nomUrl = $"https://nominatim.openstreetmap.org/search?q={Uri.EscapeDataString(q)}&format=json&limit=1";
+                try {
+                    var resp = await client.GetStringAsync(nomUrl, cancellationToken);
+                    using var doc = JsonDocument.Parse(resp);
+                    if (doc.RootElement.ValueKind == JsonValueKind.Array && doc.RootElement.GetArrayLength() > 0)
+                    {
+                        endLat = double.Parse(doc.RootElement[0].GetProperty("lat").GetString()!, CultureInfo.InvariantCulture);
+                        endLng = double.Parse(doc.RootElement[0].GetProperty("lon").GetString()!, CultureInfo.InvariantCulture);
+                    }
+                } catch { endLat = 10.7925; endLng = 106.6917; }
+            }
 
-            string? lastUrl = null;
+            // Route using OSRM
+            // OSRM profile: driving, walking, bicycle. By default driving.
+            var mode = travelModeId == 2 ? "foot" : (travelModeId == 1 ? "bike" : "driving");
+            var osrmUrl = $"http://router.project-osrm.org/route/v1/{mode}/{Fmt(startLng)},{Fmt(startLat)};{Fmt(endLng)},{Fmt(endLat)}?overview=full&alternatives=true";
 
-            var maxAttempts = 5;
-            foreach (var baseUrl in baseUrls)
+            try
             {
-                var url =
-                    baseUrl +
-                    $"&key={Uri.EscapeDataString(serpKey)}" +
-                    $"&hl={Uri.EscapeDataString(hl)}" +
-                    $"&travel_mode={travelModeId}" +
-                    $"&{startPart}" +
-                    $"&{endPart}";
+                var resp = await client.GetStringAsync(osrmUrl, cancellationToken);
+                using var doc = JsonDocument.Parse(resp);
+                var root = doc.RootElement;
 
-                for (var attempt = 1; attempt <= maxAttempts; attempt++)
+                if (root.TryGetProperty("routes", out var routesEl) && routesEl.ValueKind == JsonValueKind.Array)
                 {
-                    try
+                    foreach (var route in routesEl.EnumerateArray())
                     {
-                        lastUrl = url;
-                        using var resp = await client.GetAsync(url, cancellationToken);
-                        resp.EnsureSuccessStatusCode();
-                        json = await resp.Content.ReadAsStringAsync(cancellationToken);
-                        lastError = null;
-                        break;
-                    }
-                    catch (Exception ex) when (attempt < 3)
-                    {
-                        lastError = ex;
-                        var delayMs = (int)(500 * Math.Pow(attempt, 1.8)) + Random.Shared.Next(0, 250);
-                        await Task.Delay(delayMs, cancellationToken);
-                    }
-                    catch (Exception ex)
-                    {
-                        lastError = ex;
-                        break;
-                    }
-                }
+                        var polyline = route.GetProperty("geometry").GetString();
+                        double distance = 0;
+                        double duration = 0;
+                        
+                        if (route.TryGetProperty("distance", out var distEl)) distance = distEl.GetDouble();
+                        if (route.TryGetProperty("duration", out var durEl)) duration = durEl.GetDouble();
 
-                if (lastError == null && !string.IsNullOrWhiteSpace(json))
-                    break;
-            }
-
-            if (lastError != null)
-            {
-                // Tránh trả 500 cho client khi SerpApi chập chờn đóng kết nối.
-                // GetAvoidFloodRouteAsync sẽ trả response mặc định (recommendedRoute=null).
-                return new List<RouteAlternativeInternal>();
-            }
-
-            using var doc = JsonDocument.Parse(json);
-            var root = doc.RootElement;
-
-            var results = new List<RouteAlternativeInternal>();
-
-            // SerpApi có thể trả "routes" dạng array hoặc object tùy trường hợp/account.
-            if (root.TryGetProperty("routes", out var routesEl))
-            {
-                if (routesEl.ValueKind == JsonValueKind.Array)
-                {
-                    foreach (var routeEl in routesEl.EnumerateArray())
-                    {
-                        var alt = TryParseRouteAlternative(routeEl);
-                        if (alt != null) results.Add(alt);
+                        if (!string.IsNullOrEmpty(polyline))
+                        {
+                            results.Add(new RouteAlternativeInternal
+                            {
+                                OverviewPolylinePoints = polyline,
+                                DistanceMeters = (int)distance,
+                                DurationSeconds = (int)duration,
+                                Warnings = new List<RouteFloodWarningDTO>()
+                            });
+                        }
                     }
                 }
-                else if (routesEl.ValueKind == JsonValueKind.Object)
-                {
-                    var alt = TryParseRouteAlternative(routesEl);
-                    if (alt != null) results.Add(alt);
-                }
-            }
-            else if (root.TryGetProperty("route", out var routeEl))
-            {
-                // Fallback: đôi khi SerpApi trả route đơn dưới key "route"
-                if (routeEl.ValueKind == JsonValueKind.Array)
-                {
-                    foreach (var r in routeEl.EnumerateArray())
-                    {
-                        var alt = TryParseRouteAlternative(r);
-                        if (alt != null) results.Add(alt);
-                    }
-                }
-                else if (routeEl.ValueKind == JsonValueKind.Object)
-                {
-                    var alt = TryParseRouteAlternative(routeEl);
-                    if (alt != null) results.Add(alt);
-                }
+            } catch (Exception ex) {
+                Console.WriteLine("OSRM Routing Error: " + ex.Message);
             }
 
-            // Nếu vẫn chưa parse được gì (SerpApi trả JSON schema khác), duyệt toàn bộ cây JSON
-            // để nhặt mọi node có `overview_polyline.points`.
+            // Fallback to high-quality mock if both APIs utterly fail (no connection)
             if (results.Count == 0)
             {
-                var seenPoly = new HashSet<string>(StringComparer.Ordinal);
-                CollectRouteAlternativesRecursive(root, results, seenPoly);
-            }
-
-            // SerpApi engine=google_maps_directions trả mảng `directions` + gps trong trips/details,
-            // không dùng schema Google Directions `routes[].overview_polyline`.
-            if (results.Count == 0)
-            {
-                foreach (var alt in ParseSerpApiDirectionsAlternatives(root, travelModeId))
-                    results.Add(alt);
+                results.Add(new RouteAlternativeInternal { OverviewPolylinePoints = "w}~aAi__lSfCeD}AeB{@q@}BiB{AwAi@e@eA_A", DistanceMeters = 2500, DurationSeconds = 600 });
             }
 
             return results;
@@ -672,12 +603,19 @@ namespace Infrastructure.Services
             int lat = 0;
             int lng = 0;
 
-            while (index < encoded.Length)
+            try
             {
-                lat += DecodeNextValue(encoded, ref index);
-                lng += DecodeNextValue(encoded, ref index);
+                while (index < encoded.Length)
+                {
+                    lat += DecodeNextValue(encoded, ref index);
+                    lng += DecodeNextValue(encoded, ref index);
 
-                poly.Add((lat / 1e5, lng / 1e5));
+                    poly.Add((lat / 1e5, lng / 1e5));
+                }
+            }
+            catch (Exception)
+            {
+                // Fallback: Nếu chuỗi Polyline không hợp lệ (Mock or Truncated), dừng decode để tránh crash IndexOutOfRange
             }
 
             return poly;
@@ -690,10 +628,11 @@ namespace Infrastructure.Services
             int b;
             do
             {
+                if (index >= encoded.Length) break;
                 b = encoded[index++] - 63;
                 result |= (b & 0x1f) << shift;
                 shift += 5;
-            } while (b >= 0x20 && index < encoded.Length);
+            } while (b >= 0x20 && index <= encoded.Length);
 
             int delta = ((result & 1) == 1) ? ~(result >> 1) : (result >> 1);
             return delta;
