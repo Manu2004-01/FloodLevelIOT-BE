@@ -81,7 +81,7 @@ namespace WebAPI.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new BaseCommentResponse(500, $"Đã xảy ra lỗi máy chủ nội bộ!!!"));
+                return StatusCode(500, new BaseCommentResponse(500, "Đã xảy ra lỗi máy chủ nội bộ!!!"));
             }
         }
 
@@ -149,8 +149,7 @@ Trân trọng.";
             }
             catch (Exception ex)
             {
-                var msg = "Đã xảy ra lỗi máy chủ nội bộ: " + ex.Message + (ex.InnerException != null ? " | " + ex.InnerException.Message : "");
-                return StatusCode(500, new BaseCommentResponse(500, msg));
+                return StatusCode(500, new BaseCommentResponse(500, $"Đã xảy ra lỗi máy chủ nội bộ!!!"));
             }
         }
 
