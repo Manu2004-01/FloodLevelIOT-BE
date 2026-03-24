@@ -81,4 +81,5 @@ namespace Core.DTOs
         public int SensorId { get; set; }
         public string SensorName { get; set; }
     }
+
 }

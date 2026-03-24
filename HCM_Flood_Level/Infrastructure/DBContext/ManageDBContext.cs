@@ -20,7 +20,6 @@ namespace Infrastructure.DBContext
         public virtual DbSet<Priority> Priorities { get; set; }
         public virtual DbSet<MaintenanceRequest> MaintenanceRequests { get; set; }
         public virtual DbSet<MaintenanceSchedule> MaintenanceSchedules { get; set; }
-        public virtual DbSet<Report> Reports { get; set; }
         public virtual DbSet<History> Histories { get; set; }
         public virtual DbSet<Area> Areas { get; set; }
 
@@ -59,7 +58,6 @@ namespace Infrastructure.DBContext
                     );
                 }
             );
-            modelBuilder.Entity<Report>().ToTable("report");
             modelBuilder.Entity<History>().ToTable("history");
             modelBuilder.Entity<Area>().ToTable("areas");
 
@@ -224,15 +222,6 @@ namespace Infrastructure.DBContext
                 entity.Property(e => e.AssignedTechnicianId).HasColumnName("assigned_technician_id");
                 entity.Property(e => e.Note).HasColumnName("note");
                 entity.Property(e => e.Status).HasColumnName("status");
-                entity.Property(e => e.CreatedAt).HasColumnName("created_at").ValueGeneratedOnAdd();
-            });
-
-            modelBuilder.Entity<Report>(entity =>
-            {
-                entity.HasKey(e => e.ReportId);
-                entity.Property(e => e.ReportId).HasColumnName("report_id");
-                entity.Property(e => e.LocationId).HasColumnName("location_id");
-                entity.Property(e => e.Description).HasColumnName("description");
                 entity.Property(e => e.CreatedAt).HasColumnName("created_at").ValueGeneratedOnAdd();
             });
 

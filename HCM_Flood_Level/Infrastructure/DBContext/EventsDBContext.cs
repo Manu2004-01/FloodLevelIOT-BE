@@ -20,7 +20,6 @@ namespace Infrastructure.DBContext
             base.OnModelCreating(modelBuilder);
             modelBuilder.HasPostgresEnum<Severity>();
 
-            // Globally ignore Location in this context as it's a management entity.
             modelBuilder.Ignore<Location>();
 
             ConfigureColumnNames(modelBuilder);
@@ -30,9 +29,6 @@ namespace Infrastructure.DBContext
             modelBuilder.Entity<Report>().ToTable("report");
             modelBuilder.Entity<Sensor>().ToTable("sensors");
 
-            // In the events database we only care about sensor metadata and readings.
-            // Ignore maintenance- and management-related navigations to avoid pulling
-            // those entities (and their complex relationships) into this model.
             modelBuilder.Entity<Sensor>(entity =>
             {
                 entity.Ignore(s => s.Technician);
@@ -40,8 +36,7 @@ namespace Infrastructure.DBContext
                 entity.Ignore(s => s.MaintenanceSchedules);
                 entity.Ignore(s => s.SensorReadings);
             });
-            
-            // SensorReading only stores raw data columns; do not model FK to Sensor here
+
             modelBuilder.Entity<SensorReading>(entity =>
             {
                 entity.Ignore(sr => sr.Sensor);
@@ -52,7 +47,6 @@ namespace Infrastructure.DBContext
         {
             modelBuilder.Entity<SensorReading>(entity =>
             {
-                // Explicitly set primary key because property name is 'ReadingId'
                 entity.HasKey(e => e.ReadingId);
                 entity.Property(e => e.ReadingId).HasColumnName("reading_id");
                 entity.Property(e => e.SensorId).HasColumnName("sensor_id");
@@ -81,8 +75,9 @@ namespace Infrastructure.DBContext
             {
                 entity.HasKey(e => e.ReportId);
                 entity.Property(e => e.ReportId).HasColumnName("report_id");
-                entity.Property(e => e.LocationId).HasColumnName("location_id");
                 entity.Property(e => e.Description).HasColumnName("description");
+                entity.Property(e => e.ForecastRiskLevel).HasColumnName("forecast_risk_level");
+                entity.Property(e => e.ForecastDataJson).HasColumnName("forecast_data_json");
                 entity.Property(e => e.CreatedAt).HasColumnName("created_at").ValueGeneratedOnAdd();
             });
 

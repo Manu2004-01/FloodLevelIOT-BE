@@ -76,7 +76,11 @@ builder.Services.AddHttpClient("SerpApiClient")
     });
 
 builder.Services.AddHttpClient();
+builder.Services.AddHttpClient("OpenWeather");
+builder.Services.AddHttpClient("Gemini");
 builder.Services.AddScoped<IMapsService, SerpApiMapsService>();
+builder.Services.AddScoped<IOpenWeatherService, OpenWeatherService>();
+builder.Services.AddScoped<IFloodForecastService, FloodForecastService>();
 builder.Services.AddScoped<IRouteAvoidFloodService, RouteAvoidFloodService>();
 builder.Services.AddScoped<ITokenService, TokenService>();
 

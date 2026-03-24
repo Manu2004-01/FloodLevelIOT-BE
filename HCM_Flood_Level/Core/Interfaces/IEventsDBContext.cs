@@ -9,6 +9,7 @@ namespace Core.Interfaces
     {
         DbSet<SensorReading> SensorReadings { get; set; }
         DbSet<History> Histories { get; set; }
+        DbSet<Report> Reports { get; set; }
         DbSet<Sensor> Sensors { get; set; }
         Task<int> SaveChangesAsync(CancellationToken cancellationToken = default);
     }

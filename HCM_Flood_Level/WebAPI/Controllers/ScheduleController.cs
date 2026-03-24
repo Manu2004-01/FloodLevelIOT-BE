@@ -77,14 +77,14 @@ namespace WebAPI.Controllers
 
         [Authorize(Roles = "Staff")]
         [HttpGet("staff-schedules")]
-        public async Task<ActionResult> GetAllSchedules([FromQuery] int pagenumber = 1, [FromQuery] int pazesize = 10, [FromQuery] string? status = null, [FromQuery] string? type = null, [FromQuery] string? mode = null)
+        public async Task<ActionResult> GetAllSchedules([FromQuery] int pagenumber = 1, [FromQuery] int pagesize = 10, [FromQuery] string? status = null, [FromQuery] string? type = null, [FromQuery] string? mode = null)
         {
             try
             {
                 var schedules = await _unitOfWork.ManageMaintenanceScheduleRepository.GetAllSchedulesAsync(new EntityParam
                 {
                     Pagenumber = pagenumber,
-                    Pagesize = pazesize,
+                    Pagesize = pagesize,
                     ScheduleStatus = status,
                     ScheduleType = type,
                     ScheduleMode = mode
@@ -94,7 +94,7 @@ namespace WebAPI.Controllers
 
                 var result = _mapper.Map<List<ScheduleDTO>>(schedules);
 
-                return Ok(new Pagination<ScheduleDTO>(pazesize, pagenumber, total, result));
+                return Ok(new Pagination<ScheduleDTO>(pagesize, pagenumber, total, result));
             }
             catch (Exception ex)
             {

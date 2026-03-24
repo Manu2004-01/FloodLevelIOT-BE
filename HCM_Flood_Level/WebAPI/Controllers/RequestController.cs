@@ -47,14 +47,14 @@ namespace WebAPI.Controllers
 
         [Authorize(Roles = "Staff")]
         [HttpGet("staff-requests")]
-        public async Task<ActionResult> StaffGetRequestAsync([FromQuery] int pagenumber = 1, [FromQuery] int pazesize = 10, [FromQuery] string? status = null, [FromQuery] string? priority = null)
+        public async Task<ActionResult> StaffGetRequestAsync([FromQuery] int pagenumber = 1, [FromQuery] int pagesize = 10, [FromQuery] string? status = null, [FromQuery] string? priority = null)
         {
             try
             {
                 var requests = await _unitOfWork.ManageRequestRepository.StaffGetRequestAsync(new EntityParam
                 {
                     Pagenumber = pagenumber,
-                    Pagesize = pazesize,
+                    Pagesize = pagesize,
                     RequestStatus = status,
                     RequestPriority = priority
                 });
@@ -63,7 +63,7 @@ namespace WebAPI.Controllers
 
                 var result = _mapper.Map<List<RequestDTO>>(requests);
 
-                return Ok(new Pagination<RequestDTO>(pazesize, pagenumber, total, result));
+                return Ok(new Pagination<RequestDTO>(pagesize, pagenumber, total, result));
             }
             catch (Exception ex)
             {
