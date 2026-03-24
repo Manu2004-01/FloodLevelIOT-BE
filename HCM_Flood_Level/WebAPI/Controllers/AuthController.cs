@@ -67,7 +67,11 @@ namespace WebAPI.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new BaseCommentResponse(500, $"Đã xảy ra lỗi máy chủ nội bộ!!!"));
+                var root = ex;
+                while (root.InnerException != null)
+                    root = root.InnerException;
+
+                return StatusCode(500, new BaseCommentResponse(500, $"Đã xảy ra lỗi máy chủ nội bộ: {root.Message}"));
             }
         }
 
