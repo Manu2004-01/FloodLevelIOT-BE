@@ -115,7 +115,7 @@ namespace WebAPI.Controllers
                 {
                     FullName = dto.FullName ?? string.Empty,
                     Email = dto.Email.Trim(),
-                    PhoneNumber = null,
+                    PhoneNumber = dto.PhoneNumber,
                     PasswordHash = PasswordHelper.HashPassword(dto.Password),
                     RoleId = defaultRoleId,
                     IsActive = false,
