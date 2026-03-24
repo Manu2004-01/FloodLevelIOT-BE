@@ -23,7 +23,7 @@ namespace Core.Services
             _configuration = configuration;
         }
 
-        public async Task<CurrentWeatherDto?> GetCurrentByCoordinatesAsync(double lat, double lon, CancellationToken cancellationToken = default)
+        public async Task<CurrentWeatherDTO?> GetCurrentByCoordinatesAsync(double lat, double lon, CancellationToken cancellationToken = default)
         {
             if (lat is < -90 or > 90 || lon is < -180 or > 180)
                 return null;
@@ -58,7 +58,7 @@ namespace Core.Services
                     return null;
             }
 
-            var dto = new CurrentWeatherDto();
+            var dto = new CurrentWeatherDTO();
 
             if (root.TryGetProperty("coord", out var coord))
             {

@@ -3,6 +3,22 @@
   "WorkspaceRootPath": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{3D73A4B9-1067-4E8D-B10E-77B202CAA7BC}|Core\\Core.csproj|d:\\floodleveliot-be\\hcm_flood_level\\core\\services\\openweatherservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3D73A4B9-1067-4E8D-B10E-77B202CAA7BC}|Core\\Core.csproj|solutionrelative:core\\services\\openweatherservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3D73A4B9-1067-4E8D-B10E-77B202CAA7BC}|Core\\Core.csproj|d:\\floodleveliot-be\\hcm_flood_level\\core\\dtos\\floodforecastdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3D73A4B9-1067-4E8D-B10E-77B202CAA7BC}|Core\\Core.csproj|solutionrelative:core\\dtos\\floodforecastdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3D73A4B9-1067-4E8D-B10E-77B202CAA7BC}|Core\\Core.csproj|d:\\floodleveliot-be\\hcm_flood_level\\core\\dtos\\currentweatherdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3D73A4B9-1067-4E8D-B10E-77B202CAA7BC}|Core\\Core.csproj|solutionrelative:core\\dtos\\currentweatherdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E0705B8D-A8BA-4818-A9B5-F64473F23E9A}|WebAPI\\WebAPI.csproj|d:\\floodleveliot-be\\hcm_flood_level\\webapi\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E0705B8D-A8BA-4818-A9B5-F64473F23E9A}|WebAPI\\WebAPI.csproj|solutionrelative:webapi\\controllers\\authcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{E0705B8D-A8BA-4818-A9B5-F64473F23E9A}|WebAPI\\WebAPI.csproj|d:\\floodleveliot-be\\hcm_flood_level\\webapi\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
       "RelativeMoniker": "D:0:0:{E0705B8D-A8BA-4818-A9B5-F64473F23E9A}|WebAPI\\WebAPI.csproj|solutionrelative:webapi\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
     }
@@ -31,6 +47,58 @@
             {
               "$type": "Document",
               "DocumentIndex": 0,
+              "Title": "OpenWeatherService.cs",
+              "DocumentMoniker": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Core\\Services\\OpenWeatherService.cs",
+              "RelativeDocumentMoniker": "Core\\Services\\OpenWeatherService.cs",
+              "ToolTip": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Core\\Services\\OpenWeatherService.cs",
+              "RelativeToolTip": "Core\\Services\\OpenWeatherService.cs",
+              "ViewState": "AgIAADgAAAAAAAAAAIAwwDwAAAArAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-24T08:47:45.407Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "FloodForecastDTO.cs",
+              "DocumentMoniker": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Core\\DTOs\\FloodForecastDTO.cs",
+              "RelativeDocumentMoniker": "Core\\DTOs\\FloodForecastDTO.cs",
+              "ToolTip": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Core\\DTOs\\FloodForecastDTO.cs",
+              "RelativeToolTip": "Core\\DTOs\\FloodForecastDTO.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-24T08:47:03.178Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "CurrentWeatherDTO.cs",
+              "DocumentMoniker": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Core\\DTOs\\CurrentWeatherDTO.cs",
+              "RelativeDocumentMoniker": "Core\\DTOs\\CurrentWeatherDTO.cs",
+              "ToolTip": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Core\\DTOs\\CurrentWeatherDTO.cs",
+              "RelativeToolTip": "Core\\DTOs\\CurrentWeatherDTO.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-24T08:46:28.163Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "AuthController.cs",
+              "DocumentMoniker": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\WebAPI\\Controllers\\AuthController.cs",
+              "RelativeDocumentMoniker": "WebAPI\\Controllers\\AuthController.cs",
+              "ToolTip": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\WebAPI\\Controllers\\AuthController.cs",
+              "RelativeToolTip": "WebAPI\\Controllers\\AuthController.cs",
+              "ViewState": "AgIAALcAAAAAAAAAAAAowJcAAABpAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-24T08:33:23.471Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
               "Title": "appsettings.json",
               "DocumentMoniker": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\WebAPI\\appsettings.json",
               "RelativeDocumentMoniker": "WebAPI\\appsettings.json",
