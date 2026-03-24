@@ -115,7 +115,6 @@ namespace WebAPI.Controllers
                     if (existedEmail.IsActive)
                         return BadRequest(new BaseCommentResponse(400, "Email đã tồn tại và đã được kích hoạt"));
 
-                    // Reuse the existing user if they haven't activated yet
                     user = existedEmail;
                     user.FullName = dto.FullName ?? string.Empty;
                     user.PhoneNumber = dto.PhoneNumber;
