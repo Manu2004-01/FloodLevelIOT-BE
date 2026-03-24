@@ -160,7 +160,7 @@ Trân trọng.";
                 }
                 catch (Exception ex)
                 {
-                    var msg = "Lỗi gửi Mail (SMTP): " + ex.Message;
+                    var msg = "Lỗi gửi Mail: " + ex.Message;
                     return StatusCode(500, new BaseCommentResponse(500, msg));
                 }
 
@@ -301,7 +301,7 @@ Trân trọng.";
                 }
                 catch (Exception ex)
                 {
-                    var msg = "Lỗi gửi Mail (SMTP): " + ex.Message;
+                    var msg = "Lỗi gửi Mail: " + ex.Message;
                     return StatusCode(500, new BaseCommentResponse(500, msg));
                 }
 
@@ -349,7 +349,7 @@ Trân trọng.";
                 }
                 catch (Exception ex)
                 {
-                    var msg = "Lỗi gửi Mail (SMTP): " + ex.Message;
+                    var msg = "Lỗi gửi Mail: " + ex.Message;
                     return StatusCode(500, new BaseCommentResponse(500, msg));
                 }
 
