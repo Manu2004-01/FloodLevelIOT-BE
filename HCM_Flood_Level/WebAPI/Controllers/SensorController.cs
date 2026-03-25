@@ -197,19 +197,19 @@ namespace WebAPI.Controllers
             }
         }
 
-        [HttpPut("{id}/threshold")]
-        public async Task<IActionResult> UpdateThreshold(int id, UpdateThresholdDTO dto)
-        {
-            var sensor = await _repo.GetById(id);
-            if (sensor == null) return NotFound();
+        //[HttpPut("{id}/threshold")]
+        //public async Task<IActionResult> UpdateThreshold(int id, UpdateThresholdDTO dto)
+        //{
+        //    var sensor = await _repo.GetById(id);
+        //    if (sensor == null) return NotFound();
 
-            sensor.WarningThreshold = dto.Warning;
-            sensor.DangerThreshold = dto.Danger;
+        //    sensor.WarningThreshold = dto.Warning;
+        //    sensor.DangerThreshold = dto.Danger;
 
-            await _repo.Update(sensor);
+        //    await _repo.Update(sensor);
 
-            return Ok();
-        }
+        //    return Ok();
+        //}
 
 
 

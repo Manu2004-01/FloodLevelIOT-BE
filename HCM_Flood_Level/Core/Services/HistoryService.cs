@@ -10,18 +10,23 @@ namespace Core.Services
     public class HistoryService : IHistoryService
     {
         private readonly IEventsDBContext _context;
+        private readonly ISensorRepository _sensorRepository;
 
-        public HistoryService(IEventsDBContext context)
+        public HistoryService(IEventsDBContext context, ISensorRepository sensorRepository)
         {
             _context = context;
+            _sensorRepository = sensorRepository;
         }
 
         public async Task ProcessSensorReading(SensorReading reading)
         {
-            var sensor = await _context.Sensors.FindAsync(reading.SensorId);
+            var sensor = await _sensorRepository.GetAsync(reading.SensorId);
             if (sensor == null) return; // Sensor not found
 
-            Severity severity = DetermineSeverity(reading.WaterLevelCm, (float)sensor.WarningThreshold, (float)sensor.DangerThreshold);
+            // Ensure reading.RecordedAt is treated as UTC
+            var recordedAtUtc = DateTime.SpecifyKind(reading.RecordedAt, DateTimeKind.Utc);
+
+            Severity severity = DetermineSeverity(reading.WaterLevelCm, sensor.WarningThreshold, sensor.DangerThreshold);
 
             var activeHistory = await _context.Histories
                 .Where(h => h.LocationId == sensor.PlaceId && h.EndTime == null)
@@ -31,7 +36,7 @@ namespace Core.Services
             {
                 if (activeHistory != null)
                 {
-                    activeHistory.EndTime = reading.RecordedAt;
+                    activeHistory.EndTime = recordedAtUtc;
                 }
             }
             else // Warning or Danger
@@ -41,7 +46,7 @@ namespace Core.Services
                     var newHistory = new History
                     {
                         LocationId = sensor.PlaceId,
-                        StartTime = reading.RecordedAt,
+                        StartTime = recordedAtUtc,
                         MaxWaterLevel = reading.WaterLevelCm,
                         Severity = severity,
                         CreatedAt = DateTime.UtcNow

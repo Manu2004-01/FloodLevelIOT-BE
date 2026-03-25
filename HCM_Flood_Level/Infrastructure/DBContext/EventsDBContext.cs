@@ -13,7 +13,6 @@ namespace Infrastructure.DBContext
         public virtual DbSet<SensorReading> SensorReadings { get; set; }
         public virtual DbSet<History> Histories { get; set; }
         public virtual DbSet<Report> Reports { get; set; }
-        public virtual DbSet<Sensor> Sensors { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
@@ -27,15 +26,6 @@ namespace Infrastructure.DBContext
             modelBuilder.Entity<SensorReading>().ToTable("sensorreadings");
             modelBuilder.Entity<History>().ToTable("history");
             modelBuilder.Entity<Report>().ToTable("report");
-            modelBuilder.Entity<Sensor>().ToTable("sensors");
-
-            modelBuilder.Entity<Sensor>(entity =>
-            {
-                entity.Ignore(s => s.Technician);
-                entity.Ignore(s => s.MaintenanceRequests);
-                entity.Ignore(s => s.MaintenanceSchedules);
-                entity.Ignore(s => s.SensorReadings);
-            });
 
             modelBuilder.Entity<SensorReading>(entity =>
             {
@@ -79,22 +69,6 @@ namespace Infrastructure.DBContext
                 entity.Property(e => e.ForecastRiskLevel).HasColumnName("forecast_risk_level");
                 entity.Property(e => e.ForecastDataJson).HasColumnName("forecast_data_json");
                 entity.Property(e => e.CreatedAt).HasColumnName("created_at").ValueGeneratedOnAdd();
-            });
-
-            modelBuilder.Entity<Sensor>(entity =>
-            {
-                entity.Property(e => e.SensorId).HasColumnName("sensor_id");
-                entity.Property(e => e.PlaceId).HasColumnName("place_id");
-                entity.Property(e => e.SensorCode).HasColumnName("sensor_code");
-                entity.Property(e => e.SensorName).HasColumnName("sensor_name");
-                entity.Property(e => e.SensorType).HasColumnName("sensor_type");
-                entity.Property(e => e.Protocol).HasColumnName("protocol");
-                entity.Property(e => e.Specification).HasColumnName("specification");
-                entity.Property(e => e.InstalledAt).HasColumnName("installed_at");
-                entity.Property(e => e.WarningThreshold).HasColumnName("warning_threshold");
-                entity.Property(e => e.DangerThreshold).HasColumnName("danger_threshold");
-                entity.Property(e => e.MaxLevel).HasColumnName("max_level");
-                entity.Property(e => e.CreatedAt).HasColumnName("created_at");
             });
         }
     }

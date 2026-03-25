@@ -3,6 +3,34 @@
   "WorkspaceRootPath": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\",
   "Documents": [
     {
+      "AbsoluteMoniker": "D:0:0:{E0705B8D-A8BA-4818-A9B5-F64473F23E9A}|WebAPI\\WebAPI.csproj|d:\\floodleveliot-be\\hcm_flood_level\\webapi\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
+      "RelativeMoniker": "D:0:0:{E0705B8D-A8BA-4818-A9B5-F64473F23E9A}|WebAPI\\WebAPI.csproj|solutionrelative:webapi\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E0705B8D-A8BA-4818-A9B5-F64473F23E9A}|WebAPI\\WebAPI.csproj|d:\\floodleveliot-be\\hcm_flood_level\\webapi\\controllers\\sensorcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E0705B8D-A8BA-4818-A9B5-F64473F23E9A}|WebAPI\\WebAPI.csproj|solutionrelative:webapi\\controllers\\sensorcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3D73A4B9-1067-4E8D-B10E-77B202CAA7BC}|Core\\Core.csproj|d:\\floodleveliot-be\\hcm_flood_level\\core\\entities\\sensor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3D73A4B9-1067-4E8D-B10E-77B202CAA7BC}|Core\\Core.csproj|solutionrelative:core\\entities\\sensor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{34A3E703-B133-440D-A8E4-9E6583E657CC}|Infrastructure\\Infrastructure.csproj|d:\\floodleveliot-be\\hcm_flood_level\\infrastructure\\repositories\\sensorreadingrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{34A3E703-B133-440D-A8E4-9E6583E657CC}|Infrastructure\\Infrastructure.csproj|solutionrelative:infrastructure\\repositories\\sensorreadingrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{34A3E703-B133-440D-A8E4-9E6583E657CC}|Infrastructure\\Infrastructure.csproj|d:\\floodleveliot-be\\hcm_flood_level\\infrastructure\\repositories\\sensorrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{34A3E703-B133-440D-A8E4-9E6583E657CC}|Infrastructure\\Infrastructure.csproj|solutionrelative:infrastructure\\repositories\\sensorrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3D73A4B9-1067-4E8D-B10E-77B202CAA7BC}|Core\\Core.csproj|d:\\floodleveliot-be\\hcm_flood_level\\core\\interfaces\\isensorrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3D73A4B9-1067-4E8D-B10E-77B202CAA7BC}|Core\\Core.csproj|solutionrelative:core\\interfaces\\isensorrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3D73A4B9-1067-4E8D-B10E-77B202CAA7BC}|Core\\Core.csproj|d:\\floodleveliot-be\\hcm_flood_level\\core\\entities\\sensorreading.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3D73A4B9-1067-4E8D-B10E-77B202CAA7BC}|Core\\Core.csproj|solutionrelative:core\\entities\\sensorreading.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
       "AbsoluteMoniker": "D:0:0:{3D73A4B9-1067-4E8D-B10E-77B202CAA7BC}|Core\\Core.csproj|d:\\floodleveliot-be\\hcm_flood_level\\core\\dtos\\sensordto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{3D73A4B9-1067-4E8D-B10E-77B202CAA7BC}|Core\\Core.csproj|solutionrelative:core\\dtos\\sensordto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
@@ -11,16 +39,40 @@
       "RelativeMoniker": "D:0:0:{3D73A4B9-1067-4E8D-B10E-77B202CAA7BC}|Core\\Core.csproj|solutionrelative:core\\dtos\\sensorreadingdto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{E0705B8D-A8BA-4818-A9B5-F64473F23E9A}|WebAPI\\WebAPI.csproj|d:\\floodleveliot-be\\hcm_flood_level\\webapi\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}",
-      "RelativeMoniker": "D:0:0:{E0705B8D-A8BA-4818-A9B5-F64473F23E9A}|WebAPI\\WebAPI.csproj|solutionrelative:webapi\\appsettings.json||{90A6B3A7-C1A3-4009-A288-E2FF89E96FA0}"
+      "AbsoluteMoniker": "D:0:0:{3D73A4B9-1067-4E8D-B10E-77B202CAA7BC}|Core\\Core.csproj|d:\\floodleveliot-be\\hcm_flood_level\\core\\services\\sensorreadingservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3D73A4B9-1067-4E8D-B10E-77B202CAA7BC}|Core\\Core.csproj|solutionrelative:core\\services\\sensorreadingservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{34A3E703-B133-440D-A8E4-9E6583E657CC}|Infrastructure\\Infrastructure.csproj|d:\\floodleveliot-be\\hcm_flood_level\\infrastructure\\services\\mqttsubscriberservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{34A3E703-B133-440D-A8E4-9E6583E657CC}|Infrastructure\\Infrastructure.csproj|solutionrelative:infrastructure\\services\\mqttsubscriberservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{E0705B8D-A8BA-4818-A9B5-F64473F23E9A}|WebAPI\\WebAPI.csproj|d:\\floodleveliot-be\\hcm_flood_level\\webapi\\services\\sensorreadinggeneratorservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{E0705B8D-A8BA-4818-A9B5-F64473F23E9A}|WebAPI\\WebAPI.csproj|solutionrelative:webapi\\services\\sensorreadinggeneratorservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3D73A4B9-1067-4E8D-B10E-77B202CAA7BC}|Core\\Core.csproj|d:\\floodleveliot-be\\hcm_flood_level\\core\\interfaces\\isensorreadingservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3D73A4B9-1067-4E8D-B10E-77B202CAA7BC}|Core\\Core.csproj|solutionrelative:core\\interfaces\\isensorreadingservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3D73A4B9-1067-4E8D-B10E-77B202CAA7BC}|Core\\Core.csproj|d:\\floodleveliot-be\\hcm_flood_level\\core\\interfaces\\isensorreadingrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3D73A4B9-1067-4E8D-B10E-77B202CAA7BC}|Core\\Core.csproj|solutionrelative:core\\interfaces\\isensorreadingrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{34A3E703-B133-440D-A8E4-9E6583E657CC}|Infrastructure\\Infrastructure.csproj|d:\\floodleveliot-be\\hcm_flood_level\\infrastructure\\dbcontext\\managedbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{34A3E703-B133-440D-A8E4-9E6583E657CC}|Infrastructure\\Infrastructure.csproj|solutionrelative:infrastructure\\dbcontext\\managedbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{34A3E703-B133-440D-A8E4-9E6583E657CC}|Infrastructure\\Infrastructure.csproj|d:\\floodleveliot-be\\hcm_flood_level\\infrastructure\\dbcontext\\eventsdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{34A3E703-B133-440D-A8E4-9E6583E657CC}|Infrastructure\\Infrastructure.csproj|solutionrelative:infrastructure\\dbcontext\\eventsdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{E0705B8D-A8BA-4818-A9B5-F64473F23E9A}|WebAPI\\WebAPI.csproj|d:\\floodleveliot-be\\hcm_flood_level\\webapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{E0705B8D-A8BA-4818-A9B5-F64473F23E9A}|WebAPI\\WebAPI.csproj|solutionrelative:webapi\\program.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{34A3E703-B133-440D-A8E4-9E6583E657CC}|Infrastructure\\Infrastructure.csproj|d:\\floodleveliot-be\\hcm_flood_level\\infrastructure\\services\\mqttsubscriberservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{34A3E703-B133-440D-A8E4-9E6583E657CC}|Infrastructure\\Infrastructure.csproj|solutionrelative:infrastructure\\services\\mqttsubscriberservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+      "AbsoluteMoniker": "D:0:0:{3D73A4B9-1067-4E8D-B10E-77B202CAA7BC}|Core\\Core.csproj|d:\\floodleveliot-be\\hcm_flood_level\\core\\dtos\\scheduledto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3D73A4B9-1067-4E8D-B10E-77B202CAA7BC}|Core\\Core.csproj|solutionrelative:core\\dtos\\scheduledto.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{34A3E703-B133-440D-A8E4-9E6583E657CC}|Infrastructure\\Infrastructure.csproj|d:\\floodleveliot-be\\hcm_flood_level\\infrastructure\\infrastructure.csproj.backup.tmp||{FA3CD31E-987B-443A-9B81-186104E8DAC1}",
@@ -31,26 +83,6 @@
       "RelativeMoniker": "D:0:0:{E0705B8D-A8BA-4818-A9B5-F64473F23E9A}|WebAPI\\WebAPI.csproj|solutionrelative:webapi\\webapi.csproj.backup.tmp||{FA3CD31E-987B-443A-9B81-186104E8DAC1}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{3D73A4B9-1067-4E8D-B10E-77B202CAA7BC}|Core\\Core.csproj|d:\\floodleveliot-be\\hcm_flood_level\\core\\interfaces\\isensorreadingservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{3D73A4B9-1067-4E8D-B10E-77B202CAA7BC}|Core\\Core.csproj|solutionrelative:core\\interfaces\\isensorreadingservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{34A3E703-B133-440D-A8E4-9E6583E657CC}|Infrastructure\\Infrastructure.csproj|d:\\floodleveliot-be\\hcm_flood_level\\infrastructure\\repositories\\sensorrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{34A3E703-B133-440D-A8E4-9E6583E657CC}|Infrastructure\\Infrastructure.csproj|solutionrelative:infrastructure\\repositories\\sensorrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{34A3E703-B133-440D-A8E4-9E6583E657CC}|Infrastructure\\Infrastructure.csproj|d:\\floodleveliot-be\\hcm_flood_level\\infrastructure\\repositories\\sensorreadingrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{34A3E703-B133-440D-A8E4-9E6583E657CC}|Infrastructure\\Infrastructure.csproj|solutionrelative:infrastructure\\repositories\\sensorreadingrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{3D73A4B9-1067-4E8D-B10E-77B202CAA7BC}|Core\\Core.csproj|d:\\floodleveliot-be\\hcm_flood_level\\core\\entities\\sensor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{3D73A4B9-1067-4E8D-B10E-77B202CAA7BC}|Core\\Core.csproj|solutionrelative:core\\entities\\sensor.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{3D73A4B9-1067-4E8D-B10E-77B202CAA7BC}|Core\\Core.csproj|d:\\floodleveliot-be\\hcm_flood_level\\core\\interfaces\\isensorrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{3D73A4B9-1067-4E8D-B10E-77B202CAA7BC}|Core\\Core.csproj|solutionrelative:core\\interfaces\\isensorrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{34A3E703-B133-440D-A8E4-9E6583E657CC}|Infrastructure\\Infrastructure.csproj|d:\\floodleveliot-be\\hcm_flood_level\\infrastructure\\infrastructure.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|",
       "RelativeMoniker": "D:0:0:{34A3E703-B133-440D-A8E4-9E6583E657CC}|Infrastructure\\Infrastructure.csproj|solutionrelative:infrastructure\\infrastructure.csproj||{FA3CD31E-987B-443A-9B81-186104E8DAC1}|"
     },
@@ -59,36 +91,12 @@
       "RelativeMoniker": "D:0:0:{E0705B8D-A8BA-4818-A9B5-F64473F23E9A}|WebAPI\\WebAPI.csproj|solutionrelative:webapi\\controllers\\sensorreadingcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
-      "AbsoluteMoniker": "D:0:0:{34A3E703-B133-440D-A8E4-9E6583E657CC}|Infrastructure\\Infrastructure.csproj|d:\\floodleveliot-be\\hcm_flood_level\\infrastructure\\dbcontext\\eventsdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{34A3E703-B133-440D-A8E4-9E6583E657CC}|Infrastructure\\Infrastructure.csproj|solutionrelative:infrastructure\\dbcontext\\eventsdbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{34A3E703-B133-440D-A8E4-9E6583E657CC}|Infrastructure\\Infrastructure.csproj|d:\\floodleveliot-be\\hcm_flood_level\\infrastructure\\dbcontext\\managedbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{34A3E703-B133-440D-A8E4-9E6583E657CC}|Infrastructure\\Infrastructure.csproj|solutionrelative:infrastructure\\dbcontext\\managedbcontext.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
       "AbsoluteMoniker": "D:0:0:{34A3E703-B133-440D-A8E4-9E6583E657CC}|Infrastructure\\Infrastructure.csproj|d:\\floodleveliot-be\\hcm_flood_level\\infrastructure\\repositories\\requestrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{34A3E703-B133-440D-A8E4-9E6583E657CC}|Infrastructure\\Infrastructure.csproj|solutionrelative:infrastructure\\repositories\\requestrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{34A3E703-B133-440D-A8E4-9E6583E657CC}|Infrastructure\\Infrastructure.csproj|d:\\floodleveliot-be\\hcm_flood_level\\infrastructure\\repositories\\locationrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{34A3E703-B133-440D-A8E4-9E6583E657CC}|Infrastructure\\Infrastructure.csproj|solutionrelative:infrastructure\\repositories\\locationrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{3D73A4B9-1067-4E8D-B10E-77B202CAA7BC}|Core\\Core.csproj|d:\\floodleveliot-be\\hcm_flood_level\\core\\entities\\sensorreading.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{3D73A4B9-1067-4E8D-B10E-77B202CAA7BC}|Core\\Core.csproj|solutionrelative:core\\entities\\sensorreading.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{3D73A4B9-1067-4E8D-B10E-77B202CAA7BC}|Core\\Core.csproj|d:\\floodleveliot-be\\hcm_flood_level\\core\\interfaces\\isensorreadingrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{3D73A4B9-1067-4E8D-B10E-77B202CAA7BC}|Core\\Core.csproj|solutionrelative:core\\interfaces\\isensorreadingrepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{3D73A4B9-1067-4E8D-B10E-77B202CAA7BC}|Core\\Core.csproj|d:\\floodleveliot-be\\hcm_flood_level\\core\\services\\sensorreadingservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{3D73A4B9-1067-4E8D-B10E-77B202CAA7BC}|Core\\Core.csproj|solutionrelative:core\\services\\sensorreadingservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E0705B8D-A8BA-4818-A9B5-F64473F23E9A}|WebAPI\\WebAPI.csproj|d:\\floodleveliot-be\\hcm_flood_level\\webapi\\controllers\\sensorcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E0705B8D-A8BA-4818-A9B5-F64473F23E9A}|WebAPI\\WebAPI.csproj|solutionrelative:webapi\\controllers\\sensorcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{3D73A4B9-1067-4E8D-B10E-77B202CAA7BC}|Core\\Core.csproj|d:\\floodleveliot-be\\hcm_flood_level\\core\\services\\historyservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -101,10 +109,6 @@
     {
       "AbsoluteMoniker": "D:0:0:{3D73A4B9-1067-4E8D-B10E-77B202CAA7BC}|Core\\Core.csproj|d:\\floodleveliot-be\\hcm_flood_level\\core\\interfaces\\iarearepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
       "RelativeMoniker": "D:0:0:{3D73A4B9-1067-4E8D-B10E-77B202CAA7BC}|Core\\Core.csproj|solutionrelative:core\\interfaces\\iarearepository.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
-    },
-    {
-      "AbsoluteMoniker": "D:0:0:{E0705B8D-A8BA-4818-A9B5-F64473F23E9A}|WebAPI\\WebAPI.csproj|d:\\floodleveliot-be\\hcm_flood_level\\webapi\\services\\sensorreadinggeneratorservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
-      "RelativeMoniker": "D:0:0:{E0705B8D-A8BA-4818-A9B5-F64473F23E9A}|WebAPI\\WebAPI.csproj|solutionrelative:webapi\\services\\sensorreadinggeneratorservice.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
     },
     {
       "AbsoluteMoniker": "D:0:0:{E0705B8D-A8BA-4818-A9B5-F64473F23E9A}|WebAPI\\WebAPI.csproj|d:\\floodleveliot-be\\hcm_flood_level\\webapi\\models\\mqttpayload.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
@@ -122,69 +126,241 @@
           "Children": [
             {
               "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "SensorReadingRepository.cs",
+              "DocumentMoniker": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Infrastructure\\Repositories\\SensorReadingRepository.cs",
+              "RelativeDocumentMoniker": "Infrastructure\\Repositories\\SensorReadingRepository.cs",
+              "ToolTip": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Infrastructure\\Repositories\\SensorReadingRepository.cs",
+              "RelativeToolTip": "Infrastructure\\Repositories\\SensorReadingRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-24T17:31:42.733Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
               "DocumentIndex": 2,
+              "Title": "Sensor.cs",
+              "DocumentMoniker": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Core\\Entities\\Sensor.cs",
+              "RelativeDocumentMoniker": "Core\\Entities\\Sensor.cs",
+              "ToolTip": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Core\\Entities\\Sensor.cs",
+              "RelativeToolTip": "Core\\Entities\\Sensor.cs",
+              "ViewState": "AgIAABQAAAAAAAAAAAA5wCMAAAAuAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-24T17:29:56.66Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "SensorReading.cs",
+              "DocumentMoniker": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Core\\Entities\\SensorReading.cs",
+              "RelativeDocumentMoniker": "Core\\Entities\\SensorReading.cs",
+              "ToolTip": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Core\\Entities\\SensorReading.cs",
+              "RelativeToolTip": "Core\\Entities\\SensorReading.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAABQAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-24T17:30:01.046Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "ISensorRepository.cs",
+              "DocumentMoniker": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Core\\Interfaces\\ISensorRepository.cs",
+              "RelativeDocumentMoniker": "Core\\Interfaces\\ISensorRepository.cs",
+              "ToolTip": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Core\\Interfaces\\ISensorRepository.cs",
+              "RelativeToolTip": "Core\\Interfaces\\ISensorRepository.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAuwB4AAAA0AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-24T16:58:51.897Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "SensorRepository.cs",
+              "DocumentMoniker": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Infrastructure\\Repositories\\SensorRepository.cs",
+              "RelativeDocumentMoniker": "Infrastructure\\Repositories\\SensorRepository.cs",
+              "ToolTip": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Infrastructure\\Repositories\\SensorRepository.cs",
+              "RelativeToolTip": "Infrastructure\\Repositories\\SensorRepository.cs",
+              "ViewState": "AgIAABkAAAAAAAAAAAAzwCwAAAAJAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-24T17:01:29.725Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "SensorController.cs",
+              "DocumentMoniker": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\WebAPI\\Controllers\\SensorController.cs",
+              "RelativeDocumentMoniker": "WebAPI\\Controllers\\SensorController.cs",
+              "ToolTip": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\WebAPI\\Controllers\\SensorController.cs",
+              "RelativeToolTip": "WebAPI\\Controllers\\SensorController.cs",
+              "ViewState": "AgIAAL8AAAAAAAAAAAAmwNMAAAALAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-24T16:40:25.056Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
               "Title": "appsettings.json",
               "DocumentMoniker": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\WebAPI\\appsettings.json",
               "RelativeDocumentMoniker": "WebAPI\\appsettings.json",
               "ToolTip": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\WebAPI\\appsettings.json",
               "RelativeToolTip": "WebAPI\\appsettings.json",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABkAAAAAAAAAAAAAAA==",
+              "ViewState": "AgIAABwAAAAAAAAAAADwvy0AAAAfAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001642|",
               "WhenOpened": "2026-03-24T18:41:19.71Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 5,
-              "Title": "Infrastructure.csproj.Backup.tmp",
-              "DocumentMoniker": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Infrastructure\\Infrastructure.csproj.Backup.tmp",
-              "RelativeDocumentMoniker": "Infrastructure\\Infrastructure.csproj.Backup.tmp",
-              "ToolTip": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Infrastructure\\Infrastructure.csproj.Backup.tmp",
-              "RelativeToolTip": "Infrastructure\\Infrastructure.csproj.Backup.tmp",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAA+AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
-              "WhenOpened": "2026-03-24T18:17:44.033Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 4,
-              "Title": "MqttSubscriberService.cs",
-              "DocumentMoniker": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Infrastructure\\Services\\MqttSubscriberService.cs",
-              "RelativeDocumentMoniker": "Infrastructure\\Services\\MqttSubscriberService.cs",
-              "ToolTip": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Infrastructure\\Services\\MqttSubscriberService.cs",
-              "RelativeToolTip": "Infrastructure\\Services\\MqttSubscriberService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABkAAAAAAAAAAAAAAA==",
+              "DocumentIndex": 7,
+              "Title": "SensorDTO.cs",
+              "DocumentMoniker": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Core\\DTOs\\SensorDTO.cs",
+              "RelativeDocumentMoniker": "Core\\DTOs\\SensorDTO.cs",
+              "ToolTip": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Core\\DTOs\\SensorDTO.cs",
+              "RelativeToolTip": "Core\\DTOs\\SensorDTO.cs",
+              "ViewState": "AgIAAEAAAAAAAAAAAAA/wFUAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-24T17:23:10.887Z"
+              "WhenOpened": "2026-03-24T17:04:07.499Z",
+              "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 3,
-              "Title": "Program.cs",
-              "DocumentMoniker": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\WebAPI\\Program.cs",
-              "RelativeDocumentMoniker": "WebAPI\\Program.cs",
-              "ToolTip": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\WebAPI\\Program.cs",
-              "RelativeToolTip": "WebAPI\\Program.cs",
-              "ViewState": "AgIAAJwAAAAAAAAAAAAAAJQAAAADAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-24T17:18:04.63Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 1,
+              "DocumentIndex": 8,
               "Title": "SensorReadingDTO.cs",
               "DocumentMoniker": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Core\\DTOs\\SensorReadingDTO.cs",
               "RelativeDocumentMoniker": "Core\\DTOs\\SensorReadingDTO.cs",
               "ToolTip": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Core\\DTOs\\SensorReadingDTO.cs",
               "RelativeToolTip": "Core\\DTOs\\SensorReadingDTO.cs",
-              "ViewState": "AgIAABAAAAAAAAAAAAAwwCMAAAAFAAAAAAAAAA==",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACoAAAAAAAAAAAAAAA==",
               "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
               "WhenOpened": "2026-03-24T16:44:29.383Z",
               "EditorCaption": ""
             },
             {
               "$type": "Document",
-              "DocumentIndex": 6,
+              "DocumentIndex": 9,
+              "Title": "SensorReadingService.cs",
+              "DocumentMoniker": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Core\\Services\\SensorReadingService.cs",
+              "RelativeDocumentMoniker": "Core\\Services\\SensorReadingService.cs",
+              "ToolTip": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Core\\Services\\SensorReadingService.cs",
+              "RelativeToolTip": "Core\\Services\\SensorReadingService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAACEAAAAyAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-24T16:39:39.99Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 11,
+              "Title": "SensorReadingGeneratorService.cs",
+              "DocumentMoniker": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\WebAPI\\Services\\SensorReadingGeneratorService.cs",
+              "RelativeDocumentMoniker": "WebAPI\\Services\\SensorReadingGeneratorService.cs",
+              "ToolTip": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\WebAPI\\Services\\SensorReadingGeneratorService.cs",
+              "RelativeToolTip": "WebAPI\\Services\\SensorReadingGeneratorService.cs",
+              "ViewState": "AgIAACcAAAAAAAAAAAAYwAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-24T16:35:37.869Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 10,
+              "Title": "MqttSubscriberService.cs",
+              "DocumentMoniker": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Infrastructure\\Services\\MqttSubscriberService.cs",
+              "RelativeDocumentMoniker": "Infrastructure\\Services\\MqttSubscriberService.cs",
+              "ToolTip": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Infrastructure\\Services\\MqttSubscriberService.cs",
+              "RelativeToolTip": "Infrastructure\\Services\\MqttSubscriberService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAADcAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-24T17:23:10.887Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 12,
+              "Title": "ISensorReadingService.cs",
+              "DocumentMoniker": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Core\\Interfaces\\ISensorReadingService.cs",
+              "RelativeDocumentMoniker": "Core\\Interfaces\\ISensorReadingService.cs",
+              "ToolTip": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Core\\Interfaces\\ISensorReadingService.cs",
+              "RelativeToolTip": "Core\\Interfaces\\ISensorReadingService.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-24T16:38:36.83Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 13,
+              "Title": "ISensorReadingRepository.cs",
+              "DocumentMoniker": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Core\\Interfaces\\ISensorReadingRepository.cs",
+              "RelativeDocumentMoniker": "Core\\Interfaces\\ISensorReadingRepository.cs",
+              "ToolTip": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Core\\Interfaces\\ISensorReadingRepository.cs",
+              "RelativeToolTip": "Core\\Interfaces\\ISensorReadingRepository.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA4AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-24T17:02:05.068Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 14,
+              "Title": "ManageDBContext.cs",
+              "DocumentMoniker": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Infrastructure\\DBContext\\ManageDBContext.cs",
+              "RelativeDocumentMoniker": "Infrastructure\\DBContext\\ManageDBContext.cs",
+              "ToolTip": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Infrastructure\\DBContext\\ManageDBContext.cs",
+              "RelativeToolTip": "Infrastructure\\DBContext\\ManageDBContext.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAABAAAAA2AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-24T17:33:46.737Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 15,
+              "Title": "EventsDBContext.cs",
+              "DocumentMoniker": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Infrastructure\\DBContext\\EventsDBContext.cs",
+              "RelativeDocumentMoniker": "Infrastructure\\DBContext\\EventsDBContext.cs",
+              "ToolTip": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Infrastructure\\DBContext\\EventsDBContext.cs",
+              "RelativeToolTip": "Infrastructure\\DBContext\\EventsDBContext.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAA8AAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-24T17:34:56.323Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 16,
+              "Title": "Program.cs",
+              "DocumentMoniker": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\WebAPI\\Program.cs",
+              "RelativeDocumentMoniker": "WebAPI\\Program.cs",
+              "ToolTip": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\WebAPI\\Program.cs",
+              "RelativeToolTip": "WebAPI\\Program.cs",
+              "ViewState": "AgIAABIAAAAAAAAAAAAAAFgAAAAQAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-24T17:18:04.63Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 17,
+              "Title": "ScheduleDTO.cs",
+              "DocumentMoniker": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Core\\DTOs\\ScheduleDTO.cs",
+              "RelativeDocumentMoniker": "Core\\DTOs\\ScheduleDTO.cs",
+              "ToolTip": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Core\\DTOs\\ScheduleDTO.cs",
+              "RelativeToolTip": "Core\\DTOs\\ScheduleDTO.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-03-25T12:46:44.094Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 19,
               "Title": "WebAPI.csproj.Backup.tmp",
               "DocumentMoniker": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\WebAPI\\WebAPI.csproj.Backup.tmp",
               "RelativeDocumentMoniker": "WebAPI\\WebAPI.csproj.Backup.tmp",
@@ -196,20 +372,19 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 0,
-              "Title": "SensorDTO.cs",
-              "DocumentMoniker": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Core\\DTOs\\SensorDTO.cs",
-              "RelativeDocumentMoniker": "Core\\DTOs\\SensorDTO.cs",
-              "ToolTip": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Core\\DTOs\\SensorDTO.cs",
-              "RelativeToolTip": "Core\\DTOs\\SensorDTO.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAEQAAAAyAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-24T17:04:07.499Z",
-              "EditorCaption": ""
+              "DocumentIndex": 18,
+              "Title": "Infrastructure.csproj.Backup.tmp",
+              "DocumentMoniker": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Infrastructure\\Infrastructure.csproj.Backup.tmp",
+              "RelativeDocumentMoniker": "Infrastructure\\Infrastructure.csproj.Backup.tmp",
+              "ToolTip": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Infrastructure\\Infrastructure.csproj.Backup.tmp",
+              "RelativeToolTip": "Infrastructure\\Infrastructure.csproj.Backup.tmp",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA8AAAA+AAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.001001|",
+              "WhenOpened": "2026-03-24T18:17:44.033Z"
             },
             {
               "$type": "Document",
-              "DocumentIndex": 12,
+              "DocumentIndex": 20,
               "Title": "Infrastructure.csproj",
               "DocumentMoniker": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Infrastructure\\Infrastructure.csproj",
               "RelativeDocumentMoniker": "Infrastructure\\Infrastructure.csproj",
@@ -221,67 +396,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 8,
-              "Title": "SensorRepository.cs",
-              "DocumentMoniker": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Infrastructure\\Repositories\\SensorRepository.cs",
-              "RelativeDocumentMoniker": "Infrastructure\\Repositories\\SensorRepository.cs",
-              "ToolTip": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Infrastructure\\Repositories\\SensorRepository.cs",
-              "RelativeToolTip": "Infrastructure\\Repositories\\SensorRepository.cs",
-              "ViewState": "AgIAABwAAAAAAAAAAAAQwDIAAAAJAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-24T17:01:29.725Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 9,
-              "Title": "SensorReadingRepository.cs",
-              "DocumentMoniker": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Infrastructure\\Repositories\\SensorReadingRepository.cs",
-              "RelativeDocumentMoniker": "Infrastructure\\Repositories\\SensorReadingRepository.cs",
-              "ToolTip": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Infrastructure\\Repositories\\SensorReadingRepository.cs",
-              "RelativeToolTip": "Infrastructure\\Repositories\\SensorReadingRepository.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABsAAAA9AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-24T17:31:42.733Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 10,
-              "Title": "Sensor.cs",
-              "DocumentMoniker": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Core\\Entities\\Sensor.cs",
-              "RelativeDocumentMoniker": "Core\\Entities\\Sensor.cs",
-              "ToolTip": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Core\\Entities\\Sensor.cs",
-              "RelativeToolTip": "Core\\Entities\\Sensor.cs",
-              "ViewState": "AgIAABIAAAAAAAAAAAAcwCIAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-24T17:29:56.66Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 7,
-              "Title": "ISensorReadingService.cs",
-              "DocumentMoniker": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Core\\Interfaces\\ISensorReadingService.cs",
-              "RelativeDocumentMoniker": "Core\\Interfaces\\ISensorReadingService.cs",
-              "ToolTip": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Core\\Interfaces\\ISensorReadingService.cs",
-              "RelativeToolTip": "Core\\Interfaces\\ISensorReadingService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAuwA4AAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-24T16:38:36.83Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 11,
-              "Title": "ISensorRepository.cs",
-              "DocumentMoniker": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Core\\Interfaces\\ISensorRepository.cs",
-              "RelativeDocumentMoniker": "Core\\Interfaces\\ISensorRepository.cs",
-              "ToolTip": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Core\\Interfaces\\ISensorRepository.cs",
-              "RelativeToolTip": "Core\\Interfaces\\ISensorRepository.cs",
-              "ViewState": "AgIAAAwAAAAAAAAAAAAAAAIAAAAWAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-24T16:58:51.897Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 13,
+              "DocumentIndex": 21,
               "Title": "SensorReadingController.cs",
               "DocumentMoniker": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\WebAPI\\Controllers\\SensorReadingController.cs",
               "RelativeDocumentMoniker": "WebAPI\\Controllers\\SensorReadingController.cs",
@@ -293,31 +408,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 14,
-              "Title": "EventsDBContext.cs",
-              "DocumentMoniker": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Infrastructure\\DBContext\\EventsDBContext.cs",
-              "RelativeDocumentMoniker": "Infrastructure\\DBContext\\EventsDBContext.cs",
-              "ToolTip": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Infrastructure\\DBContext\\EventsDBContext.cs",
-              "RelativeToolTip": "Infrastructure\\DBContext\\EventsDBContext.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-24T17:34:56.323Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 15,
-              "Title": "ManageDBContext.cs",
-              "DocumentMoniker": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Infrastructure\\DBContext\\ManageDBContext.cs",
-              "RelativeDocumentMoniker": "Infrastructure\\DBContext\\ManageDBContext.cs",
-              "ToolTip": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Infrastructure\\DBContext\\ManageDBContext.cs",
-              "RelativeToolTip": "Infrastructure\\DBContext\\ManageDBContext.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAABAAAAA2AAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-24T17:33:46.737Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 16,
+              "DocumentIndex": 22,
               "Title": "RequestRepository.cs",
               "DocumentMoniker": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Infrastructure\\Repositories\\RequestRepository.cs",
               "RelativeDocumentMoniker": "Infrastructure\\Repositories\\RequestRepository.cs",
@@ -329,7 +420,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 17,
+              "DocumentIndex": 23,
               "Title": "LocationRepository.cs",
               "DocumentMoniker": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Infrastructure\\Repositories\\LocationRepository.cs",
               "RelativeDocumentMoniker": "Infrastructure\\Repositories\\LocationRepository.cs",
@@ -341,55 +432,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 18,
-              "Title": "SensorReading.cs",
-              "DocumentMoniker": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Core\\Entities\\SensorReading.cs",
-              "RelativeDocumentMoniker": "Core\\Entities\\SensorReading.cs",
-              "ToolTip": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Core\\Entities\\SensorReading.cs",
-              "RelativeToolTip": "Core\\Entities\\SensorReading.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAkwBEAAAAwAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-24T17:30:01.046Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 19,
-              "Title": "ISensorReadingRepository.cs",
-              "DocumentMoniker": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Core\\Interfaces\\ISensorReadingRepository.cs",
-              "RelativeDocumentMoniker": "Core\\Interfaces\\ISensorReadingRepository.cs",
-              "ToolTip": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Core\\Interfaces\\ISensorReadingRepository.cs",
-              "RelativeToolTip": "Core\\Interfaces\\ISensorReadingRepository.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAA0AAAABAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-24T17:02:05.068Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 20,
-              "Title": "SensorReadingService.cs",
-              "DocumentMoniker": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Core\\Services\\SensorReadingService.cs",
-              "RelativeDocumentMoniker": "Core\\Services\\SensorReadingService.cs",
-              "ToolTip": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Core\\Services\\SensorReadingService.cs",
-              "RelativeToolTip": "Core\\Services\\SensorReadingService.cs",
-              "ViewState": "AgIAABIAAAAAAAAAAAAYwCEAAAAnAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-24T16:39:39.99Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 21,
-              "Title": "SensorController.cs",
-              "DocumentMoniker": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\WebAPI\\Controllers\\SensorController.cs",
-              "RelativeDocumentMoniker": "WebAPI\\Controllers\\SensorController.cs",
-              "ToolTip": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\WebAPI\\Controllers\\SensorController.cs",
-              "RelativeToolTip": "WebAPI\\Controllers\\SensorController.cs",
-              "ViewState": "AgIAAL8AAAAAAAAAAAAswMoAAAAlAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-24T16:40:25.056Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 22,
+              "DocumentIndex": 24,
               "Title": "HistoryService.cs",
               "DocumentMoniker": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Core\\Services\\HistoryService.cs",
               "RelativeDocumentMoniker": "Core\\Services\\HistoryService.cs",
@@ -401,7 +444,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 23,
+              "DocumentIndex": 25,
               "Title": "IGenericRepository.cs",
               "DocumentMoniker": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Core\\Interfaces\\IGenericRepository.cs",
               "RelativeDocumentMoniker": "Core\\Interfaces\\IGenericRepository.cs",
@@ -413,7 +456,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 24,
+              "DocumentIndex": 26,
               "Title": "IAreaRepository.cs",
               "DocumentMoniker": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\Core\\Interfaces\\IAreaRepository.cs",
               "RelativeDocumentMoniker": "Core\\Interfaces\\IAreaRepository.cs",
@@ -425,19 +468,7 @@
             },
             {
               "$type": "Document",
-              "DocumentIndex": 25,
-              "Title": "SensorReadingGeneratorService.cs",
-              "DocumentMoniker": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\WebAPI\\Services\\SensorReadingGeneratorService.cs",
-              "RelativeDocumentMoniker": "WebAPI\\Services\\SensorReadingGeneratorService.cs",
-              "ToolTip": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\WebAPI\\Services\\SensorReadingGeneratorService.cs",
-              "RelativeToolTip": "WebAPI\\Services\\SensorReadingGeneratorService.cs",
-              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
-              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
-              "WhenOpened": "2026-03-24T16:35:37.869Z"
-            },
-            {
-              "$type": "Document",
-              "DocumentIndex": 26,
+              "DocumentIndex": 27,
               "Title": "MqttPayload.cs",
               "DocumentMoniker": "D:\\FloodLevelIOT-BE\\HCM_Flood_Level\\WebAPI\\Models\\MqttPayload.cs",
               "RelativeDocumentMoniker": "WebAPI\\Models\\MqttPayload.cs",

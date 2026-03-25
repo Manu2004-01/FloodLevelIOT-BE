@@ -27,8 +27,7 @@ namespace Core.Interfaces
 
 
         //24/03 - for SensorController GetById and GetByDeviceId
-        Task<Sensor> GetById(int id);
+        Task<Sensor> GetByIdAsync(int id);
         Task<Sensor> GetByDeviceId(string deviceId);
-        Task Update(Sensor sensor);
     }
 }

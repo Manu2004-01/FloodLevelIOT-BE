@@ -31,9 +31,9 @@ namespace Core.Entities
 
 
 
-        public int Id { get; set; }
+        ////public int Id { get; set; }
 
-        public string DeviceId { get; set; }
+        //public string DeviceId { get; set; }
 
 
     }

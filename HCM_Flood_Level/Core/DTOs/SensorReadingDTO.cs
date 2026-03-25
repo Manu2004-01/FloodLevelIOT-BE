@@ -32,6 +32,11 @@ namespace Core.DTOs
     {
         public string DeviceId { get; set; }
         public float DistanceCm { get; set; }
-        public float Height { get; set; }
+        public float HeightCm { get; set; }
+        public float WaterCm { get; set; }
+        public string Level { get; set; }
+        public bool OutRange { get; set; }
+        public string Type { get; set; }
+        public long Ts { get; set; }
     }
 }

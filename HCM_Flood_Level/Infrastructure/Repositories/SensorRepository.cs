@@ -33,21 +33,15 @@ namespace Infrastructure.Repositories
             _maintenanceScheduleRepository = maintenanceScheduleRepository;
         }
 
-        public async Task<Sensor> GetById(int id)
+        public async Task<Sensor> GetByIdAsync(int id)
         {
             return await _context.Sensors.FindAsync(id);
         }
 
-        public async Task<Sensor> GetByDeviceId(string deviceId)
+        public async Task<Sensor> GetByDeviceId(string sensordcode)
         {
             return await _context.Sensors
-                .FirstOrDefaultAsync(x => x.DeviceId == deviceId);
-        }
-
-        public async Task Update(Sensor sensor)
-        {
-            _context.Sensors.Update(sensor);
-            await _context.SaveChangesAsync();
+                .FirstOrDefaultAsync(x => x.SensorCode == sensordcode);
         }
 
 

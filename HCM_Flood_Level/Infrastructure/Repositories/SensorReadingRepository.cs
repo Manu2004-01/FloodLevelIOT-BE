@@ -10,24 +10,17 @@ namespace Infrastructure.Repositories
         
 
 
-        //private readonly ManageDBContext _context;
+        private readonly ManageDBContext _context;
         private readonly EventsDBContext _eventsContext;
 
-        //public SensorReadingRepository(ManageDBContext context)
-        //{
-        //    _context = context;
-        //}
+
 
         public SensorReadingRepository(EventsDBContext eventsDBContext)
         {
-            eventsDBContext = eventsDBContext;
+            _eventsContext = eventsDBContext; 
         }
         public async Task AddAsync(SensorReading reading)
         {
-            
-            //await _context.SensorReading.AddAsync(reading);
-            //await _context.SaveChangesAsync();
-
             await _eventsContext.SensorReadings.AddAsync(reading);
             await _eventsContext.SaveChangesAsync();
         }

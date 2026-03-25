@@ -1,17 +1,22 @@
 using Core.Interfaces;
+using Core.Interfaces;
 using Core.Services;
 using Infrastructure;
-using Infrastructure.Services;
+using Infrastructure.DBContext;
 using Infrastructure.Repositories;
+using Infrastructure.Repositories;
+using Infrastructure.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using System.Text;
 using WebAPI.Extensions;
 using WebAPI.Middleware;
-using Core.Interfaces;
-using Infrastructure.Repositories;
 
+
+
+AppContext.SetSwitch("Npgsql.EnableLegacyTimestampBehavior", true);
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,6 +25,10 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<ISensorReadingService, SensorReadingService>();
 builder.Services.AddScoped<ISensorRepository, SensorRepository>();
 builder.Services.AddScoped<ISensorReadingRepository, SensorReadingRepository>();
+builder.Services.AddScoped<IScheduleRepository, ScheduleRepository>();
+
+builder.Services.AddDbContext<EventsDBContext>(options =>
+    options.UseNpgsql(builder.Configuration.GetConnectionString("EventsDb")));
 
 
 
@@ -103,7 +112,7 @@ builder.Services.AddScoped<ITokenService, TokenService>();
 builder.Services.AddHttpContextAccessor();
 
 // Background generator for sensor readings (30-minute interval)
-builder.Services.AddHostedService<WebAPI.Services.SensorReadingGeneratorService>();
+// builder.Services.AddHostedService<WebAPI.Services.SensorReadingGeneratorService>();
 
 var jwtSection = builder.Configuration.GetSection("Jwt");
 var jwtKey = jwtSection["Key"];
@@ -146,7 +155,7 @@ builder.Services.AddScoped<INotificationService, NotificationService>();
 var app = builder.Build();
 
 //  MQTT chạy sau khi app build
-var mqttService = new MqttSubscriberService(app.Services);
+var mqttService = new MqttSubscriberService(app.Services, app.Configuration);
 await mqttService.StartAsync();
 
 // Configure the HTTP request pipeline.
