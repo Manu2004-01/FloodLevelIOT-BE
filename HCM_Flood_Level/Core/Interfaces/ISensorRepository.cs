@@ -1,5 +1,6 @@
 using Core.DTOs;
 using Core.Entities;
+using Core.Interfaces;
 using Core.Sharing;
 using System;
 using System.Collections.Generic;
@@ -23,5 +24,11 @@ namespace Core.Interfaces
         Task<bool> LocationHasSensorAsync(int placeId);
         Task<bool> UpdateSensorAsync(int id, UpdateSensorDTO dto);
         Task<bool?> DeleteSensorAsync(int id);
+
+
+        //24/03 - for SensorController GetById and GetByDeviceId
+        Task<Sensor> GetById(int id);
+        Task<Sensor> GetByDeviceId(string deviceId);
+        Task Update(Sensor sensor);
     }
 }

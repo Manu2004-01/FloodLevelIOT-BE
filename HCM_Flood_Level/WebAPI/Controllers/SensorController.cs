@@ -18,6 +18,9 @@ namespace WebAPI.Controllers
         private readonly IUnitOfWork _unitOfWork;
         private readonly IMapper _mapper;
 
+        //24/03
+        private readonly ISensorRepository _repo;
+
         public SensorController(IUnitOfWork unitOfWork, IMapper mapper)
         {
             _unitOfWork = unitOfWork;
@@ -193,5 +196,22 @@ namespace WebAPI.Controllers
                 return StatusCode(500, new BaseCommentResponse(500, $"Đã xảy ra lỗi máy chủ nội bộ: {ex.Message}"));
             }
         }
+
+        [HttpPut("{id}/threshold")]
+        public async Task<IActionResult> UpdateThreshold(int id, UpdateThresholdDTO dto)
+        {
+            var sensor = await _repo.GetById(id);
+            if (sensor == null) return NotFound();
+
+            sensor.WarningThreshold = dto.Warning;
+            sensor.DangerThreshold = dto.Danger;
+
+            await _repo.Update(sensor);
+
+            return Ok();
+        }
+
+
+
     }
 }

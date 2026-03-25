@@ -9,8 +9,24 @@ using Microsoft.OpenApi.Models;
 using System.Text;
 using WebAPI.Extensions;
 using WebAPI.Middleware;
+using Core.Interfaces;
+using Infrastructure.Repositories;
+
 
 var builder = WebApplication.CreateBuilder(args);
+
+
+// 24/03Dependency Injection for application services and repositories
+builder.Services.AddScoped<ISensorReadingService, SensorReadingService>();
+builder.Services.AddScoped<ISensorRepository, SensorRepository>();
+builder.Services.AddScoped<ISensorReadingRepository, SensorReadingRepository>();
+
+
+
+
+
+
+
 
 // Add services to the container.
 
@@ -130,6 +146,10 @@ builder.Services.AddScoped<INotificationService, NotificationService>();
 
 var app = builder.Build();
 
+//  MQTT chạy sau khi app build
+var mqttService = new MqttSubscriberService(app.Services);
+await mqttService.StartAsync();
+
 // Configure the HTTP request pipeline.
 // Enable Swagger in all environments for API documentation
 app.UseSwagger();
@@ -145,6 +165,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+
 
 // Ensure DBs are configured/created (development helper)
 await InfrastructureRequistration.InfrastructureConfigMiddleware(app);

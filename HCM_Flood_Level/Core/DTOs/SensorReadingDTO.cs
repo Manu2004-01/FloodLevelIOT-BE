@@ -21,4 +21,17 @@ namespace Core.DTOs
         public long ReadingId { get; set; }
         public float WaterLevelCm { get; set; }
     }
+
+    public class UpdateThresholdDTO
+    {
+        public float Warning { get; set; }
+        public float Danger { get; set; }
+    }
+
+    public class MqttPayload
+    {
+        public string DeviceId { get; set; }
+        public float DistanceCm { get; set; }
+        public float Height { get; set; }
+    }
 }

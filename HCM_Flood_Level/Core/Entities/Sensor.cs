@@ -28,5 +28,13 @@ namespace Core.Entities
         public ICollection<MaintenanceRequest> MaintenanceRequests { get; set; }
         public ICollection<MaintenanceSchedule> MaintenanceSchedules { get; set; }
         public ICollection<SensorReading> SensorReadings { get; set; }
+
+
+
+        public int Id { get; set; }
+
+        public string DeviceId { get; set; }
+
+
     }
 }
