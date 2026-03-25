@@ -94,7 +94,6 @@ builder.Services.AddHttpClient("SerpApiClient")
 builder.Services.AddHttpClient();
 builder.Services.AddHttpClient("OpenWeather");
 builder.Services.AddHttpClient("Gemini");
-builder.Services.AddHttpClient("Resend");
 builder.Services.AddScoped<IMapsService, SerpApiMapsService>();
 builder.Services.AddScoped<IOpenWeatherService, OpenWeatherService>();
 builder.Services.AddScoped<IFloodForecastService, FloodForecastService>();
@@ -141,7 +140,7 @@ builder.Services
         };
     });
 
-builder.Services.AddScoped<IEmailProvider, ResendEmailProvider>();
+builder.Services.AddScoped<IEmailProvider, SmtpEmailProvider>();
 builder.Services.AddScoped<INotificationService, NotificationService>();
 
 var app = builder.Build();
