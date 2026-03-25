@@ -19,9 +19,17 @@ namespace Infrastructure.Repositories
 
         public async Task SendEmailAsync(string toEmail, string subject, string body, CancellationToken cancellationToken = default)
         {
-            var apiKey = _configuration["Resend:ApiKey"] ?? Environment.GetEnvironmentVariable("RESEND_API_KEY");
+            var apiKeyRaw = _configuration["Resend:ApiKey"] ?? Environment.GetEnvironmentVariable("RESEND_API_KEY");
+            var apiKey = NormalizeApiKey(apiKeyRaw);
             if (string.IsNullOrWhiteSpace(apiKey))
                 throw new InvalidOperationException("Missing Resend API key (Resend:ApiKey or RESEND_API_KEY).");
+
+            if (!apiKey.StartsWith("re_", StringComparison.Ordinal))
+            {
+                throw new InvalidOperationException(
+                    "Resend API key không đúng định dạng (key hợp lệ thường bắt đầu bằng \"re_\"). " +
+                    "Vào Resend Dashboard → API Keys → tạo/copy key mới, dán nguyên một dòng vào Render (Resend__ApiKey).");
+            }
 
             var fromEmail = _configuration["Resend:FromEmail"] ?? _configuration["Email:FromEmail"];
             if (string.IsNullOrWhiteSpace(fromEmail))
@@ -40,11 +48,15 @@ namespace Infrastructure.Repositories
 
             var client = _httpClientFactory.CreateClient("Resend");
             client.Timeout = TimeSpan.FromSeconds(20);
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
 
             var json = JsonSerializer.Serialize(payload);
             using var content = new StringContent(json, Encoding.UTF8, "application/json");
-            using var response = await client.PostAsync("https://api.resend.com/emails", content, cancellationToken);
+            using var request = new HttpRequestMessage(HttpMethod.Post, "https://api.resend.com/emails")
+            {
+                Content = content
+            };
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", apiKey);
+            using var response = await client.SendAsync(request, cancellationToken);
             var responseText = await response.Content.ReadAsStringAsync(cancellationToken);
 
             if (!response.IsSuccessStatusCode)
@@ -58,6 +70,14 @@ namespace Infrastructure.Repositories
         {
             if (string.IsNullOrWhiteSpace(value)) return "(empty)";
             return value.Length <= maxLength ? value : value[..maxLength] + "...";
+        }
+
+        private static string NormalizeApiKey(string? raw)
+        {
+            if (string.IsNullOrWhiteSpace(raw)) return string.Empty;
+            var s = raw.Trim();
+            s = s.Replace("\r", string.Empty, StringComparison.Ordinal).Replace("\n", string.Empty, StringComparison.Ordinal);
+            return s.Trim();
         }
     }
 }
