@@ -123,8 +123,9 @@ namespace WebAPI.Controllers
                     user.FullName = dto.FullName ?? string.Empty;
                     user.PhoneNumber = dto.PhoneNumber;
                     user.PasswordHash = PasswordHelper.HashPassword(dto.Password);
-                    user.EmailOtpHash = otpHash;
-                    user.EmailOtpExpiredAt = DateTime.UtcNow.AddMinutes(10);
+                    user.IsActive = true;
+                    user.EmailOtpHash = null;
+                    user.EmailOtpExpiredAt = null;
                     _context.Users.Update(user);
                 }
                 else
@@ -136,9 +137,9 @@ namespace WebAPI.Controllers
                         PhoneNumber = dto.PhoneNumber,
                         PasswordHash = PasswordHelper.HashPassword(dto.Password),
                         RoleId = defaultRoleId,
-                        IsActive = false,
-                        EmailOtpHash = otpHash,
-                        EmailOtpExpiredAt = DateTime.UtcNow.AddMinutes(10),
+                        IsActive = true,
+                        EmailOtpHash = null,
+                        EmailOtpExpiredAt = null,
                         CreatedAt = DateTime.UtcNow
                     };
                     _context.Users.Add(user);
@@ -146,25 +147,7 @@ namespace WebAPI.Controllers
 
                 await _context.SaveChangesAsync();
 
-                try
-                {
-                    var subject = "Mã OTP xác nhận đăng ký";
-                    var body = 
-$@"Xin chào {user.FullName},
-
-Mã OTP của bạn là: {otp}
-Mã có hiệu lực trong 10 phút.
-
-Trân trọng.";
-                    await _notificationService.SendEmailAsync(user.Email!, subject, body);
-                }
-                catch (Exception ex)
-                {
-                    var msg = "Lỗi gửi Mail: " + ex.Message;
-                    return StatusCode(500, new BaseCommentResponse(500, msg));
-                }
-
-                return Ok(new BaseCommentResponse(200, "Đăng ký thành công. Vui lòng kiểm tra email để lấy OTP và xác nhận tài khoản."));
+                return Ok(new BaseCommentResponse(200, "Đăng ký thành công."));
             }
             catch (Exception ex)
             {

@@ -37,7 +37,7 @@ namespace WebAPI.Controllers
 
         [Authorize(Roles = "Citizen")]
         [HttpPost("route-avoid-flood")]
-        public async Task<ActionResult<RouteAvoidFloodResponseDTO>> RouteAvoidFlood([FromQuery] RouteAvoidFloodRequestDTO request)
+        public async Task<ActionResult<RouteAvoidFloodResponseDTO>> RouteAvoidFlood([FromBody] RouteAvoidFloodRequestDTO request)
         {
             try
             {
