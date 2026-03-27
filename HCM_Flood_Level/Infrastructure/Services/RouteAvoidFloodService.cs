@@ -88,22 +88,32 @@ namespace Infrastructure.Services
                 alt.Warnings = scoreResult.Warnings;
             }
 
+            // 1) Chọn tuyến đường NHANH NHẤT làm mặc định (giống Google Maps)
             var recommended = scoredAlternatives
-                .OrderBy(a => a.RiskScore)
-                .ThenBy(a => a.DurationSeconds ?? int.MaxValue)
+                .OrderBy(a => a.DurationSeconds ?? int.MaxValue)
                 .First();
 
-            // Lấy warnings tương ứng alternative recommended
             var recommendedWarnings = routeAlternatives
                 .FirstOrDefault(r => r.OverviewPolylinePoints == recommended.OverviewPolylinePoints)?
                 .Warnings ?? new List<RouteFloodWarningDTO>();
+
+            // 2) Tìm các tuyến đường thay thế AN TOÀN HƠN hoặc KHÔNG NGẬP
+            var saferAlternatives = new List<RouteAlternativeDTO>();
+            if (recommended.IsFlooded)
+            {
+                saferAlternatives = scoredAlternatives
+                    .Where(a => a.OverviewPolylinePoints != recommended.OverviewPolylinePoints && a.RiskScore < recommended.RiskScore)
+                    .OrderBy(a => a.RiskScore)
+                    .ThenBy(a => a.DurationSeconds ?? int.MaxValue)
+                    .ToList();
+            }
 
             return new RouteAvoidFloodResponseDTO
             {
                 RecommendedRoute = recommended,
                 IsRecommendedRouteFlooded = recommended.IsFlooded,
                 RecommendedWarnings = recommendedWarnings,
-                Alternatives = scoredAlternatives
+                Alternatives = saferAlternatives
             };
         }
 
