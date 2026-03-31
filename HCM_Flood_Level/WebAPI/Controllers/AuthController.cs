@@ -31,7 +31,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("login")]
-        public async Task<IActionResult> Login([FromQuery] LoginDTO login)
+        public async Task<IActionResult> Login([FromBody] LoginDTO login)
         {
             try
             {
@@ -47,31 +47,29 @@ namespace WebAPI.Controllers
                 if (string.IsNullOrWhiteSpace(login.Password))
                     return BadRequest(new BaseCommentResponse(400, "Mật khẩu là bắt buộc"));
 
+                var authFailMsg = "Email hoặc mật khẩu không đúng";
+
                 var log = await _context.Users
                     .Include(u => u.Role)
                     .FirstOrDefaultAsync(u => u.Email == login.Email);
 
                 if (log == null)
-                    return Unauthorized(new BaseCommentResponse(401, "Tên đăng nhập hoặc mật khẩu không đúng"));
+                    return Unauthorized(new BaseCommentResponse(401, authFailMsg));
 
                 if(!PasswordHelper.VerifyPassword(login.Password, log.PasswordHash))
-                    return Unauthorized(new BaseCommentResponse(401, "Mật khẩu không đúng"));
+                    return Unauthorized(new BaseCommentResponse(401, authFailMsg));
 
                 if (!log.IsActive)
                     return Unauthorized(new BaseCommentResponse(401, "Tài khoản chưa xác nhận OTP"));
-                
+
                 var roleName = log.Role?.RoleName ?? string.Empty;
                 var token = _tokenService.CreateToken(log, roleName);
 
                 return Ok(new {token});
             }
-            catch (Exception ex)
+            catch (Exception)
             {
-                var root = ex;
-                while (root.InnerException != null)
-                    root = root.InnerException;
-
-                return StatusCode(500, new BaseCommentResponse(500, $"Đã xảy ra lỗi máy chủ nội bộ: {root.Message}"));
+                return StatusCode(500, new BaseCommentResponse(500, "Đã xảy ra lỗi máy chủ nội bộ!!!"));
             }
         }
 
@@ -90,7 +88,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("register")]
-        public async Task<IActionResult> Register([FromQuery] RegisterDTO dto)
+        public async Task<IActionResult> Register([FromBody] RegisterDTO dto)
         {
             try
             {
@@ -119,13 +117,14 @@ namespace WebAPI.Controllers
                     if (existedEmail.IsActive)
                         return BadRequest(new BaseCommentResponse(400, "Email đã tồn tại và đã được kích hoạt"));
 
+                    // Reuse inactive account — update credentials and require OTP verification
                     user = existedEmail;
                     user.FullName = dto.FullName ?? string.Empty;
                     user.PhoneNumber = dto.PhoneNumber;
                     user.PasswordHash = PasswordHelper.HashPassword(dto.Password);
-                    user.IsActive = true;
-                    user.EmailOtpHash = null;
-                    user.EmailOtpExpiredAt = null;
+                    user.IsActive = false;
+                    user.EmailOtpHash = otpHash;
+                    user.EmailOtpExpiredAt = DateTime.UtcNow.AddMinutes(10);
                     _context.Users.Update(user);
                 }
                 else
@@ -137,9 +136,9 @@ namespace WebAPI.Controllers
                         PhoneNumber = dto.PhoneNumber,
                         PasswordHash = PasswordHelper.HashPassword(dto.Password),
                         RoleId = defaultRoleId,
-                        IsActive = true,
-                        EmailOtpHash = null,
-                        EmailOtpExpiredAt = null,
+                        IsActive = false,
+                        EmailOtpHash = otpHash,
+                        EmailOtpExpiredAt = DateTime.UtcNow.AddMinutes(10),
                         CreatedAt = DateTime.UtcNow
                     };
                     _context.Users.Add(user);
@@ -147,7 +146,25 @@ namespace WebAPI.Controllers
 
                 await _context.SaveChangesAsync();
 
-                return Ok(new BaseCommentResponse(200, "Đăng ký thành công."));
+                // Send OTP verification email
+                try
+                {
+                    var subject = "Mã OTP xác nhận email";
+                    var body =
+$@"Xin chào {user.FullName},
+
+Mã OTP để xác nhận email của bạn là: {otp}
+Mã có hiệu lực trong 10 phút.
+
+Trân trọng.";
+                    await _notificationService.SendEmailAsync(user.Email!, subject, body);
+                }
+                catch (Exception)
+                {
+                    // Email sending failed — user can request resend later
+                }
+
+                return Ok(new BaseCommentResponse(200, "Đăng ký thành công. Vui lòng kiểm tra email để xác nhận OTP."));
             }
             catch (Exception ex)
             {
@@ -156,7 +173,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("verify-email-otp")]
-        public async Task<IActionResult> VerifyEmailOtp([FromQuery] VerifyEmailOtpDTO dto)
+        public async Task<IActionResult> VerifyEmailOtp([FromBody] VerifyEmailOtpDTO dto)
         {
             try
             {
@@ -201,16 +218,18 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("forgot-password")]
-        public async Task<IActionResult> ForgotPassword([FromQuery] ForgotPasswordDTO dto)
+        public async Task<IActionResult> ForgotPassword([FromBody] ForgotPasswordDTO dto)
         {
             try
             {
                 if (!ModelState.IsValid)
                     return BadRequest(new BaseCommentResponse(400, "Dữ liệu đầu vào không hợp lệ"));
 
+                var successMsg = "Nếu email tồn tại trong hệ thống, mã OTP sẽ được gửi.";
+
                 var user = await _context.Users.FirstOrDefaultAsync(u => u.Email == dto.Email);
                 if (user == null)
-                    return NotFound(new BaseCommentResponse(404, "Không tìm thấy người dùng với email này"));
+                    return Ok(new BaseCommentResponse(200, successMsg));
 
                 var otp = OtpHelper.GenerateOtp6();
                 var otpHash = OtpHelper.HashOtpSha256(otp);
@@ -224,21 +243,20 @@ namespace WebAPI.Controllers
                 {
                     var subject = "Mã OTP đặt lại mật khẩu";
                     var body =
-$@"Xin chào {user.FullName},
+                        $@"Xin chào {user.FullName},
 
-Mã OTP để đặt lại mật khẩu của bạn là: {otp}
-Mã có hiệu lực trong 10 phút.
+                        Mã OTP để đặt lại mật khẩu của bạn là: {otp}
+                        Mã có hiệu lực trong 10 phút.
 
-Trân trọng.";
+                        Trân trọng.";
                     await _notificationService.SendEmailAsync(user.Email!, subject, body);
                 }
                 catch (Exception)
                 {
-                    // Email sending failed
-                    return StatusCode(500, new BaseCommentResponse(500, "Đã xảy ra lỗi khi lấy mã OTP"));
+                    // Email failed but don't reveal user existence
                 }
 
-                return Ok(new BaseCommentResponse(200, "Yêu cầu đặt lại mật khẩu thành công. Vui lòng kiểm tra email để lấy OTP."));
+                return Ok(new BaseCommentResponse(200, successMsg));
             }
             catch (Exception ex)
             {
@@ -247,7 +265,7 @@ Trân trọng.";
         }
 
         [HttpPost("reset-password")]
-        public async Task<IActionResult> ResetPassword([FromQuery] ResetPasswordDTO dto)
+        public async Task<IActionResult> ResetPassword([FromBody] ResetPasswordDTO dto)
         {
             try
             {
@@ -275,11 +293,11 @@ Trân trọng.";
                 {
                     var subject = "Thông báo đổi mật khẩu thành công";
                     var body =
-$@"Xin chào {user.FullName},
+                        $@"Xin chào {user.FullName},
 
-Mật khẩu của bạn đã được đổi thành công.
+                        Mật khẩu của bạn đã được đổi thành công.
 
-Trân trọng.";
+                        Trân trọng.";
                     await _notificationService.SendEmailAsync(user.Email!, subject, body);
                 }
                 catch (Exception ex)
@@ -298,7 +316,7 @@ Trân trọng.";
 
         [Authorize]
         [HttpPost("change-password")]
-        public async Task<IActionResult> ChangePassword([FromQuery] ChangePasswordDTO dto)
+        public async Task<IActionResult> ChangePassword([FromBody] ChangePasswordDTO dto)
         {
             try
             {
@@ -323,11 +341,11 @@ Trân trọng.";
                 {
                     var subject = "Thông báo đổi mật khẩu thành công";
                     var body =
-$@"Xin chào {user.FullName},
+                        $@"Xin chào {user.FullName},
 
-Mật khẩu của bạn đã được thay đổi thành công theo yêu cầu.
+                        Mật khẩu của bạn đã được thay đổi thành công theo yêu cầu.
 
-Trân trọng.";
+                        Trân trọng.";
                     await _notificationService.SendEmailAsync(user.Email!, subject, body);
                 }
                 catch (Exception ex)
@@ -346,7 +364,7 @@ Trân trọng.";
 
         [Authorize(Roles = "Citizen")]
         [HttpPut("profile/{id}")]
-        public async Task<ActionResult> UpdateProfile(int id, [FromQuery] UpdateProfileDTO dto)
+        public async Task<ActionResult> UpdateProfile(int id, [FromBody] UpdateProfileDTO dto)
         {
             try
             {

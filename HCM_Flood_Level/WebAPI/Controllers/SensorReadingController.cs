@@ -25,6 +25,16 @@ namespace WebAPI.Controllers
             _historyService = historyService;
         }
 
+        /// <summary>
+        /// Lấy 10 MQTT message gần nhất từ HiveMQ (debug).
+        /// </summary>
+        [HttpGet("mqtt-log")]
+        public ActionResult<List<string>> GetMqttLog()
+        {
+            var messages = MqttSubscriberService.GetRecentMessages();
+            return Ok(new { count = messages.Count, messages });
+        }
+
         [HttpGet("sensor-readings")]
         public async Task<ActionResult<List<SensorReadingDTO>>> GetAllSensorReadings()
         {

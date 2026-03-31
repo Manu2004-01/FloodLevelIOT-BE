@@ -13,10 +13,26 @@ public class MqttSubscriberService
     private readonly IServiceProvider _serviceProvider;
     private readonly IConfiguration _configuration;
 
+    // Buffer giữ 10 MQTT message gần nhất để debug
+    private static readonly LinkedList<string> _recentMessages = new();
+    private static readonly object _lock = new();
+    private const int MaxBufferSize = 10;
+
     public MqttSubscriberService(IServiceProvider serviceProvider, IConfiguration configuration)
     {
         _serviceProvider = serviceProvider;
         _configuration = configuration;
+    }
+
+    /// <summary>
+    /// Lấy danh sách 10 MQTT message gần nhất (mới nhất trước).
+    /// </summary>
+    public static List<string> GetRecentMessages()
+    {
+        lock (_lock)
+        {
+            return _recentMessages.ToList();
+        }
     }
 
     public async Task StartAsync()
@@ -59,6 +75,14 @@ public class MqttSubscriberService
             {
                 var payload = Encoding.UTF8.GetString(e.ApplicationMessage.Payload);
                 Console.WriteLine($"[MQTT Received] Topic: {e.ApplicationMessage.Topic} | Payload: {payload}");
+
+                // Lưu message vào buffer debug
+                lock (_lock)
+                {
+                    _recentMessages.AddFirst($"[{DateTime.UtcNow:HH:mm:ss}] {payload}");
+                    if (_recentMessages.Count > MaxBufferSize)
+                        _recentMessages.RemoveLast();
+                }
 
                 var options = new JsonSerializerOptions { PropertyNameCaseInsensitive = true };
                 var data = JsonSerializer.Deserialize<MqttPayload>(payload, options);

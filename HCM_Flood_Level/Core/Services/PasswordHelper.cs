@@ -15,20 +15,18 @@ namespace Core.Services
 
         public static bool VerifyPassword(string password, string hash)
         {
+            if (string.IsNullOrEmpty(password) || string.IsNullOrEmpty(hash))
+                return false;
 
-            if (hash != null && (hash.StartsWith("$2a$") || hash.StartsWith("$2b$") || hash.StartsWith("$2x$") || hash.StartsWith("$2y$")))
+            try
             {
-                try
-                {
-                    return BCrypt.Net.BCrypt.Verify(password, hash);
-                }
-                catch
-                {
-                    return password == hash;
-                }
+                return BCrypt.Net.BCrypt.Verify(password, hash);
             }
-
-            return password == hash;
+            catch
+            {
+                // Invalid/corrupt hash → reject, never fallback to plaintext
+                return false;
+            }
         }
     }
 }
