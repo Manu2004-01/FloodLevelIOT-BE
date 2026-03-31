@@ -36,7 +36,7 @@ namespace WebAPI.Controllers
                     radiusKm,
                     cancellationToken);
                 if (result == null)
-                    return NotFound(new BaseCommentResponse(404, "Không tìm thấy sensor đang ghi nhận dữ liệu trong bán kính yêu cầu."));
+                    return BadRequest(new BaseCommentResponse(400, "Không thể khởi tạo mô hình dự báo (tọa độ không hợp lệ)."));
 
                 return Ok(result);
             }

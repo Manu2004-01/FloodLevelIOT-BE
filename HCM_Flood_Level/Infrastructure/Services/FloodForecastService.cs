@@ -94,9 +94,6 @@ namespace Infrastructure.Services
                 .Where(x => x.DistanceKm <= effectiveRadiusKm)
                 .ToDictionary(x => x.PlaceId, x => x);
 
-            if (locationById.Count == 0)
-                return null;
-
             var placeIds = locationById.Keys.ToList();
             var sensors = await _manage.Sensors
                 .AsNoTracking()
@@ -121,9 +118,6 @@ namespace Infrastructure.Services
             var activeSensors = sensors
                 .Where(s => readingsBySensorId.ContainsKey(s.SensorId))
                 .ToList();
-
-            if (activeSensors.Count == 0)
-                return null;
 
             var histories = await _events.Histories
                 .AsNoTracking()
@@ -176,12 +170,12 @@ namespace Infrastructure.Services
             }
             catch (JsonException)
             {
-                throw new InvalidOperationException("Gemini tr? v? JSON kh?ng d?c du?c. Th? l?i sau.");
+                throw new InvalidOperationException("Gemini trả về JSON không đọc được. Thử lại sau.");
             }
 
             var risk = NormalizeRiskLevel(ai?.RiskLevel);
             var summary = string.IsNullOrWhiteSpace(ai?.Summary)
-                ? "Kh?ng c? t?m t?t t? m? h?nh. Xem tru?ng forecastDataJson."
+                ? "Không có tóm tắt từ mô hình. Xem trường forecastDataJson."
                 : ai!.Summary.Trim();
 
             var modelName = _configuration["Gemini:Model"] ?? "gemini-1.5-flash";
@@ -231,7 +225,7 @@ namespace Infrastructure.Services
         {
             var apiKey = _configuration["Gemini:ApiKey"] ?? Environment.GetEnvironmentVariable("GEMINI_API_KEY");
             if (string.IsNullOrWhiteSpace(apiKey))
-                throw new InvalidOperationException("Chua c?u h?nh Gemini API key (Gemini:ApiKey ho?c GEMINI_API_KEY).");
+                throw new InvalidOperationException("Chưa cấu hình Gemini API key (Gemini:ApiKey hoặc GEMINI_API_KEY).");
 
             var model = (_configuration["Gemini:Model"] ?? "gemini-1.5-flash").Trim();
             var url = $"https://generativelanguage.googleapis.com/v1beta/models/{model}:generateContent";
@@ -280,28 +274,28 @@ namespace Infrastructure.Services
                 fb.TryGetProperty("blockReason", out var br))
             {
                 var reason = br.ValueKind == JsonValueKind.String ? br.GetString() : br.ToString();
-                throw new InvalidOperationException($"Gemini ch?n prompt (blockReason: {reason}).");
+                throw new InvalidOperationException($"Gemini chặn prompt (blockReason: {reason}).");
             }
 
             if (!root.TryGetProperty("candidates", out var candidates) || candidates.GetArrayLength() == 0)
-                throw new InvalidOperationException($"Gemini kh?ng tr? candidates. Ph?n h?i: {TruncateForMessage(respText, 800)}");
+                throw new InvalidOperationException($"Gemini không trả candidates. Phản hồi: {TruncateForMessage(respText, 800)}");
 
             var first = candidates[0];
             var finishReason = GetFinishReasonString(first);
             if (string.Equals(finishReason, "SAFETY", StringComparison.OrdinalIgnoreCase))
-                throw new InvalidOperationException("Gemini d?ng v? SAFETY (n?i dung b? ch?n).");
+                throw new InvalidOperationException("Gemini dừng vì SAFETY (nội dung bị chặn).");
 
             if (!first.TryGetProperty("content", out var contentEl) ||
                 !contentEl.TryGetProperty("parts", out var parts) || parts.GetArrayLength() == 0)
-                throw new InvalidOperationException($"Gemini thi?u content/parts (finishReason={finishReason}).");
+                throw new InvalidOperationException($"Gemini thiếu content/parts (finishReason={finishReason}).");
 
             var part0 = parts[0];
             if (!part0.TryGetProperty("text", out var textEl))
-                throw new InvalidOperationException("Gemini part kh?ng c? tru?ng text.");
+                throw new InvalidOperationException("Gemini part không có trường text.");
 
             var text = textEl.GetString();
             if (string.IsNullOrWhiteSpace(text))
-                throw new InvalidOperationException("Gemini tr? text r?ng.");
+                throw new InvalidOperationException("Gemini trả text rỗng.");
 
             return text;
         }
@@ -338,21 +332,21 @@ namespace Infrastructure.Services
 
         private static string BuildUserPrompt(double latitude, double longitude, double radiusKm, string inputsJson)
         {
-            return $@"B?n h? tr? c?nh b?o ng?p ?ng ?? th? Vi?t Nam (kh?ng thay th? c?nh b?o ch?nh th?c c?a c? quan nh? n??c).
-H? th?ng AL/ML d? d??c hu?n luy?n v?i d? li?u l?ch s? ng?p l?t t?i TP.HCM trong 20 n?m t? 2006 ??n 2026.
-D?a tr?n ki?n th?c l?ch s? n?y k?t h?p th?i ti?t OpenWeather + sensor, h?y d? b?o cho citizen trong b?n k?nh {radiusKm:0.##}km.
+            return $@"Bạn hỗ trợ cảnh báo ngập úng đô thị Việt Nam (không thay thế cảnh báo chính thức của cơ quan nhà nước).
+Hệ thống AI/ML đã được huấn luyện với dữ liệu lịch sử ngập lụt tại TP.HCM trong 20 năm từ 2006 đến 2026.
+Dựa trên kiến thức lịch sử này kết hợp thời tiết OpenWeather + sensor, hãy dự báo cho citizen trong bán kính {radiusKm:0.##}km.
 
-T?a ?? m?u: ({latitude}, {longitude})
+Tọa độ mẫu: ({latitude}, {longitude})
 
-D? li?u ??u v?o (JSON):
+Dữ liệu đầu vào (JSON):
 {inputsJson}
 
-Tr? v? DUY NH?T m?t JSON h?p l?, kh?ng markdown, v?i c?c kh?a:
+Trả về DUY NHẤT một JSON hợp lệ, không markdown, với các khóa:
 - ""riskLevel"": ""Low"", ""Medium"", ""High"".
-- ""summary"": 2-4 c?u ti?nh Vi?t n?u r? t?nh tr?ng d?a v?o m? h?nh l?ch s? 20 n?m (2006-2026).
-- ""recommendations"": m?ng 2-5 g?i ? h?nh ??ng.
-- ""confidenceNote"": ghi ch? ?? tin c?y.
-- ""hoursAheadConsidered"": s? nguy?n (v? d? 12).";
+- ""summary"": 2-4 câu tiếng Việt nêu rõ tình trạng dựa vào mô hình lịch sử 20 năm (2006-2026).
+- ""recommendations"": mảng 2-5 gợi ý hành động.
+- ""confidenceNote"": ghi chú độ tin cậy.
+- ""hoursAheadConsidered"": số nguyên (ví dụ 12).";
         }
 
         private static string NormalizeModelJson(string raw)
