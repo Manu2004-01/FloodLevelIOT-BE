@@ -9,6 +9,6 @@ namespace Core.Interfaces
 {
     public interface ISensorReadingService
     {
-        Task HandleIncomingData(MqttPayload payload);
+        Task<SensorReadingDTO?> HandleIncomingData(MqttPayload payload);
     }
 }

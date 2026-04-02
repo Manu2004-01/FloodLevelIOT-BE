@@ -5,8 +5,9 @@ using System.Text.Json;
 using Core.DTOs;
 using Microsoft.Extensions.DependencyInjection;
 using Core.Interfaces;
-
 using Microsoft.Extensions.Configuration;
+using Microsoft.AspNetCore.SignalR;
+using Infrastructure.Hubs;
 
 public class MqttSubscriberService
 {
@@ -91,7 +92,14 @@ public class MqttSubscriberService
                 {
                     using var scope = _serviceProvider.CreateScope();
                     var service = scope.ServiceProvider.GetRequiredService<ISensorReadingService>();
-                    await service.HandleIncomingData(data);
+                    var dto = await service.HandleIncomingData(data);
+
+                    // Broadcast processed reading to all connected SignalR clients
+                    if (dto != null)
+                    {
+                        var hubContext = scope.ServiceProvider.GetRequiredService<IHubContext<SensorHub>>();
+                        await hubContext.Clients.All.SendAsync("ReceiveSensorReading", dto);
+                    }
                 }
                 else
                 {

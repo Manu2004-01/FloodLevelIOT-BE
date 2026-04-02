@@ -18,13 +18,13 @@ public class SensorReadingService : ISensorReadingService
         _historyService = historyService;
     }
 
-    public async Task HandleIncomingData(MqttPayload payload)
+    public async Task<SensorReadingDTO?> HandleIncomingData(MqttPayload payload)
     {
         var sensor = await _sensorRepo.GetByDeviceId(payload.DeviceId);
         if (sensor == null)
         {
             Console.WriteLine($"[MQTT Error] Sensor with DeviceId '{payload.DeviceId}' not found in database.");
-            return;
+            return null;
         }
 
         // Use waterCm from ESP32 payload or calculate if necessary
@@ -44,10 +44,21 @@ public class SensorReadingService : ISensorReadingService
         };
 
         await _readingRepo.AddAsync(reading);
-        
+
         // Process this reading to update History
         await _historyService.ProcessSensorReading(reading);
-        
+
         Console.WriteLine($"[MQTT Processed] Device: {payload.DeviceId} | Level: {waterLevel}cm | Status: {status}");
+
+        return new SensorReadingDTO
+        {
+            ReadingId = reading.ReadingId,
+            SensorId = reading.SensorId,
+            Status = reading.Status,
+            WaterLevelCm = reading.WaterLevelCm,
+            BatteryPercent = reading.BatteryPercent,
+            SignalStrength = reading.SignalStrength,
+            RecordedAt = reading.RecordedAt
+        };
     }
 }

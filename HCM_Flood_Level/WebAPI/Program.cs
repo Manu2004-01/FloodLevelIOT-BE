@@ -39,6 +39,7 @@ builder.Services.AddDbContext<EventsDBContext>(options =>
 
 // Add services to the container.
 
+builder.Services.AddSignalR();
 builder.Services.AddControllers();
 builder.Services.AddCors(options =>
 {
@@ -185,6 +186,7 @@ app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllers();
+app.MapHub<Infrastructure.Hubs.SensorHub>("/sensorHub");
 
 
 // Ensure DBs are configured/created (development helper)
