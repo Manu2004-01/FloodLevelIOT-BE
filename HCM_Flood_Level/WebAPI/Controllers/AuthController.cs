@@ -59,17 +59,17 @@ namespace WebAPI.Controllers
                 if(!PasswordHelper.VerifyPassword(login.Password, log.PasswordHash))
                     return Unauthorized(new BaseCommentResponse(401, authFailMsg));
 
-                if (!log.IsActive)
-                    return Unauthorized(new BaseCommentResponse(401, "Tài khoản chưa xác nhận OTP"));
+                // if (!log.IsActive)
+                //     return Unauthorized(new BaseCommentResponse(401, "Tài khoản chưa xác nhận OTP"));
 
                 var roleName = log.Role?.RoleName ?? string.Empty;
                 var token = _tokenService.CreateToken(log, roleName);
 
                 return Ok(new {token});
             }
-            catch (Exception)
+            catch (Exception ex)
             {
-                return StatusCode(500, new BaseCommentResponse(500, "Đã xảy ra lỗi máy chủ nội bộ!!!"));
+                return StatusCode(500, new BaseCommentResponse(500, $"Đã xảy ra lỗi máy chủ nội bộ!!! Chi tiết: {ex.Message}"));
             }
         }
 
@@ -83,7 +83,7 @@ namespace WebAPI.Controllers
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new BaseCommentResponse(500, "Đã xảy ra lỗi máy chủ nội bộ!!!"));
+                return StatusCode(500, new BaseCommentResponse(500, $"Đã xảy ra lỗi máy chủ nội bộ!!! Chi tiết: {ex.Message}"));
             }
         }
 
@@ -108,8 +108,6 @@ namespace WebAPI.Controllers
                     .FirstOrDefaultAsync(u => u.Email == dto.Email);
 
                 var defaultRoleId = 3;
-                var otp = OtpHelper.GenerateOtp6();
-                var otpHash = OtpHelper.HashOtpSha256(otp);
                 User user;
 
                 if (existedEmail != null)
@@ -117,14 +115,12 @@ namespace WebAPI.Controllers
                     if (existedEmail.IsActive)
                         return BadRequest(new BaseCommentResponse(400, "Email đã tồn tại và đã được kích hoạt"));
 
-                    // Reuse inactive account — update credentials and require OTP verification
+                    // Reuse inactive account — update credentials and activate
                     user = existedEmail;
                     user.FullName = dto.FullName ?? string.Empty;
                     user.PhoneNumber = dto.PhoneNumber;
                     user.PasswordHash = PasswordHelper.HashPassword(dto.Password);
-                    user.IsActive = false;
-                    user.EmailOtpHash = otpHash;
-                    user.EmailOtpExpiredAt = DateTime.UtcNow.AddMinutes(10);
+                    user.IsActive = true;
                     _context.Users.Update(user);
                 }
                 else
@@ -136,9 +132,7 @@ namespace WebAPI.Controllers
                         PhoneNumber = dto.PhoneNumber,
                         PasswordHash = PasswordHelper.HashPassword(dto.Password),
                         RoleId = defaultRoleId,
-                        IsActive = false,
-                        EmailOtpHash = otpHash,
-                        EmailOtpExpiredAt = DateTime.UtcNow.AddMinutes(10),
+                        IsActive = true,
                         CreatedAt = DateTime.UtcNow
                     };
                     _context.Users.Add(user);
@@ -146,29 +140,11 @@ namespace WebAPI.Controllers
 
                 await _context.SaveChangesAsync();
 
-                // Send OTP verification email
-                try
-                {
-                    var subject = "Mã OTP xác nhận email";
-                    var body =
-$@"Xin chào {user.FullName},
-
-Mã OTP để xác nhận email của bạn là: {otp}
-Mã có hiệu lực trong 10 phút.
-
-Trân trọng.";
-                    await _notificationService.SendEmailAsync(user.Email!, subject, body);
-                }
-                catch (Exception)
-                {
-                    // Email sending failed — user can request resend later
-                }
-
-                return Ok(new BaseCommentResponse(200, "Đăng ký thành công. Vui lòng kiểm tra email để xác nhận OTP."));
+                return Ok(new BaseCommentResponse(200, "Đăng ký thành công. Vui lòng đăng nhập."));
             }
             catch (Exception ex)
             {
-                return StatusCode(500, new BaseCommentResponse(500, $"Đã xảy ra lỗi máy chủ nội bộ!!!"));
+                return StatusCode(500, new BaseCommentResponse(500, $"Đã xảy ra lỗi máy chủ nội bộ!!! Chi tiết: {ex.Message}"));
             }
         }
 
