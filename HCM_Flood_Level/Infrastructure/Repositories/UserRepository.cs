@@ -46,13 +46,32 @@ namespace Infrastructure.Repositories
             return true;
         }
 
-        public async Task<bool> DeleteStaffAsync(int id)
+        public async Task<StaffDeleteUserResult> DeleteStaffAsync(int id)
         {
-            var currentUser = await _context.Users.FindAsync(id);
+            var currentUser = await _context.Users
+                .Include(u => u.Role)
+                .FirstOrDefaultAsync(u => u.UserId == id);
+
+            if (currentUser == null)
+                return StaffDeleteUserResult.UserNotFound;
+
+            if (!string.Equals(currentUser.Role?.RoleName, "Technician", StringComparison.OrdinalIgnoreCase))
+                return StaffDeleteUserResult.TargetNotTechnician;
+
+            const string completed = "Completed";
+
+            var hasIncompleteRequests = await _context.MaintenanceRequests
+                .AnyAsync(r => r.AssignedTechnicianTo == id && r.Status != completed);
+
+            var hasIncompleteSchedules = await _context.MaintenanceSchedules
+                .AnyAsync(s => s.AssignedTechnicianId == id && (s.Status == null || s.Status != completed));
+
+            if (hasIncompleteRequests || hasIncompleteSchedules)
+                return StaffDeleteUserResult.TechnicianHasIncompleteWork;
 
             _context.Users.Remove(currentUser);
             await _context.SaveChangesAsync();
-            return true;
+            return StaffDeleteUserResult.Success;
         }
 
         public async Task<IEnumerable<User>> GetAllUserAsync(EntityParam entityParam)

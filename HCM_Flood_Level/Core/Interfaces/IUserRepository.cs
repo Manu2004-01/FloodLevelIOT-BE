@@ -1,4 +1,4 @@
-﻿using Core.DTOs;
+using Core.DTOs;
 using Core.Entities;
 using Core.Sharing;
 using System;
@@ -13,7 +13,7 @@ namespace Core.Interfaces
     {
         Task<IEnumerable<User>> GetAllUserAsync(EntityParam entityParam);
         Task<bool> AddNewStaffAsync(CreateUserDTO dto);
-        Task<bool> DeleteStaffAsync(int id);
+        Task<StaffDeleteUserResult> DeleteStaffAsync(int id);
         Task<bool> UpdateStaffAsync(int id, UpdateUserDTO dto);
         Task<bool> UpdateProfileAsync(int id, UpdateProfileDTO dto);
     }

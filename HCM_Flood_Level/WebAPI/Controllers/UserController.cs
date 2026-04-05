@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Core.DTOs;
 using Core.Interfaces;
 using Core.Sharing;
@@ -133,11 +133,14 @@ namespace WebAPI.Controllers
 
                 var result = await _unitOfWork.ManageUserRepository.DeleteStaffAsync(id);
 
-                if (result == false)
+                if (result == StaffDeleteUserResult.UserNotFound)
                     return NotFound(new BaseCommentResponse(404, "Không tìm thấy người dùng"));
 
-                if (!result)
-                    return BadRequest(new BaseCommentResponse(400, "Xóa người dùng không thành công"));
+                if (result == StaffDeleteUserResult.TargetNotTechnician)
+                    return BadRequest(new BaseCommentResponse(400, "Chỉ được xóa tài khoản kỹ thuật viên. Không được xóa công dân."));
+
+                if (result == StaffDeleteUserResult.TechnicianHasIncompleteWork)
+                    return BadRequest(new BaseCommentResponse(400, "Không thể xóa kỹ thuật viên khi còn yêu cầu bảo trì hoặc lịch bảo trì chưa hoàn thành. Vui lòng phân công kỹ thuật viên khác trước khi xóa."));
 
                 return Ok(new BaseCommentResponse(200, "Đã xóa người dùng thành công"));
             }

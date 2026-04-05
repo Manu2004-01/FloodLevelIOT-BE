@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -37,5 +37,13 @@ namespace Core.Sharing
             get => _search;
             set => _search = value?.ToLower();
         }
+    }
+
+    public enum StaffDeleteUserResult
+    {
+        Success,
+        UserNotFound,
+        TargetNotTechnician,
+        TechnicianHasIncompleteWork
     }
 }

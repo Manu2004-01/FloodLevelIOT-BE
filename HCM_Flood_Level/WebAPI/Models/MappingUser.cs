@@ -12,8 +12,7 @@ namespace WebAPI.Models
                 .ForMember(a => a.UserId, a => a.MapFrom(b => b.UserId))
                 .ForMember(a => a.Status, a => a.MapFrom(b => b.IsActive))
                 .ForMember(a => a.RoleName, a => a.MapFrom(b => b.Role != null ? b.Role.RoleName : string.Empty))
-                .ForMember(a => a.Email, a => a.MapFrom(b => b.Email))
-                .ForMember(a => a.Username, a => a.MapFrom(b => b.FullName));
+                .ForMember(a => a.Email, a => a.MapFrom(b => b.Email));
 
             CreateMap<CreateUserDTO, User>()
                 .ForMember(a => a.PasswordHash, a => a.Ignore()) 

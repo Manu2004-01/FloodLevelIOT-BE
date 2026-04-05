@@ -1,3 +1,4 @@
+using AutoMapper;
 using Core.DTOs;
 using Core.Entities;
 using Core.Interfaces;
@@ -20,14 +21,16 @@ namespace WebAPI.Controllers
         private readonly IUnitOfWork _unitOfWork;
         private readonly IConfiguration _configuration;
         private readonly INotificationService _notificationService;
+        private readonly IMapper _mapper;
 
-        public AuthController(ManageDBContext context, ITokenService tokenService, IUnitOfWork unitOfWork, IConfiguration configuration, INotificationService notificationService)
+        public AuthController(ManageDBContext context, ITokenService tokenService, IUnitOfWork unitOfWork, IConfiguration configuration, INotificationService notificationService, IMapper mapper)
         {
             _context = context;
             _tokenService = tokenService;
             _unitOfWork = unitOfWork;
             _configuration = configuration;
             _notificationService = notificationService;
+            _mapper = mapper;
         }
 
         [HttpPost("login")]
@@ -350,6 +353,29 @@ namespace WebAPI.Controllers
                 if (!result)
                     return NotFound(new BaseCommentResponse(404, "Không tìm thấy người dùng"));
                 return Ok(new BaseCommentResponse(200, "Cập nhật thông tin cá nhân thành công"));
+            }
+            catch (Exception ex)
+            {
+                return StatusCode(500, new BaseCommentResponse(500, "Đã xảy ra lỗi máy chủ nội bộ!!!"));
+            }
+        }
+
+        [Authorize(Roles = "Citizen")]
+        [HttpGet("profile/{id}")]
+        public async Task<ActionResult> Profile(int id)
+        {
+            try
+            {
+                if (id <= 0)
+                    return BadRequest(new BaseCommentResponse(400, "ID người dùng không hợp lệ"));
+
+                var profile = await _unitOfWork.ManageUserRepository.GetByIdAsync(id);
+
+                if (profile == null)
+                    return NotFound(new BaseCommentResponse(404, "Không tìm thấy tài khoản"));
+
+                var result = _mapper.Map<ProfileDTO>(profile);
+                return Ok(result);
             }
             catch (Exception ex)
             {

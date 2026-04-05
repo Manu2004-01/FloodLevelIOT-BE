@@ -10,7 +10,6 @@ namespace Core.DTOs
     {
         public int UserId { get; set; }
         public string FullName { get; set; }
-        public string Username { get; set; }
         public string Email { get; set; }
         public string PhoneNumber { get; set; }
         public DateTime CreatedAt { get; set; }
@@ -48,5 +47,13 @@ namespace Core.DTOs
     {
         public string? FullName { get; set; }
         public string? PhoneNumber { get; set; }
+    }
+
+    public class ProfileDTO
+    {
+        public int UserId { get; set; }
+        public string FullName { get; set; }
+        public string Email { get; set; }
+        public string PhoneNumber { get; set; }
     }
 }
