@@ -102,7 +102,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPost("devices")]
-        public async Task<ActionResult> CreateDevice([FromQuery] CreateSensorDTO dto)
+        public async Task<ActionResult> CreateDevice([FromBody] CreateSensorDTO dto)
         {
             try
             {
@@ -138,7 +138,7 @@ namespace WebAPI.Controllers
         }
 
         [HttpPut("devices/{id}")]
-        public async Task<ActionResult> UpdateDevice(int id, [FromQuery] UpdateSensorDTO dto)
+        public async Task<ActionResult> UpdateDevice(int id, [FromBody] UpdateSensorDTO dto)
         {
             try
             {

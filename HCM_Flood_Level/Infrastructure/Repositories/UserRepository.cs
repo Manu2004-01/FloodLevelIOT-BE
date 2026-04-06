@@ -83,9 +83,9 @@ namespace Infrastructure.Repositories
 
             if (!string.IsNullOrEmpty(entityParam.Search))
             {
-                query = query.Where(u => 
+                query = query.Where(u =>
                     u.FullName.ToLower().Contains(entityParam.Search) ||
-                    u.FullName.ToLower().Contains(entityParam.Search) ||
+                    u.PhoneNumber.ToLower().Contains(entityParam.Search) ||
                     u.Email.ToLower().Contains(entityParam.Search));
             }
 
@@ -99,6 +99,28 @@ namespace Infrastructure.Repositories
                          .Take(entityParam.Pagesize);
 
             return await query.ToListAsync();
+        }
+
+        public async Task<int> CountUserAsync(EntityParam entityParam)
+        {
+            var query = _context.Users
+                .Where(u => u.RoleId != 1)
+                .AsQueryable();
+
+            if (!string.IsNullOrEmpty(entityParam.Search))
+            {
+                query = query.Where(u =>
+                    u.FullName.ToLower().Contains(entityParam.Search) ||
+                    u.PhoneNumber.ToLower().Contains(entityParam.Search) ||
+                    u.Email.ToLower().Contains(entityParam.Search));
+            }
+
+            if (entityParam.RoleId.HasValue)
+            {
+                query = query.Where(u => u.RoleId == entityParam.RoleId.Value);
+            }
+
+            return await query.CountAsync();
         }
 
         public async Task<bool> UpdateProfileAsync(int id, UpdateProfileDTO dto)

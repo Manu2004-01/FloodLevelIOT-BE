@@ -48,7 +48,7 @@ namespace WebAPI.Controllers
 
         [Authorize(Roles = "Staff")]
         [HttpPost("schedules")]
-        public async Task<ActionResult> CreateSchedule([FromQuery] CreateMaintenanceScheduleDTO dto)
+        public async Task<ActionResult> CreateSchedule([FromBody] CreateMaintenanceScheduleDTO dto)
         {
             try
             {
@@ -104,7 +104,7 @@ namespace WebAPI.Controllers
 
         [Authorize(Roles = "Staff")]
         [HttpPut("schedules/{id}")]
-        public async Task<ActionResult> UpdateSchedule(int id, [FromQuery] UpdateMaintenanceScheduleDTO dto)
+        public async Task<ActionResult> UpdateSchedule(int id, [FromBody] UpdateMaintenanceScheduleDTO dto)
         {
             try
             {

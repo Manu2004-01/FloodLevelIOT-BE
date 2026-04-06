@@ -12,6 +12,7 @@ namespace Core.Interfaces
     public interface IUserRepository : IGenericRepository<User>
     {
         Task<IEnumerable<User>> GetAllUserAsync(EntityParam entityParam);
+        Task<int> CountUserAsync(EntityParam entityParam);
         Task<bool> AddNewStaffAsync(CreateUserDTO dto);
         Task<StaffDeleteUserResult> DeleteStaffAsync(int id);
         Task<bool> UpdateStaffAsync(int id, UpdateUserDTO dto);

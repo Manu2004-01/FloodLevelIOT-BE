@@ -48,7 +48,7 @@ public class MqttSubscriberService
         var factory = new MqttFactory();
         var client = factory.CreateMqttClient();
 
-        var optionsBuilder = new MqttClientOptionsBuilder()
+            var optionsBuilder = new MqttClientOptionsBuilder()
             .WithTcpServer(host, port);
 
         if (!string.IsNullOrEmpty(username))
