@@ -1,4 +1,4 @@
-﻿using AutoMapper;
+using AutoMapper;
 using Core.DTOs;
 using Core.Entities;
 
@@ -21,7 +21,7 @@ namespace WebAPI.Models
                 .ForMember(a => a.RequestId, a => a.MapFrom(b => b.RequestId))
                 .ForMember(a => a.SensorName, a => a.MapFrom(b => b.Sensor.SensorName))
                 .ForMember(a => a.Priority, a => a.MapFrom(b => b.Priority.DisplayName))
-                .ForMember(a => a.AssignedTechnicianTo, a => a.MapFrom(b => b.AssignedTechnician.FullName));
+                .ForMember(a => a.AssignedTechnicianTo, a => a.MapFrom(b => b.AssignedTechnician != null ? b.AssignedTechnician.FullName : null));
         }
     }
 }

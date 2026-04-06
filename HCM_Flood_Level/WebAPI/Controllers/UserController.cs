@@ -5,6 +5,9 @@ using Core.Sharing;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System;
+using System.Collections.Generic;
+using System.Linq;
 using WebAPI.Errors;
 using WebAPI.Helpers;
 
@@ -41,9 +44,9 @@ namespace WebAPI.Controllers
 
                 var total = await _unitOfWork.ManageUserRepository.CountAsync(u => u.RoleId != 1);
 
-                var result = _mapper.Map<List<UserDTO>>(acc);
+                var result = _mapper.Map<List<UserSummaryDTO>>(acc);
 
-                return Ok(new Pagination<UserDTO>(pagesize, pagenumber, total, result));
+                return Ok(new Pagination<UserSummaryDTO>(pagesize, pagenumber, total, result));
             }
             catch (Exception ex)
             {
@@ -64,6 +67,15 @@ namespace WebAPI.Controllers
                     return NotFound(new BaseCommentResponse(404, "Không tìm thấy tài khoản"));
 
                 var result = _mapper.Map<UserDTO>(acc);
+
+                if (string.Equals(acc.Role?.RoleName, "Technician", StringComparison.OrdinalIgnoreCase))
+                {
+                    var schedules = (await _unitOfWork.ManageMaintenanceScheduleRepository.GetByAssignedTechnicianIdAsync(id)).ToList();
+                    var requests = (await _unitOfWork.ManageRequestRepository.GetByAssignedTechnicianIdAsync(id)).ToList();
+                    result.Schedule = schedules.Count > 0 ? _mapper.Map<List<ScheduleDTO>>(schedules) : null;
+                    result.Request = requests.Count > 0 ? _mapper.Map<List<RequestDTO>>(requests) : null;
+                }
+
                 return Ok(result);
             }
             catch (Exception ex)

@@ -29,8 +29,10 @@ namespace Infrastructure.Repositories
 
         public async Task<bool> AddNewScheduleAsync(CreateMaintenanceScheduleDTO dto)
         {
-            var sensorIdExist = await _context.MaintenanceSchedules.AnyAsync(s => s.SensorId == dto.SensorId);
-            if (sensorIdExist) return false;
+            var hasIncomplete = await _context.MaintenanceSchedules.AnyAsync(s =>
+                s.SensorId == dto.SensorId && (s.Status == null || s.Status != "Completed"));
+            if (hasIncomplete)
+                return false;
 
             var schedule = _mapper.Map<MaintenanceSchedule>(dto);
 
@@ -45,8 +47,10 @@ namespace Infrastructure.Repositories
 
         public async Task<bool> AddAutoScheduleAsync(int sensorId)
         {
-            var sensorIdExist = await _context.MaintenanceSchedules.AnyAsync(s => s.SensorId == sensorId);
-            if (sensorIdExist) return false;
+            var hasIncomplete = await _context.MaintenanceSchedules.AnyAsync(s =>
+                s.SensorId == sensorId && (s.Status == null || s.Status != "Completed"));
+            if (hasIncomplete)
+                return false;
 
             var schedule = new MaintenanceSchedule
             {
@@ -185,6 +189,41 @@ namespace Infrastructure.Repositories
             _context.MaintenanceSchedules.Remove(schedule);
             await _context.SaveChangesAsync();
             return true;
+        }
+
+        public async Task<IEnumerable<MaintenanceSchedule>> GetBySensorIdAsync(int sensorId)
+        {
+            return await _context.MaintenanceSchedules
+                .AsSplitQuery()
+                .Include(s => s.AssignedTechnician)
+                .Include(s => s.Sensor)
+                .Where(s => s.SensorId == sensorId)
+                .OrderByDescending(s => s.CreatedAt)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<MaintenanceSchedule>> GetByAssignedTechnicianIdAsync(int technicianId)
+        {
+            var overdueSchedules = await _context.MaintenanceSchedules
+                .Where(s => s.AssignedTechnicianId == technicianId && s.EndDate.HasValue && s.EndDate.Value < DateTime.UtcNow && s.Status != "Completed")
+                .ToListAsync();
+
+            foreach (var schedule in overdueSchedules)
+            {
+                schedule.Status = "Overdue";
+            }
+
+            if (overdueSchedules.Count > 0)
+                await _context.SaveChangesAsync();
+
+            return await _context.MaintenanceSchedules
+                .AsSplitQuery()
+                .Include(s => s.Sensor)
+                .Include(s => s.AssignedTechnician)
+                .Where(s => s.AssignedTechnicianId == technicianId)
+                .OrderBy(s => s.Status == "Scheduled" ? 0 : s.Status == "Active" ? 1 : s.Status == "Completed" ? 2 : s.Status == "Paused" ? 3 : s.Status == "Overdue" ? 4 : 5)
+                .ThenByDescending(s => s.CreatedAt)
+                .ToListAsync();
         }
     }
 }

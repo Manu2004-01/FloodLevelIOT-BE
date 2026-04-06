@@ -43,6 +43,11 @@ namespace Infrastructure.Repositories
             if (technician.Role?.RoleName != "Technician" && technician.RoleId != 3) 
                 throw new Exception($"Người dùng {technician.FullName} không có vai trò Kỹ thuật viên (RoleId: {technician.RoleId})");
 
+            var hasIncompleteRequest = await _context.MaintenanceRequests.AnyAsync(r =>
+                r.SensorId == dto.SensorId && (r.Status == null || r.Status != "Completed"));
+            if (hasIncompleteRequest)
+                throw new Exception("Sensor đang có yêu cầu bảo trì chưa hoàn thành. Chỉ được tạo yêu cầu mới khi yêu cầu hiện tại đã Completed.");
+
             // 4. Map DTO to Entity
             var request = _mapper.Map<MaintenanceRequest>(dto);
 
@@ -145,6 +150,40 @@ namespace Infrastructure.Repositories
                          .Take(entityParam.Pagesize);
 
             return await query.ToListAsync();
+        }
+
+        public async Task<IEnumerable<MaintenanceRequest>> GetBySensorIdAsync(int sensorId)
+        {
+            return await _context.MaintenanceRequests
+                .AsSplitQuery()
+                .Include(r => r.Sensor)
+                .Include(r => r.Priority)
+                .Include(r => r.AssignedTechnician)
+                .Where(r => r.SensorId == sensorId)
+                .OrderByDescending(r => r.CreatedAt)
+                .ToListAsync();
+        }
+
+        public async Task<IEnumerable<MaintenanceRequest>> GetByAssignedTechnicianIdAsync(int technicianId)
+        {
+            var requests = await _context.MaintenanceRequests
+                .AsNoTracking()
+                .AsSplitQuery()
+                .Include(r => r.Sensor)
+                .Include(r => r.Priority)
+                .Include(r => r.AssignedTechnician)
+                .Where(r => r.AssignedTechnicianTo == technicianId)
+                .OrderBy(r => r.Status == "Pending" ? 0 : r.Status == "Assigned" ? 1 : r.Status == "InProgress" ? 2 : r.Status == "Completed" ? 3 : r.Status == "Cancelled" ? 4 : 5)
+                .ThenByDescending(r => r.CreatedAt)
+                .ToListAsync();
+
+            foreach (var r in requests)
+            {
+                if (r.Status == "InProgress")
+                    r.Status = "Assigned";
+            }
+
+            return requests;
         }
     }
 }

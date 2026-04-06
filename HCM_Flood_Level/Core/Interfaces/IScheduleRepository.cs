@@ -18,5 +18,7 @@ namespace Core.Interfaces
         Task<bool> UpdateScheduleAsync(int id, UpdateMaintenanceScheduleDTO dto);
         Task<bool> UpdateScheduleStatusAsync(int id, UpdateScheduleStatusDTO dto);
         Task<bool> DeleteScheduleAsync(int id);
+        Task<IEnumerable<MaintenanceSchedule>> GetBySensorIdAsync(int sensorId);
+        Task<IEnumerable<MaintenanceSchedule>> GetByAssignedTechnicianIdAsync(int technicianId);
     }
 }

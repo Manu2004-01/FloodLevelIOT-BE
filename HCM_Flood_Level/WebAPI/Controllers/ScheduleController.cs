@@ -36,7 +36,7 @@ namespace WebAPI.Controllers
 
                 var result = await _unitOfWork.ManageMaintenanceScheduleRepository.AddAutoScheduleAsync(sensorId);
                 if (!result)
-                    return BadRequest(new BaseCommentResponse(400, "Sensor này đã có lịch bảo trì auto. Không thể tạo thêm."));
+                    return BadRequest(new BaseCommentResponse(400, "Sensor vẫn còn lịch bảo trì chưa Completed. Chỉ được tạo lịch mới khi lịch hiện tại đã Completed."));
 
                 return Ok(new BaseCommentResponse(200, "Đã tạo lịch bảo trì auto cho sensor thành công"));
             }
@@ -65,11 +65,11 @@ namespace WebAPI.Controllers
                 var result = await _unitOfWork.ManageMaintenanceScheduleRepository.AddNewScheduleAsync(dto);
 
                 if (!result)
-                    return BadRequest(new BaseCommentResponse(400, "Tạo lịch bảo trì không thành công"));
+                    return BadRequest(new BaseCommentResponse(400, "Sensor vẫn còn lịch bảo trì chưa Completed. Chỉ được tạo lịch mới khi lịch hiện tại đã Completed."));
 
                 return Ok(new BaseCommentResponse(200, "Tạo lịch bảo trì thành công"));
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return StatusCode(500, new BaseCommentResponse(500, "Đã xảy ra lỗi máy chủ nội bộ!!!"));
             }

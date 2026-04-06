@@ -2,6 +2,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Core.DTOs
@@ -39,6 +40,12 @@ namespace Core.DTOs
         public double? WaterLevel { get; set; }
         public string? Status { get; set; }
         public DateTime? RecordAt { get; set; }
+
+        // [JsonPropertyName("schedule")]
+        public List<ScheduleDTO> Schedule { get; set; } = new();
+
+        // [JsonPropertyName("request")]
+        public List<RequestDTO> Request { get; set; } = new();
     }
 
     public class CreateSensorDTO

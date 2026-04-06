@@ -82,10 +82,16 @@ namespace WebAPI.Controllers
                 var latestReadings = await _unitOfWork.ManageSensorRepository.GetLatestReadingsForSensorIdsAsync(new List<int> { sensor.SensorId });
                 var readingsBySensor = latestReadings.Where(r => r != null).ToDictionary(r => r.SensorId, r => r);
 
+                var schedules = await _unitOfWork.ManageMaintenanceScheduleRepository.GetBySensorIdAsync(id);
+                var requests = await _unitOfWork.ManageRequestRepository.GetBySensorIdAsync(id);
+
                 var result = _mapper.Map<SensorDTO>(sensor, opts =>
                 {
                     opts.Items["LatestReadings"] = readingsBySensor;
                 });
+
+                result.Schedule = _mapper.Map<List<ScheduleDTO>>(schedules);
+                result.Request = _mapper.Map<List<RequestDTO>>(requests);
 
                 return Ok(result);
             }
