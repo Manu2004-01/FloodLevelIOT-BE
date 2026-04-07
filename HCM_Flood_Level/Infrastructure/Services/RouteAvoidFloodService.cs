@@ -200,7 +200,7 @@ namespace Infrastructure.Services
                 }
             }
 
-            // --- T?ch h?p m? h?nh l?ch s? 2006-2026 n?u d? b?o c? m?a ---
+            // --- Tích hợp mô hình lịch sử 2006-2026 nếu dự báo có mưa ---
             bool isRaining = false;
             try 
             {
@@ -215,10 +215,7 @@ namespace Infrastructure.Services
                     isRaining = true;
                 }
             } 
-            catch { /* L?i d?ch v? th?i ti?t th? b? qua */ }
-
-            // Gi? l?p: N?u th?i ti?t d? b?o m?a ho?c b?n mu?n m?c d?nh b?t ?? show demo, th?m isRaining = true
-            isRaining = true; // K?ch ho?t t? v?ng r?i do ng??i d?ng y?u c?u ?? test t?nh nang. Th?c t? s? b? d?ng tr?n.
+            catch { /* Lỗi dịch vụ thời tiết thì bỏ qua */ }
 
             if (isRaining)
             {
