@@ -67,6 +67,17 @@ namespace Infrastructure.Repositories
             return result > 0;
         }
 
+        public async Task<bool> StaffDeleteRequestAsync(int requestId)
+        {
+            var request = await _context.MaintenanceRequests.FindAsync(requestId);
+            if (request == null) return false;
+            if (request.Status != "Completed")
+                throw new Exception("Chỉ được xóa yêu cầu khi trạng thái là Completed.");
+
+            _context.MaintenanceRequests.Remove(request);
+            return await _context.SaveChangesAsync() > 0;
+        }
+
         public async Task<IEnumerable<MaintenanceRequest>> StaffGetRequestAsync(EntityParam entityParam)
         {
             var query = _context.MaintenanceRequests
