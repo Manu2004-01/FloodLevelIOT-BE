@@ -200,69 +200,9 @@ namespace Infrastructure.Services
                 }
             }
 
-            // --- Tích hợp mô hình lịch sử 2006-2026 nếu dự báo có mưa ---
-            bool isRaining = false;
-            try 
-            {
-                var weatherInfo = await _openWeatherService.GetCurrentByCoordinatesAsync(lat, lng, cancellationToken);
-                if (weatherInfo != null && (
-                    (weatherInfo.RainMmPerHour ?? 0) > 0 || 
-                    (weatherInfo.WeatherDescription != null && weatherInfo.WeatherDescription.Contains("rain", StringComparison.OrdinalIgnoreCase)) ||
-                    (weatherInfo.WeatherDescription != null && weatherInfo.WeatherDescription.Contains("thunder", StringComparison.OrdinalIgnoreCase)) ||
-                    (weatherInfo.WeatherDescription != null && weatherInfo.WeatherDescription.Contains("storm", StringComparison.OrdinalIgnoreCase))
-                ))
-                {
-                    isRaining = true;
-                }
-            } 
-            catch { /* Lỗi dịch vụ thời tiết thì bỏ qua */ }
-
-            if (isRaining)
-            {
-                var routePoints = DecodePolyline(primaryRoutePoly);
-                if (routePoints.Count > 5)
-                {
-                    // Lấy một điểm trên tuyến đường (khoảng 30% chặng đường) để giả lập ngập dựa trên kho dữ liệu lịch sử
-                    var targetIndex = routePoints.Count / 3;
-                    var hotspot = routePoints[targetIndex];
-
-                    flooded.Add(new FloodSensor
-                    {
-                        SensorId = -new Random().Next(1000, 9999), 
-                        SensorName = "Điểm đen ngập lụt (Dữ liệu lịch sử phân tích từ tuyến đường)",
-                        Severity = "Danger", 
-                        WaterLevelCm = 50.0f,
-                        WarningThresholdCm = 20.0f,
-                        DangerThresholdCm = 40.0f,
-                        ReadingStatus = "Dự báo AI từ kho dữ liệu 2006-2026 cho tuyến đường này",
-                        Latitude = hotspot.lat,
-                        Longitude = hotspot.lng
-                    });
-                }
-                else
-                {
-                    var historicalHotspots = new List<(double Lat, double Lng, string Name)>
-                    {
-                        (10.762622, 106.682323, "Nguyễn Hữu Cảnh (Lịch sử dự báo ngập)")
-                    };
-
-                    foreach (var hotspot in historicalHotspots)
-                    {
-                        flooded.Add(new FloodSensor
-                        {
-                            SensorId = -new Random().Next(1000, 9999), 
-                            SensorName = hotspot.Name,
-                            Severity = "Danger", 
-                            WaterLevelCm = 50.0f,
-                            WarningThresholdCm = 20.0f,
-                            DangerThresholdCm = 40.0f,
-                            ReadingStatus = "Dự báo AI từ kho dữ liệu 2006-2026",
-                            Latitude = hotspot.Lat,
-                            Longitude = hotspot.Lng
-                        });
-                    }
-                }
-            }
+            // Ghi chú: Đã tắt bỏ tính năng tự động tạo điểm đen ngập giả lập (Mock hotspots)
+            // để đảm bảo tính nhất quán (consistency) giữa Dự báo AI (Forecast) và Tìm đường (Routing).
+            // Tìm tuyến đường giờ đây sẽ CHỈ cảnh báo khi cảm biến IoT thực tế tại khu vực đó đang báo ngập.
 
             return flooded;
         }

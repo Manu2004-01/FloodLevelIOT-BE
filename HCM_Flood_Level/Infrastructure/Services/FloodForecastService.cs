@@ -119,11 +119,12 @@ namespace Infrastructure.Services
                 .Where(s => readingsBySensorId.ContainsKey(s.SensorId))
                 .ToList();
 
+            var fiveYearsAgo = DateTime.UtcNow.AddYears(-5);
             var histories = await _events.Histories
                 .AsNoTracking()
-                .Where(h => placeIds.Contains(h.LocationId))
+                .Where(h => placeIds.Contains(h.LocationId) && h.StartTime >= fiveYearsAgo)
                 .OrderByDescending(h => h.StartTime)
-                .Take(30)
+                .Take(200) // Mở rộng lấy dữ liệu trong 5 năm gần đây
                 .ToListAsync(cancellationToken);
 
             var inputsObject = new
@@ -161,16 +162,50 @@ namespace Infrastructure.Services
             var inputsJson = JsonSerializer.Serialize(inputsObject, new JsonSerializerOptions { WriteIndented = false });
             var prompt = BuildUserPrompt(lat, lon, effectiveRadiusKm, inputsJson);
 
-            var geminiRaw = await CallGeminiAsync(prompt, cancellationToken);
-            var normalized = NormalizeModelJson(geminiRaw);
+            string normalized;
             FloodForecastAiResult? ai;
             try
             {
+                var geminiRaw = await CallGeminiAsync(prompt, cancellationToken);
+                normalized = NormalizeModelJson(geminiRaw);
                 ai = JsonSerializer.Deserialize<FloodForecastAiResult>(normalized, JsonReadOptions);
+                if (ai == null) throw new InvalidOperationException("Deserialized result is null");
             }
-            catch (JsonException)
+            catch (Exception ex)
             {
-                throw new InvalidOperationException("Gemini trả về JSON không đọc được. Thử lại sau.");
+                Console.WriteLine($"[Forecast] Gemini API Error: {ex.Message}. Falling back to local offline heuristic.");
+                
+                int totalHistories = histories.Count;
+                int recentDanger = histories.Count(h => h.Severity == Severity.Danger);
+                int recentWarning = histories.Count(h => h.Severity == Severity.Warning);
+
+                string fallbackRiskLevel = "Low";
+                string fallbackSummary = $"Đã phân tích dựa trên thuật toán cục bộ với {totalHistories} điểm dữ liệu trong 5 năm gần đây.";
+                
+                if (recentDanger >= 3)
+                {
+                    fallbackRiskLevel = "High";
+                    fallbackSummary += " Khu vực này có tỷ lệ ngập sâu nguy hiểm ngập lụt thường xuyên. Hết sức cẩn trọng.";
+                }
+                else if (recentWarning >= 2 || recentDanger > 0)
+                {
+                    fallbackRiskLevel = "Medium";
+                    fallbackSummary += " Tuyến đường thỉnh thoảng có ngập cục bộ và úng nước khi mưa lớn, triều cường.";
+                }
+                else
+                {
+                    fallbackRiskLevel = "Low";
+                    fallbackSummary += " Mức độ ngập lụt thấp, tuyến đường an toàn di chuyển.";
+                }
+
+                ai = new FloodForecastAiResult
+                {
+                    RiskLevel = fallbackRiskLevel,
+                    Summary = fallbackSummary,
+                    Recommendations = new List<string> { "Đề phòng vùng trũng hoặc nắp cống", "Theo dõi thông báo thời tiết liên tục" },
+                    ConfidenceNote = "Sử dụng dự báo offline từ dữ liệu lịch sử hệ thống (do AI model đang bận)."
+                };
+                normalized = JsonSerializer.Serialize(ai);
             }
 
             var risk = NormalizeRiskLevel(ai?.RiskLevel);

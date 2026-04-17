@@ -40,10 +40,20 @@ public class MqttSubscriberService
     {
         var mqttConfig = _configuration.GetSection("Mqtt");
         var host = mqttConfig["Host"];
-        var port = int.Parse(mqttConfig["Port"] ?? "8883");
+
+        // Nếu MQTT chưa được cấu hình, bỏ qua quá trình khởi tạo để không bị crash backend
+        if (string.IsNullOrWhiteSpace(host))
+        {
+            Console.WriteLine("[MQTT Warning] MQTT Host is not configured in appsettings.json. Skipping MQTT initialization.");
+            return;
+        }
+
+        var portConfig = mqttConfig["Port"];
+        var port = (string.IsNullOrWhiteSpace(portConfig) || portConfig == "0") ? 8883 : int.Parse(portConfig);
         var username = mqttConfig["Username"];
         var password = mqttConfig["Password"];
-        var topic = mqttConfig["Topic"] ?? "flood/+/telemetry";
+        var topic = mqttConfig["Topic"];
+        if (string.IsNullOrWhiteSpace(topic)) topic = "flood/+/telemetry";
 
         var factory = new MqttFactory();
         var client = factory.CreateMqttClient();
