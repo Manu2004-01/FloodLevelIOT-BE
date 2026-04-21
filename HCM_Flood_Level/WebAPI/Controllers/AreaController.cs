@@ -22,7 +22,6 @@ namespace WebAPI.Controllers
             _mapper = mapper;
         }
 
-        /// <summary>Lấy tất cả sensor theo mọi khu vực + đọc gần nhất.</summary>
         [HttpGet("areas")]
         public async Task<ActionResult> GetAll()
         {
