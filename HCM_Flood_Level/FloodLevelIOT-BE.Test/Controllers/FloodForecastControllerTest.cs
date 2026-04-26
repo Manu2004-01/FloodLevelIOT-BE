@@ -10,6 +10,7 @@ namespace FloodLevelIOT_BE.Test.Controllers;
 public class FloodForecastControllerTest
 {
     private readonly IFloodForecastService _floodForecastService;
+    private const string InvalidCoordinateMessage = "Tọa độ không hợp lệ (lat: -90..90, lon: -180..180).";
 
     public FloodForecastControllerTest()
     {
@@ -51,6 +52,7 @@ public class FloodForecastControllerTest
         var bad = Assert.IsType<BadRequestObjectResult>(result);
         var body = Assert.IsType<BaseCommentResponse>(bad.Value);
         Assert.Equal(400, body.Statuscodes);
+        Assert.Equal("Không thể khởi tạo mô hình dự báo (tọa độ không hợp lệ).", body.Message);
     }
 
     [Fact]
@@ -122,6 +124,93 @@ public class FloodForecastControllerTest
         Assert.IsType<OkObjectResult>(result);
         A.CallTo(() => _floodForecastService.RunForecastForCitizenAsync(10.0, 106.0, 3.0, A<CancellationToken>._))
             .MustHaveHappenedOnceExactly();
+    }
+
+    /// <summary>UTCID-06: RunForecast với body null → 400, không gọi service.</summary>
+    [Fact]
+    public async Task RunForecast_WithNullPayload_ReturnsBadRequest()
+    {
+        var controller = new FloodForecastController(_floodForecastService);
+
+        var result = await controller.RunForecast(null!, CancellationToken.None);
+
+        var bad = Assert.IsType<BadRequestObjectResult>(result);
+        var body = Assert.IsType<BaseCommentResponse>(bad.Value);
+        Assert.Equal(400, body.Statuscodes);
+        Assert.Equal("Payload không hợp lệ.", body.Message);
+        A.CallTo(() => _floodForecastService.RunForecastForCitizenAsync(A<double>._, A<double>._, A<double>._, A<CancellationToken>._))
+            .MustNotHaveHappened();
+    }
+
+    /// <summary>UTCID-07: vĩ độ ngoài phạm vi (vd. 91) → 400, không gọi service.</summary>
+    [Fact]
+    public async Task RunForecast_WithInvalidLatitude_ReturnsBadRequest()
+    {
+        var dto = new FloodForecastRequestDto { Latitude = 91, Longitude = 106.6, RadiusKm = 2 };
+        var controller = new FloodForecastController(_floodForecastService);
+
+        var result = await controller.RunForecast(dto, CancellationToken.None);
+
+        var bad = Assert.IsType<BadRequestObjectResult>(result);
+        var body = Assert.IsType<BaseCommentResponse>(bad.Value);
+        Assert.Equal(400, body.Statuscodes);
+        Assert.Equal(InvalidCoordinateMessage, body.Message);
+        A.CallTo(() => _floodForecastService.RunForecastForCitizenAsync(A<double>._, A<double>._, A<double>._, A<CancellationToken>._))
+            .MustNotHaveHappened();
+    }
+
+    /// <summary>UTCID-07: kinh độ ngoài phạm vi (vd. 181) → 400, không gọi service.</summary>
+    [Fact]
+    public async Task RunForecast_WithInvalidLongitude_ReturnsBadRequest()
+    {
+        var dto = new FloodForecastRequestDto { Latitude = 10.0, Longitude = 181, RadiusKm = 2 };
+        var controller = new FloodForecastController(_floodForecastService);
+
+        var result = await controller.RunForecast(dto, CancellationToken.None);
+
+        var bad = Assert.IsType<BadRequestObjectResult>(result);
+        var body = Assert.IsType<BaseCommentResponse>(bad.Value);
+        Assert.Equal(400, body.Statuscodes);
+        Assert.Equal(InvalidCoordinateMessage, body.Message);
+        A.CallTo(() => _floodForecastService.RunForecastForCitizenAsync(A<double>._, A<double>._, A<double>._, A<CancellationToken>._))
+            .MustNotHaveHappened();
+    }
+
+    /// <summary>UTCID-08: lỗi dịch vụ — <see cref="InvalidOperationException"/> → 502, Message = nội dung exception.</summary>
+    [Fact]
+    public async Task RunForecast_WhenServiceThrowsInvalidOperationException_Returns502()
+    {
+        const string message = "Forecast model unavailable.";
+        var dto = new FloodForecastRequestDto { Latitude = 10.8, Longitude = 106.6, RadiusKm = 2 };
+        A.CallTo(() => _floodForecastService.RunForecastForCitizenAsync(dto.Latitude, dto.Longitude, 2.0, A<CancellationToken>._))
+            .ThrowsAsync(new InvalidOperationException(message));
+        var controller = new FloodForecastController(_floodForecastService);
+
+        var result = await controller.RunForecast(dto, CancellationToken.None);
+
+        var error = Assert.IsType<ObjectResult>(result);
+        Assert.Equal(502, error.StatusCode);
+        var body = Assert.IsType<BaseCommentResponse>(error.Value);
+        Assert.Equal(502, body.Statuscodes);
+        Assert.Equal(message, body.Message);
+    }
+
+    /// <summary>UTCID-08: lỗi dịch vụ — exception chung → 500, Message cố định (lỗi máy chủ nội bộ).</summary>
+    [Fact]
+    public async Task RunForecast_WhenServiceThrowsException_Returns500()
+    {
+        var dto = new FloodForecastRequestDto { Latitude = 10.8, Longitude = 106.6, RadiusKm = 2 };
+        A.CallTo(() => _floodForecastService.RunForecastForCitizenAsync(dto.Latitude, dto.Longitude, 2.0, A<CancellationToken>._))
+            .ThrowsAsync(new Exception("Unexpected error"));
+        var controller = new FloodForecastController(_floodForecastService);
+
+        var result = await controller.RunForecast(dto, CancellationToken.None);
+
+        var error = Assert.IsType<ObjectResult>(result);
+        Assert.Equal(500, error.StatusCode);
+        var body = Assert.IsType<BaseCommentResponse>(error.Value);
+        Assert.Equal(500, body.Statuscodes);
+        Assert.Equal("Đã xảy ra lỗi máy chủ nội bộ!!!", body.Message);
     }
 
 }

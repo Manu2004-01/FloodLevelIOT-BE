@@ -7,6 +7,7 @@ using Infrastructure.DBContext;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebAPI.Controllers;
+using WebAPI.Errors;
 
 namespace FloodLevelIOT_BE.Test.Controllers;
 
@@ -205,5 +206,67 @@ public class SensorReadingControllerTest
         var payload = Assert.IsType<List<SensorReadingDTO>>(ok.Value);
         Assert.Equal(2, payload.Count);
         Assert.True(payload[0].RecordedAt > payload[1].RecordedAt);
+    }
+
+    [Fact]
+    public async Task GetAllSensorReadings_WhenMappingThrows_Returns500()
+    {
+        await using var context = new TestEventsDbContext(CreateOptions());
+        context.SensorReadings.Add(
+            new SensorReading
+            {
+                ReadingId = 1,
+                SensorId = 1,
+                Status = "Online",
+                WaterLevelCm = 1,
+                BatteryPercent = 100,
+                SignalStrength = "-50",
+                RecordedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc)
+            });
+        await context.SaveChangesAsync();
+
+        var mapper = A.Fake<IMapper>();
+        A.CallTo(() => mapper.Map<List<SensorReadingDTO>>(A<object>._))
+            .Throws(new InvalidOperationException("Map failed"));
+        var history = A.Fake<IHistoryService>();
+        var controller = CreateController(context, mapper, history);
+
+        var result = await controller.GetAllSensorReadings();
+
+        var error = Assert.IsType<ObjectResult>(result.Result);
+        Assert.Equal(500, error.StatusCode);
+        var body = Assert.IsType<BaseCommentResponse>(error.Value);
+        Assert.Equal(500, body.Statuscodes);
+    }
+
+    [Fact]
+    public async Task GetAllSensorReadings_WhenHistoryServiceThrows_Returns500()
+    {
+        await using var context = new TestEventsDbContext(CreateOptions());
+        context.SensorReadings.Add(
+            new SensorReading
+            {
+                ReadingId = 1,
+                SensorId = 1,
+                Status = "Online",
+                WaterLevelCm = 1,
+                BatteryPercent = 100,
+                SignalStrength = "-50",
+                RecordedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc)
+            });
+        await context.SaveChangesAsync();
+
+        var mapper = CreateTestMapper();
+        var history = A.Fake<IHistoryService>();
+        A.CallTo(() => history.ProcessSensorReading(A<SensorReading>._))
+            .Throws(new InvalidOperationException("History failed"));
+        var controller = CreateController(context, mapper, history);
+
+        var result = await controller.GetAllSensorReadings();
+
+        var error = Assert.IsType<ObjectResult>(result.Result);
+        Assert.Equal(500, error.StatusCode);
+        var body = Assert.IsType<BaseCommentResponse>(error.Value);
+        Assert.Equal(500, body.Statuscodes);
     }
 }

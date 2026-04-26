@@ -10,6 +10,7 @@ namespace Core.DTOs
 
         // Cho FE hiển thị nếu muốn (vd: so sánh 2-3 route khác nhau)
         public List<RouteAlternativeDTO> Alternatives { get; set; } = new List<RouteAlternativeDTO>();
+        public string? Message { get; set; }
     }
 
     public class RouteAlternativeDTO

@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using System.ComponentModel.DataAnnotations;
 using WebAPI.Errors;
 
 namespace WebAPI.Controllers
@@ -47,6 +48,9 @@ namespace WebAPI.Controllers
                 if (string.IsNullOrWhiteSpace(login.Email))
                     return BadRequest(new BaseCommentResponse(400, "Email là bắt buộc"));
 
+                if (!new EmailAddressAttribute().IsValid(login.Email))
+                    return BadRequest(new BaseCommentResponse(400, "Định dạng email không hợp lệ"));
+
                 if (string.IsNullOrWhiteSpace(login.Password))
                     return BadRequest(new BaseCommentResponse(400, "Mật khẩu là bắt buộc"));
 
@@ -62,8 +66,8 @@ namespace WebAPI.Controllers
                 if(!PasswordHelper.VerifyPassword(login.Password, log.PasswordHash))
                     return Unauthorized(new BaseCommentResponse(401, authFailMsg));
 
-                // if (!log.IsActive)
-                //     return Unauthorized(new BaseCommentResponse(401, "Tài khoản chưa xác nhận OTP"));
+                if (!log.IsActive)
+                    return Unauthorized(new BaseCommentResponse(401, "Tài khoản chưa xác nhận OTP"));
 
                 var roleName = log.Role?.RoleName ?? string.Empty;
                 var token = _tokenService.CreateToken(log, roleName);
@@ -103,6 +107,9 @@ namespace WebAPI.Controllers
 
                 if (string.IsNullOrWhiteSpace(dto.Email))
                     return BadRequest(new BaseCommentResponse(400, "Email là bắt buộc"));
+
+                if (!new EmailAddressAttribute().IsValid(dto.Email))
+                    return BadRequest(new BaseCommentResponse(400, "Định dạng email không hợp lệ"));
 
                 if (string.IsNullOrWhiteSpace(dto.Password))
                     return BadRequest(new BaseCommentResponse(400, "Mật khẩu là bắt buộc"));

@@ -43,13 +43,34 @@ namespace Infrastructure.Services
         {
             if (request == null) throw new ArgumentNullException(nameof(request));
 
+            // 0) Validation: Kiểm tra tọa độ hợp lệ và điểm đầu/cuối trùng nhau
+            if (request.StartLat.HasValue && request.StartLng.HasValue && request.EndLat.HasValue && request.EndLng.HasValue)
+            {
+                if (Math.Abs(request.StartLat.Value - request.EndLat.Value) < 0.00001 && 
+                    Math.Abs(request.StartLng.Value - request.EndLng.Value) < 0.00001)
+                {
+                    return new RouteAvoidFloodResponseDTO
+                    {
+                        RecommendedRoute = new RouteAlternativeDTO { OverviewPolylinePoints = "", DistanceMeters = 0, DurationSeconds = 0 },
+                        IsRecommendedRouteFlooded = false,
+                        Message = "Điểm đầu và điểm cuối trùng nhau."
+                    };
+                }
+
+                if (request.StartLat < -90 || request.StartLat > 90 || request.EndLat < -90 || request.EndLat > 90 ||
+                    request.StartLng < -180 || request.StartLng > 180 || request.EndLng < -180 || request.EndLng > 180)
+                {
+                    throw new ArgumentException("Tọa độ không hợp lệ (Lat: -90 đến 90, Lng: -180 đến 180)");
+                }
+            }
+
             var serpKey = _config["SerpApi:Key"] ?? Environment.GetEnvironmentVariable("SERPAPI_API_KEY");
             // Bỏ throw exception để fallback về đường đi ảo (Mock) demo nếu không có Key thật
             // if (string.IsNullOrWhiteSpace(serpKey))
             //     throw new InvalidOperationException("Thiếu SerpApi API key");
 
+            var floodRadius = request.FloodRadiusMeters > 0 ? request.FloodRadiusMeters : 300;
             var travelModeId = ParseTravelModeToId(request.TravelMode);
-            var floodRadius = request.FloodRadiusMeters <= 0 ? 300 : request.FloodRadiusMeters;
 
             double checkLat = request.StartLat ?? 10.7769;
             double checkLng = request.StartLng ?? 106.7009;

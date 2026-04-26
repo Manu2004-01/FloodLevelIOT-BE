@@ -124,6 +124,37 @@ public class AuthControllerTest
         Assert.IsType<BadRequestObjectResult>(result);
     }
 
+    [Fact]
+    public async Task Login_WithInvalidEmailFormat_ReturnsBadRequest()
+    {
+        using var context = CreateContext();
+        var controller = CreateController(context);
+
+        var result = await controller.Login(new LoginDTO { Email = "invalid-email", Password = "123456" });
+
+        var badRequest = Assert.IsType<BadRequestObjectResult>(result);
+        var response = Assert.IsType<BaseCommentResponse>(badRequest.Value);
+        Assert.Equal("Định dạng email không hợp lệ", response.Message);
+    }
+
+    [Fact]
+    public async Task Login_WithInactiveAccount_ReturnsUnauthorized()
+    {
+        using var context = CreateContext();
+        var role = new Role { RoleId = 3, RoleName = "Citizen" };
+        context.Roles.Add(role);
+        var user = new User { FullName = "A", Email = "inactive@test.com", PasswordHash = PasswordHelper.HashPassword("123456"), RoleId = 3, IsActive = false };
+        context.Users.Add(user);
+        await context.SaveChangesAsync();
+        var controller = CreateController(context);
+
+        var result = await controller.Login(new LoginDTO { Email = "inactive@test.com", Password = "123456" });
+
+        var unauthorized = Assert.IsType<UnauthorizedObjectResult>(result);
+        var response = Assert.IsType<BaseCommentResponse>(unauthorized.Value);
+        Assert.Equal("Tài khoản chưa xác nhận OTP", response.Message);
+    }
+
     // Register Tests (4 tests)
     [Fact]
     public async Task Register_WithValidData_ReturnsOkAndCreatesUser()
@@ -190,6 +221,19 @@ public class AuthControllerTest
         var result = await controller.Register(new RegisterDTO { FullName = "A", Email = "a@test.com", Password = "" });
 
         Assert.IsType<BadRequestObjectResult>(result);
+    }
+
+    [Fact]
+    public async Task Register_WithInvalidEmailFormat_ReturnsBadRequest()
+    {
+        using var context = CreateContext();
+        var controller = CreateController(context);
+
+        var result = await controller.Register(new RegisterDTO { FullName = "A", Email = "invalid-email", Password = "password" });
+
+        var badRequest = Assert.IsType<BadRequestObjectResult>(result);
+        var response = Assert.IsType<BaseCommentResponse>(badRequest.Value);
+        Assert.Equal("Định dạng email không hợp lệ", response.Message);
     }
 
     // OTP & Password Reset Tests (4 tests)
@@ -274,6 +318,50 @@ public class AuthControllerTest
     }
 
     [Fact]
+    public async Task VerifyEmailOtp_WithAlreadyActiveAccount_ReturnsOkWithNotification()
+    {
+        using var context = CreateContext();
+        context.Users.Add(new User
+        {
+            FullName = "A",
+            Email = "active@test.com",
+            PasswordHash = "hash",
+            IsActive = true,
+            RoleId = 3
+        });
+        await context.SaveChangesAsync();
+        var controller = CreateController(context);
+
+        var result = await controller.VerifyEmailOtp(new VerifyEmailOtpDTO { Email = "active@test.com", Otp = "123456" });
+
+        var ok = Assert.IsType<OkObjectResult>(result);
+        var response = Assert.IsType<BaseCommentResponse>(ok.Value);
+        Assert.Equal("Tài khoản đã được xác nhận trước đó", response.Message);
+    }
+
+    [Fact]
+    public async Task VerifyEmailOtp_WithMissingEmail_ReturnsBadRequest()
+    {
+        using var context = CreateContext();
+        var controller = CreateController(context);
+
+        var result = await controller.VerifyEmailOtp(new VerifyEmailOtpDTO { Email = "", Otp = "123456" });
+
+        Assert.IsType<BadRequestObjectResult>(result);
+    }
+
+    [Fact]
+    public async Task VerifyEmailOtp_WithMissingOtp_ReturnsBadRequest()
+    {
+        using var context = CreateContext();
+        var controller = CreateController(context);
+
+        var result = await controller.VerifyEmailOtp(new VerifyEmailOtpDTO { Email = "a@test.com", Otp = "" });
+
+        Assert.IsType<BadRequestObjectResult>(result);
+    }
+
+    [Fact]
     public async Task ForgotPassword_WithExistingEmail_ReturnsOkAndSendsOtp()
     {
         using var context = CreateContext();
@@ -300,6 +388,30 @@ public class AuthControllerTest
         var result = await controller.ForgotPassword(new ForgotPasswordDTO { Email = "none@test.com" });
 
         Assert.IsType<OkObjectResult>(result);
+    }
+
+    [Fact]
+    public async Task ForgotPassword_WithMissingEmail_ReturnsBadRequest()
+    {
+        using var context = CreateContext();
+        var controller = CreateController(context);
+        controller.ModelState.AddModelError("Email", "The Email field is required.");
+
+        var result = await controller.ForgotPassword(new ForgotPasswordDTO { Email = "" });
+
+        Assert.IsType<BadRequestObjectResult>(result);
+    }
+
+    [Fact]
+    public async Task ForgotPassword_WithInvalidEmailFormat_ReturnsBadRequest()
+    {
+        using var context = CreateContext();
+        var controller = CreateController(context);
+        controller.ModelState.AddModelError("Email", "The Email field is not a valid e-mail address.");
+
+        var result = await controller.ForgotPassword(new ForgotPasswordDTO { Email = "invalid-email" });
+
+        Assert.IsType<BadRequestObjectResult>(result);
     }
 
     [Fact]
@@ -432,6 +544,49 @@ public class AuthControllerTest
         Assert.IsType<UnauthorizedObjectResult>(result);
     }
 
+    [Fact]
+    public async Task ChangePassword_WithShortNewPassword_ReturnsBadRequest()
+    {
+        using var context = CreateContext();
+        var controller = CreateController(context);
+        controller.ModelState.AddModelError("NewPassword", "The field NewPassword must be a string with a minimum length of 6.");
+
+        var result = await controller.ChangePassword(new ChangePasswordDTO { CurrentPassword = "old", NewPassword = "123" });
+
+        Assert.IsType<BadRequestObjectResult>(result);
+    }
+
+    [Fact]
+    public async Task ChangePassword_WithMissingCurrentPassword_ReturnsBadRequest()
+    {
+        using var context = CreateContext();
+        var controller = CreateController(context);
+        controller.ModelState.AddModelError("CurrentPassword", "The CurrentPassword field is required.");
+
+        var result = await controller.ChangePassword(new ChangePasswordDTO { CurrentPassword = "", NewPassword = "newpass" });
+
+        Assert.IsType<BadRequestObjectResult>(result);
+    }
+
+    [Fact]
+    public async Task ChangePassword_WithNonexistentUser_ReturnsNotFound()
+    {
+        using var context = CreateContext();
+        var controller = CreateController(context);
+        controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext
+            {
+                User = new ClaimsPrincipal(
+                    new ClaimsIdentity(new[] { new Claim(ClaimTypes.Email, "none@test.com") }, "test"))
+            }
+        };
+
+        var result = await controller.ChangePassword(new ChangePasswordDTO { CurrentPassword = "old", NewPassword = "newpass" });
+
+        Assert.IsType<NotFoundObjectResult>(result);
+    }
+
     // Profile Tests (3 tests)
     [Fact]
     public async Task UpdateProfile_WithValidId_ReturnsOkAndUpdatesProfile()
@@ -522,5 +677,23 @@ public class AuthControllerTest
         var ok = Assert.IsType<OkObjectResult>(result);
         var response = Assert.IsType<BaseCommentResponse>(ok.Value);
         Assert.Equal(200, response.Statuscodes);
+    }
+
+    [Fact]
+    public async Task Logout_WhenNotAuthorized_ReturnsOkRegardless()
+    {
+        using var context = CreateContext();
+        var controller = CreateController(context);
+        controller.ControllerContext = new ControllerContext
+        {
+            HttpContext = new DefaultHttpContext { User = new ClaimsPrincipal(new ClaimsIdentity()) }
+        };
+
+        var result = await controller.Logout();
+
+        var ok = Assert.IsType<OkObjectResult>(result);
+        var response = Assert.IsType<BaseCommentResponse>(ok.Value);
+        Assert.Equal(200, response.Statuscodes);
+        Assert.Equal("Đăng xuất thành công", response.Message);
     }
 }

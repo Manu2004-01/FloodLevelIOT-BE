@@ -123,6 +123,18 @@ public class RequestControllerTest
         Assert.IsType<OkObjectResult>(result);
     }
 
+    [Fact]
+    public async Task StaffGetRequests_WithInternalServerError_Returns500()
+    {
+        A.CallTo(() => _requestRepository.StaffGetRequestAsync(A<EntityParam>._)).Throws(new Exception("DB Error"));
+        var controller = new RequestController(_unitOfWork, _mapper);
+
+        var result = await controller.StaffGetRequestAsync(1, 10, null, null);
+
+        var objectResult = Assert.IsType<ObjectResult>(result);
+        Assert.Equal(500, objectResult.StatusCode);
+    }
+
     // Staff Delete Request Tests (1 test)
     [Fact]
     public async Task StaffDeleteRequest_WithValidId_ReturnsOkAndDeletesRequest()
@@ -144,6 +156,29 @@ public class RequestControllerTest
         var result = await controller.StaffDeleteRequestAsync(999);
 
         Assert.IsType<NotFoundObjectResult>(result);
+    }
+
+    [Fact]
+    public async Task StaffDeleteRequest_WithNegativeId_ReturnsNotFound()
+    {
+        A.CallTo(() => _requestRepository.StaffDeleteRequestAsync(-1)).Returns(false);
+        var controller = new RequestController(_unitOfWork, _mapper);
+
+        var result = await controller.StaffDeleteRequestAsync(-1);
+
+        Assert.IsType<NotFoundObjectResult>(result);
+    }
+
+    [Fact]
+    public async Task StaffDeleteRequest_WithInternalServerError_ReturnsBadRequest()
+    {
+        A.CallTo(() => _requestRepository.StaffDeleteRequestAsync(1)).Throws(new Exception("Database Error"));
+        var controller = new RequestController(_unitOfWork, _mapper);
+
+        var result = await controller.StaffDeleteRequestAsync(1);
+
+        var badRequest = Assert.IsType<ObjectResult>(result);
+        Assert.Equal(400, badRequest.StatusCode);
     }
 
     // Technician Update Status Tests (3 tests)
@@ -169,6 +204,42 @@ public class RequestControllerTest
         SetTechnicianClaims(controller, 10);
 
         var result = await controller.TechnicianUpdateStatusAsync(99, new TechnicianUpdateStatusDTO { Status = "Completed" });
+
+        Assert.IsType<NotFoundObjectResult>(result);
+    }
+
+    [Fact]
+    public async Task TechnicianUpdateStatus_WithZeroId_ReturnsNotFound()
+    {
+        A.CallTo(() => _requestRepository.GetByIdAsync(0)).Returns((MaintenanceRequest)null!);
+        var controller = new RequestController(_unitOfWork, _mapper);
+        SetTechnicianClaims(controller, 10);
+
+        var result = await controller.TechnicianUpdateStatusAsync(0, new TechnicianUpdateStatusDTO { Status = "Completed" });
+
+        Assert.IsType<NotFoundObjectResult>(result);
+    }
+
+    [Fact]
+    public async Task TechnicianUpdateStatus_WithNegativeId_ReturnsNotFound()
+    {
+        A.CallTo(() => _requestRepository.GetByIdAsync(-1)).Returns((MaintenanceRequest)null!);
+        var controller = new RequestController(_unitOfWork, _mapper);
+        SetTechnicianClaims(controller, 10);
+
+        var result = await controller.TechnicianUpdateStatusAsync(-1, new TechnicianUpdateStatusDTO { Status = "Completed" });
+
+        Assert.IsType<NotFoundObjectResult>(result);
+    }
+
+    [Fact]
+    public async Task TechnicianUpdateStatus_WithMaxIntId_ReturnsNotFound()
+    {
+        A.CallTo(() => _requestRepository.GetByIdAsync(int.MaxValue)).Returns((MaintenanceRequest)null!);
+        var controller = new RequestController(_unitOfWork, _mapper);
+        SetTechnicianClaims(controller, 10);
+
+        var result = await controller.TechnicianUpdateStatusAsync(int.MaxValue, new TechnicianUpdateStatusDTO { Status = "Completed" });
 
         Assert.IsType<NotFoundObjectResult>(result);
     }
@@ -210,6 +281,19 @@ public class RequestControllerTest
         Assert.IsType<UnauthorizedObjectResult>(result);
     }
 
+    [Fact]
+    public async Task TechnicianUpdateStatus_WithInternalServerError_Returns500()
+    {
+        A.CallTo(() => _requestRepository.GetByIdAsync(1)).Throws(new Exception("Database Error"));
+        var controller = new RequestController(_unitOfWork, _mapper);
+        SetTechnicianClaims(controller, 10);
+
+        var result = await controller.TechnicianUpdateStatusAsync(1, new TechnicianUpdateStatusDTO { Status = "Completed" });
+
+        var objectResult = Assert.IsType<ObjectResult>(result);
+        Assert.Equal(500, objectResult.StatusCode);
+    }
+
     // Technician Get Requests Tests (2 tests)
     [Fact]
     public async Task TechnicianGetRequests_WithValidPagination_ReturnsOkWithAssignedRequests()
@@ -246,6 +330,73 @@ public class RequestControllerTest
     }
 
     [Fact]
+    public async Task TechnicianGetRequests_WithPriorityFilter_ReturnsOkWithFilteredAssignedRequests()
+    {
+        var requests = new List<MaintenanceRequest>();
+        A.CallTo(() => _requestRepository.TechnicianGetRequestAsync(10, A<EntityParam>.That.Matches(p => p.RequestPriority == "High")))
+            .Returns(requests);
+        A.CallTo(() => _requestRepository.CountAsync(A<Expression<Func<MaintenanceRequest, bool>>>._)).Returns(0);
+        A.CallTo(() => _mapper.Map<List<RequestDTO>>(requests)).Returns(new List<RequestDTO>());
+        var controller = new RequestController(_unitOfWork, _mapper);
+        SetTechnicianClaims(controller, 10);
+
+        var result = await controller.TechnicianGetRequestAsync(1, 10, null, priority: "High");
+
+        Assert.IsType<OkObjectResult>(result);
+    }
+
+    [Fact]
+    public async Task TechnicianGetRequests_WithZeroPageNumber_ReturnsOk()
+    {
+        var requests = new List<MaintenanceRequest>();
+        A.CallTo(() => _requestRepository.TechnicianGetRequestAsync(10, A<EntityParam>.That.Matches(p => p.Pagenumber == 0 && p.Pagesize == 10)))
+            .Returns(requests);
+        A.CallTo(() => _requestRepository.CountAsync(A<Expression<Func<MaintenanceRequest, bool>>>._)).Returns(0);
+        A.CallTo(() => _mapper.Map<List<RequestDTO>>(requests)).Returns(new List<RequestDTO>());
+        var controller = new RequestController(_unitOfWork, _mapper);
+        SetTechnicianClaims(controller, 10);
+
+        var result = await controller.TechnicianGetRequestAsync(0, 10, null, null);
+
+        Assert.IsType<OkObjectResult>(result);
+    }
+
+    [Fact]
+    public async Task TechnicianGetRequests_WithZeroPageSize_ReturnsOk()
+    {
+        var requests = new List<MaintenanceRequest>();
+        A.CallTo(() => _requestRepository.TechnicianGetRequestAsync(10, A<EntityParam>.That.Matches(p => p.Pagenumber == 1 && p.Pagesize == 0)))
+            .Returns(requests);
+        A.CallTo(() => _requestRepository.CountAsync(A<Expression<Func<MaintenanceRequest, bool>>>._)).Returns(0);
+        A.CallTo(() => _mapper.Map<List<RequestDTO>>(requests)).Returns(new List<RequestDTO>());
+        var controller = new RequestController(_unitOfWork, _mapper);
+        SetTechnicianClaims(controller, 10);
+
+        var result = await controller.TechnicianGetRequestAsync(1, 0, null, null);
+
+        Assert.IsType<OkObjectResult>(result);
+    }
+
+    [Fact]
+    public async Task TechnicianGetRequests_WithNoAssignedRequests_ReturnsOkWithEmptyPagination()
+    {
+        var requests = new List<MaintenanceRequest>();
+        var dtos = new List<RequestDTO>();
+        A.CallTo(() => _requestRepository.TechnicianGetRequestAsync(10, A<EntityParam>._)).Returns(requests);
+        A.CallTo(() => _requestRepository.CountAsync(A<Expression<Func<MaintenanceRequest, bool>>>._)).Returns(0);
+        A.CallTo(() => _mapper.Map<List<RequestDTO>>(requests)).Returns(dtos);
+        var controller = new RequestController(_unitOfWork, _mapper);
+        SetTechnicianClaims(controller, 10);
+
+        var result = await controller.TechnicianGetRequestAsync(1, 10, null, null);
+
+        var ok = Assert.IsType<OkObjectResult>(result);
+        var page = Assert.IsType<Pagination<RequestDTO>>(ok.Value);
+        Assert.Equal(0, page.TotalCount);
+        Assert.Empty(page.Data);
+    }
+
+    [Fact]
     public async Task TechnicianGetRequests_WithoutAuthorization_ReturnsUnauthorized()
     {
         var controller = new RequestController(_unitOfWork, _mapper);
@@ -254,5 +405,18 @@ public class RequestControllerTest
         var result = await controller.TechnicianGetRequestAsync(1, 10, null, null);
 
         Assert.IsType<UnauthorizedObjectResult>(result);
+    }
+
+    [Fact]
+    public async Task TechnicianGetRequests_WithInternalServerError_Returns500()
+    {
+        A.CallTo(() => _requestRepository.TechnicianGetRequestAsync(10, A<EntityParam>._)).Throws(new Exception("Database Error"));
+        var controller = new RequestController(_unitOfWork, _mapper);
+        SetTechnicianClaims(controller, 10);
+
+        var result = await controller.TechnicianGetRequestAsync(1, 10, null, null);
+
+        var objectResult = Assert.IsType<ObjectResult>(result);
+        Assert.Equal(500, objectResult.StatusCode);
     }
 }

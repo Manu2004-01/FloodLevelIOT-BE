@@ -151,6 +151,64 @@ public class ScheduleControllerTest
         Assert.IsType<BadRequestObjectResult>(result);
     }
 
+    [Fact]
+    public async Task ExecuteAutoSchedule_WithZeroSensorId_ReturnsNotFound()
+    {
+        A.CallTo(() => _sensorRepository.GetByIdAsync(0)).Returns((Sensor)null!);
+        var controller = new ScheduleController(_unitOfWork, _mapper);
+
+        var result = await controller.ExecuteAutoScheduleForSensor(0);
+
+        Assert.IsType<NotFoundObjectResult>(result);
+    }
+
+    [Fact]
+    public async Task ExecuteAutoSchedule_WithNegativeSensorId_ReturnsNotFound()
+    {
+        A.CallTo(() => _sensorRepository.GetByIdAsync(-1)).Returns((Sensor)null!);
+        var controller = new ScheduleController(_unitOfWork, _mapper);
+
+        var result = await controller.ExecuteAutoScheduleForSensor(-1);
+
+        Assert.IsType<NotFoundObjectResult>(result);
+    }
+
+    [Fact]
+    public async Task ExecuteAutoSchedule_WithMaxIntSensorIdAndIncompleteSchedule_ReturnsBadRequest()
+    {
+        A.CallTo(() => _sensorRepository.GetByIdAsync(int.MaxValue)).Returns(new Sensor { SensorId = int.MaxValue });
+        A.CallTo(() => _scheduleRepository.AddAutoScheduleAsync(int.MaxValue)).Returns(false);
+        var controller = new ScheduleController(_unitOfWork, _mapper);
+
+        var result = await controller.ExecuteAutoScheduleForSensor(int.MaxValue);
+
+        Assert.IsType<BadRequestObjectResult>(result);
+    }
+
+    [Fact]
+    public async Task ExecuteAutoSchedule_WithAnotherValidSensorId_ReturnsOk()
+    {
+        A.CallTo(() => _sensorRepository.GetByIdAsync(3)).Returns(new Sensor { SensorId = 3 });
+        A.CallTo(() => _scheduleRepository.AddAutoScheduleAsync(3)).Returns(true);
+        var controller = new ScheduleController(_unitOfWork, _mapper);
+
+        var result = await controller.ExecuteAutoScheduleForSensor(3);
+
+        Assert.IsType<OkObjectResult>(result);
+    }
+
+    [Fact]
+    public async Task ExecuteAutoSchedule_WithInternalServerError_Returns500()
+    {
+        A.CallTo(() => _sensorRepository.GetByIdAsync(1)).Throws(new Exception("Database Error"));
+        var controller = new ScheduleController(_unitOfWork, _mapper);
+
+        var result = await controller.ExecuteAutoScheduleForSensor(1);
+
+        var objectResult = Assert.IsType<ObjectResult>(result);
+        Assert.Equal(500, objectResult.StatusCode);
+    }
+
     // Get All Schedules Tests (3 tests)
     [Fact]
     public async Task GetAllSchedules_WithValidPagination_ReturnsOkWithPaginatedSchedules()
@@ -198,6 +256,82 @@ public class ScheduleControllerTest
         var result = await controller.GetAllSchedules(1, 10, null, type: "Monthly", mode: "Auto");
 
         Assert.IsType<OkObjectResult>(result);
+    }
+
+    [Fact]
+    public async Task GetAllSchedules_WithZeroPageNumber_ReturnsOk()
+    {
+        var schedules = new List<MaintenanceSchedule>();
+        A.CallTo(() => _scheduleRepository.GetAllSchedulesAsync(A<EntityParam>.That.Matches(p => p.Pagenumber == 0 && p.Pagesize == 10)))
+            .Returns(schedules);
+        A.CallTo(() => _scheduleRepository.CountAsync()).Returns(0);
+        A.CallTo(() => _mapper.Map<List<ScheduleDTO>>(schedules)).Returns(new List<ScheduleDTO>());
+        var controller = new ScheduleController(_unitOfWork, _mapper);
+
+        var result = await controller.GetAllSchedules(0, 10, null, null, null);
+
+        Assert.IsType<OkObjectResult>(result);
+    }
+
+    [Fact]
+    public async Task GetAllSchedules_WithZeroPageSize_ReturnsOk()
+    {
+        var schedules = new List<MaintenanceSchedule>();
+        A.CallTo(() => _scheduleRepository.GetAllSchedulesAsync(A<EntityParam>.That.Matches(p => p.Pagenumber == 1 && p.Pagesize == 0)))
+            .Returns(schedules);
+        A.CallTo(() => _scheduleRepository.CountAsync()).Returns(0);
+        A.CallTo(() => _mapper.Map<List<ScheduleDTO>>(schedules)).Returns(new List<ScheduleDTO>());
+        var controller = new ScheduleController(_unitOfWork, _mapper);
+
+        var result = await controller.GetAllSchedules(1, 0, null, null, null);
+
+        Assert.IsType<OkObjectResult>(result);
+    }
+
+    [Fact]
+    public async Task GetAllSchedules_WithNoData_ReturnsOkWithEmptyPagination()
+    {
+        var schedules = new List<MaintenanceSchedule>();
+        var dtos = new List<ScheduleDTO>();
+        A.CallTo(() => _scheduleRepository.GetAllSchedulesAsync(A<EntityParam>._)).Returns(schedules);
+        A.CallTo(() => _scheduleRepository.CountAsync()).Returns(0);
+        A.CallTo(() => _mapper.Map<List<ScheduleDTO>>(schedules)).Returns(dtos);
+        var controller = new ScheduleController(_unitOfWork, _mapper);
+
+        var result = await controller.GetAllSchedules(1, 10, null, null, null);
+
+        var ok = Assert.IsType<OkObjectResult>(result);
+        var page = Assert.IsType<Pagination<ScheduleDTO>>(ok.Value);
+        Assert.Equal(0, page.TotalCount);
+        Assert.Empty(page.Data);
+    }
+
+    [Fact]
+    public async Task GetAllSchedules_WithTypeFilterOnly_ReturnsOkWithFilteredByType()
+    {
+        var schedules = new List<MaintenanceSchedule>();
+        A.CallTo(() => _scheduleRepository.GetAllSchedulesAsync(A<EntityParam>.That.Matches(p =>
+                p.ScheduleType == "Monthly" && p.ScheduleMode == null && p.ScheduleStatus == null)))
+            .Returns(schedules);
+        A.CallTo(() => _scheduleRepository.CountAsync()).Returns(0);
+        A.CallTo(() => _mapper.Map<List<ScheduleDTO>>(schedules)).Returns(new List<ScheduleDTO>());
+        var controller = new ScheduleController(_unitOfWork, _mapper);
+
+        var result = await controller.GetAllSchedules(1, 10, null, type: "Monthly", mode: null);
+
+        Assert.IsType<OkObjectResult>(result);
+    }
+
+    [Fact]
+    public async Task GetAllSchedules_WithInternalServerError_Returns500()
+    {
+        A.CallTo(() => _scheduleRepository.GetAllSchedulesAsync(A<EntityParam>._)).Throws(new Exception("Database Error"));
+        var controller = new ScheduleController(_unitOfWork, _mapper);
+
+        var result = await controller.GetAllSchedules(1, 10, null, null, null);
+
+        var objectResult = Assert.IsType<ObjectResult>(result);
+        Assert.Equal(500, objectResult.StatusCode);
     }
 
     // Update Schedule Tests (2 tests)
@@ -252,6 +386,39 @@ public class ScheduleControllerTest
     }
 
     [Fact]
+    public async Task UpdateSchedule_WithZeroId_ReturnsNotFound()
+    {
+        A.CallTo(() => _scheduleRepository.GetByIdAsync(0)).Returns((MaintenanceSchedule)null!);
+        var controller = new ScheduleController(_unitOfWork, _mapper);
+
+        var result = await controller.UpdateSchedule(0, new UpdateMaintenanceScheduleDTO { Note = "x" });
+
+        Assert.IsType<NotFoundObjectResult>(result);
+    }
+
+    [Fact]
+    public async Task UpdateSchedule_WithNegativeId_ReturnsNotFound()
+    {
+        A.CallTo(() => _scheduleRepository.GetByIdAsync(-1)).Returns((MaintenanceSchedule)null!);
+        var controller = new ScheduleController(_unitOfWork, _mapper);
+
+        var result = await controller.UpdateSchedule(-1, new UpdateMaintenanceScheduleDTO { Note = "x" });
+
+        Assert.IsType<NotFoundObjectResult>(result);
+    }
+
+    [Fact]
+    public async Task UpdateSchedule_WithMaxIntId_ReturnsNotFound()
+    {
+        A.CallTo(() => _scheduleRepository.GetByIdAsync(int.MaxValue)).Returns((MaintenanceSchedule)null!);
+        var controller = new ScheduleController(_unitOfWork, _mapper);
+
+        var result = await controller.UpdateSchedule(int.MaxValue, new UpdateMaintenanceScheduleDTO { Note = "x" });
+
+        Assert.IsType<NotFoundObjectResult>(result);
+    }
+
+    [Fact]
     public async Task UpdateSchedule_WithNullDto_ReturnsBadRequest()
     {
         var controller = new ScheduleController(_unitOfWork, _mapper);
@@ -259,6 +426,18 @@ public class ScheduleControllerTest
         var result = await controller.UpdateSchedule(1, null!);
 
         Assert.IsType<BadRequestObjectResult>(result);
+    }
+
+    [Fact]
+    public async Task UpdateSchedule_WithInternalServerError_Returns500()
+    {
+        A.CallTo(() => _scheduleRepository.GetByIdAsync(1)).Throws(new Exception("Database Error"));
+        var controller = new ScheduleController(_unitOfWork, _mapper);
+
+        var result = await controller.UpdateSchedule(1, new UpdateMaintenanceScheduleDTO { Note = "x" });
+
+        var objectResult = Assert.IsType<ObjectResult>(result);
+        Assert.Equal(500, objectResult.StatusCode);
     }
 
     // Delete Schedule Tests (2 tests)
@@ -292,6 +471,61 @@ public class ScheduleControllerTest
         var result = await controller.DeleteSchedule(999);
 
         Assert.IsType<BadRequestObjectResult>(result);
+    }
+
+    [Fact]
+    public async Task DeleteSchedule_WithNegativeId_ReturnsBadRequest()
+    {
+        var controller = new ScheduleController(_unitOfWork, _mapper);
+
+        var result = await controller.DeleteSchedule(-1);
+
+        Assert.IsType<BadRequestObjectResult>(result);
+    }
+
+    [Fact]
+    public async Task DeleteSchedule_WithMaxIntId_ReturnsBadRequest()
+    {
+        A.CallTo(() => _scheduleRepository.DeleteScheduleAsync(int.MaxValue)).Returns(false);
+        var controller = new ScheduleController(_unitOfWork, _mapper);
+
+        var result = await controller.DeleteSchedule(int.MaxValue);
+
+        Assert.IsType<BadRequestObjectResult>(result);
+    }
+
+    [Fact]
+    public async Task DeleteSchedule_WithAnotherValidId_ReturnsOkAndDeletesSchedule()
+    {
+        A.CallTo(() => _scheduleRepository.DeleteScheduleAsync(2)).Returns(true);
+        var controller = new ScheduleController(_unitOfWork, _mapper);
+
+        var result = await controller.DeleteSchedule(2);
+
+        Assert.IsType<OkObjectResult>(result);
+    }
+
+    [Fact]
+    public async Task DeleteSchedule_WithAnotherNonexistentId_ReturnsBadRequest()
+    {
+        A.CallTo(() => _scheduleRepository.DeleteScheduleAsync(1000)).Returns(false);
+        var controller = new ScheduleController(_unitOfWork, _mapper);
+
+        var result = await controller.DeleteSchedule(1000);
+
+        Assert.IsType<BadRequestObjectResult>(result);
+    }
+
+    [Fact]
+    public async Task DeleteSchedule_WithInternalServerError_Returns500()
+    {
+        A.CallTo(() => _scheduleRepository.DeleteScheduleAsync(1)).Throws(new Exception("Database Error"));
+        var controller = new ScheduleController(_unitOfWork, _mapper);
+
+        var result = await controller.DeleteSchedule(1);
+
+        var objectResult = Assert.IsType<ObjectResult>(result);
+        Assert.Equal(500, objectResult.StatusCode);
     }
 
     // Technician Get Schedules Tests (2 tests)
@@ -330,6 +564,73 @@ public class ScheduleControllerTest
     }
 
     [Fact]
+    public async Task GetMySchedules_WithTypeFilter_ReturnsOkWithFilteredTechnicianSchedules()
+    {
+        var schedules = new List<MaintenanceSchedule>();
+        A.CallTo(() => _scheduleRepository.GetSchedulesByTechnicianAsync(10, A<EntityParam>.That.Matches(p => p.ScheduleType == "Weekly")))
+            .Returns(schedules);
+        A.CallTo(() => _scheduleRepository.CountAsync(A<Expression<Func<MaintenanceSchedule, bool>>>._)).Returns(0);
+        A.CallTo(() => _mapper.Map<List<ScheduleDTO>>(schedules)).Returns(new List<ScheduleDTO>());
+        var controller = new ScheduleController(_unitOfWork, _mapper);
+        SetTechnicianClaims(controller, 10);
+
+        var result = await controller.GetMySchedules(1, 10, null, type: "Weekly");
+
+        Assert.IsType<OkObjectResult>(result);
+    }
+
+    [Fact]
+    public async Task GetMySchedules_WithZeroPageNumber_ReturnsOk()
+    {
+        var schedules = new List<MaintenanceSchedule>();
+        A.CallTo(() => _scheduleRepository.GetSchedulesByTechnicianAsync(10, A<EntityParam>.That.Matches(p => p.Pagenumber == 0 && p.Pagesize == 10)))
+            .Returns(schedules);
+        A.CallTo(() => _scheduleRepository.CountAsync(A<Expression<Func<MaintenanceSchedule, bool>>>._)).Returns(0);
+        A.CallTo(() => _mapper.Map<List<ScheduleDTO>>(schedules)).Returns(new List<ScheduleDTO>());
+        var controller = new ScheduleController(_unitOfWork, _mapper);
+        SetTechnicianClaims(controller, 10);
+
+        var result = await controller.GetMySchedules(0, 10, null, null);
+
+        Assert.IsType<OkObjectResult>(result);
+    }
+
+    [Fact]
+    public async Task GetMySchedules_WithZeroPageSize_ReturnsOk()
+    {
+        var schedules = new List<MaintenanceSchedule>();
+        A.CallTo(() => _scheduleRepository.GetSchedulesByTechnicianAsync(10, A<EntityParam>.That.Matches(p => p.Pagenumber == 1 && p.Pagesize == 0)))
+            .Returns(schedules);
+        A.CallTo(() => _scheduleRepository.CountAsync(A<Expression<Func<MaintenanceSchedule, bool>>>._)).Returns(0);
+        A.CallTo(() => _mapper.Map<List<ScheduleDTO>>(schedules)).Returns(new List<ScheduleDTO>());
+        var controller = new ScheduleController(_unitOfWork, _mapper);
+        SetTechnicianClaims(controller, 10);
+
+        var result = await controller.GetMySchedules(1, 0, null, null);
+
+        Assert.IsType<OkObjectResult>(result);
+    }
+
+    [Fact]
+    public async Task GetMySchedules_WithNoAssignedSchedules_ReturnsOkWithEmptyPagination()
+    {
+        var schedules = new List<MaintenanceSchedule>();
+        var dtos = new List<ScheduleDTO>();
+        A.CallTo(() => _scheduleRepository.GetSchedulesByTechnicianAsync(10, A<EntityParam>._)).Returns(schedules);
+        A.CallTo(() => _scheduleRepository.CountAsync(A<Expression<Func<MaintenanceSchedule, bool>>>._)).Returns(0);
+        A.CallTo(() => _mapper.Map<List<ScheduleDTO>>(schedules)).Returns(dtos);
+        var controller = new ScheduleController(_unitOfWork, _mapper);
+        SetTechnicianClaims(controller, 10);
+
+        var result = await controller.GetMySchedules(1, 10, null, null);
+
+        var ok = Assert.IsType<OkObjectResult>(result);
+        var page = Assert.IsType<Pagination<ScheduleDTO>>(ok.Value);
+        Assert.Equal(0, page.TotalCount);
+        Assert.Empty(page.Data);
+    }
+
+    [Fact]
     public async Task GetMySchedules_WithoutAuthorization_ReturnsUnauthorized()
     {
         var controller = new ScheduleController(_unitOfWork, _mapper);
@@ -338,6 +639,19 @@ public class ScheduleControllerTest
         var result = await controller.GetMySchedules(1, 10, null, null);
 
         Assert.IsType<UnauthorizedObjectResult>(result);
+    }
+
+    [Fact]
+    public async Task GetMySchedules_WithInternalServerError_Returns500()
+    {
+        A.CallTo(() => _scheduleRepository.GetSchedulesByTechnicianAsync(10, A<EntityParam>._)).Throws(new Exception("Database Error"));
+        var controller = new ScheduleController(_unitOfWork, _mapper);
+        SetTechnicianClaims(controller, 10);
+
+        var result = await controller.GetMySchedules(1, 10, null, null);
+
+        var objectResult = Assert.IsType<ObjectResult>(result);
+        Assert.Equal(500, objectResult.StatusCode);
     }
 
     // Technician Update Status Tests (2 tests)
@@ -369,6 +683,54 @@ public class ScheduleControllerTest
     }
 
     [Fact]
+    public async Task UpdateMyScheduleStatus_WithNonexistentScheduleId_ReturnsNotFound()
+    {
+        A.CallTo(() => _scheduleRepository.GetByIdAsync(999)).Returns((MaintenanceSchedule)null!);
+        var controller = new ScheduleController(_unitOfWork, _mapper);
+        SetTechnicianClaims(controller, 10);
+
+        var result = await controller.UpdateMyScheduleStatus(999, new UpdateScheduleStatusDTO { Status = "Completed" });
+
+        Assert.IsType<NotFoundObjectResult>(result);
+    }
+
+    [Fact]
+    public async Task UpdateMyScheduleStatus_WithZeroScheduleId_ReturnsNotFound()
+    {
+        A.CallTo(() => _scheduleRepository.GetByIdAsync(0)).Returns((MaintenanceSchedule)null!);
+        var controller = new ScheduleController(_unitOfWork, _mapper);
+        SetTechnicianClaims(controller, 10);
+
+        var result = await controller.UpdateMyScheduleStatus(0, new UpdateScheduleStatusDTO { Status = "Completed" });
+
+        Assert.IsType<NotFoundObjectResult>(result);
+    }
+
+    [Fact]
+    public async Task UpdateMyScheduleStatus_WithNegativeScheduleId_ReturnsNotFound()
+    {
+        A.CallTo(() => _scheduleRepository.GetByIdAsync(-1)).Returns((MaintenanceSchedule)null!);
+        var controller = new ScheduleController(_unitOfWork, _mapper);
+        SetTechnicianClaims(controller, 10);
+
+        var result = await controller.UpdateMyScheduleStatus(-1, new UpdateScheduleStatusDTO { Status = "Completed" });
+
+        Assert.IsType<NotFoundObjectResult>(result);
+    }
+
+    [Fact]
+    public async Task UpdateMyScheduleStatus_WithMaxIntScheduleId_ReturnsNotFound()
+    {
+        A.CallTo(() => _scheduleRepository.GetByIdAsync(int.MaxValue)).Returns((MaintenanceSchedule)null!);
+        var controller = new ScheduleController(_unitOfWork, _mapper);
+        SetTechnicianClaims(controller, 10);
+
+        var result = await controller.UpdateMyScheduleStatus(int.MaxValue, new UpdateScheduleStatusDTO { Status = "Completed" });
+
+        Assert.IsType<NotFoundObjectResult>(result);
+    }
+
+    [Fact]
     public async Task UpdateMyScheduleStatus_WithScheduleNotAssignedToTechnician_ReturnsNotFound()
     {
         var schedule = new MaintenanceSchedule { ScheduleId = 4, AssignedTechnicianId = 99, Status = "Scheduled" };
@@ -390,5 +752,18 @@ public class ScheduleControllerTest
         var result = await controller.UpdateMyScheduleStatus(1, new UpdateScheduleStatusDTO { Status = "Completed" });
 
         Assert.IsType<UnauthorizedObjectResult>(result);
+    }
+
+    [Fact]
+    public async Task UpdateMyScheduleStatus_WithInternalServerError_Returns500()
+    {
+        A.CallTo(() => _scheduleRepository.GetByIdAsync(1)).Throws(new Exception("Database Error"));
+        var controller = new ScheduleController(_unitOfWork, _mapper);
+        SetTechnicianClaims(controller, 10);
+
+        var result = await controller.UpdateMyScheduleStatus(1, new UpdateScheduleStatusDTO { Status = "Completed" });
+
+        var objectResult = Assert.IsType<ObjectResult>(result);
+        Assert.Equal(500, objectResult.StatusCode);
     }
 }

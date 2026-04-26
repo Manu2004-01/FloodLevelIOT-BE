@@ -64,6 +64,46 @@ public class SensorControllerTest
     }
 
     [Fact]
+    public async Task GetAllDevices_WithInvalidPageSize_ReturnsBadRequest()
+    {
+        var controller = new SensorController(_unitOfWork, _mapper);
+
+        var result = await controller.GetAllDevices(1, 0, null);
+
+        Assert.IsType<BadRequestObjectResult>(result);
+    }
+
+    [Fact]
+    public async Task GetAllDevices_WithNoResults_ReturnsOkWithEmptyPagination()
+    {
+        A.CallTo(() => _sensorRepository.GetAllSensorsAsync(A<EntityParam>._)).Returns(new List<Sensor>());
+        A.CallTo(() => _sensorRepository.CountAsync()).Returns(0);
+        A.CallTo(() => _sensorRepository.GetLatestReadingsForSensorIdsAsync(A<IEnumerable<int>>._)).Returns(new List<SensorReading>());
+        A.CallTo(() => _mapper.Map<List<ManageSensorDTO>>(A<object>._, A<Action<IMappingOperationOptions<object, List<ManageSensorDTO>>>>._))
+            .Returns(new List<ManageSensorDTO>());
+        var controller = new SensorController(_unitOfWork, _mapper);
+
+        var result = await controller.GetAllDevices(1, 10, "non-existent");
+
+        var ok = Assert.IsType<OkObjectResult>(result);
+        var page = Assert.IsType<Pagination<ManageSensorDTO>>(ok.Value);
+        Assert.Equal(0, page.TotalCount);
+        Assert.Empty(page.Data);
+    }
+
+    [Fact]
+    public async Task GetAllDevices_WithInternalServerError_Returns500()
+    {
+        A.CallTo(() => _sensorRepository.GetAllSensorsAsync(A<EntityParam>._)).Throws(new Exception("DB Error"));
+        var controller = new SensorController(_unitOfWork, _mapper);
+
+        var result = await controller.GetAllDevices(1, 10, null);
+
+        var objectResult = Assert.IsType<ObjectResult>(result);
+        Assert.Equal(500, objectResult.StatusCode);
+    }
+
+    [Fact]
     public async Task GetAllDevices_WithSearchFilter_ReturnsOkWithFilteredSensors()
     {
         var sensors = new List<Sensor> { new() { SensorId = 2, SensorName = "Flood Sensor" } };
@@ -125,6 +165,47 @@ public class SensorControllerTest
         Assert.IsType<NotFoundObjectResult>(result);
     }
 
+    [Fact]
+    public async Task GetDeviceById_WithNegativeId_ReturnsBadRequest()
+    {
+        var controller = new SensorController(_unitOfWork, _mapper);
+
+        var result = await controller.GetDeviceById(-1);
+
+        var badRequest = Assert.IsType<BadRequestObjectResult>(result);
+        var response = Assert.IsType<BaseCommentResponse>(badRequest.Value);
+        Assert.Equal("ID thiết bị không hợp lệ", response.Message);
+    }
+
+    [Fact]
+    public async Task GetDeviceById_WithMaxIntId_ReturnsNotFound()
+    {
+        A.CallTo(() => _sensorRepository.GetByIdAsync(int.MaxValue, A<System.Linq.Expressions.Expression<Func<Sensor, object>>[]>.Ignored))
+            .Returns((Sensor)null!);
+        var controller = new SensorController(_unitOfWork, _mapper);
+
+        var result = await controller.GetDeviceById(int.MaxValue);
+
+        var notFound = Assert.IsType<NotFoundObjectResult>(result);
+        var response = Assert.IsType<BaseCommentResponse>(notFound.Value);
+        Assert.Equal("Không tìm thấy thiết bị", response.Message);
+    }
+
+    [Fact]
+    public async Task GetDeviceById_WithInternalServerError_Returns500()
+    {
+        A.CallTo(() => _sensorRepository.GetByIdAsync(1, A<System.Linq.Expressions.Expression<Func<Sensor, object>>[]>.Ignored))
+            .Throws(new Exception("DB connection failed"));
+        var controller = new SensorController(_unitOfWork, _mapper);
+
+        var result = await controller.GetDeviceById(1);
+
+        var objectResult = Assert.IsType<ObjectResult>(result);
+        Assert.Equal(500, objectResult.StatusCode);
+        var response = Assert.IsType<BaseCommentResponse>(objectResult.Value);
+        Assert.Contains("Đã xảy ra lỗi máy chủ nội bộ", response.Message);
+    }
+
     // Create Device Tests (2 tests)
     [Fact]
     public async Task CreateDevice_WithValidData_ReturnsOkAndCreatesSensor()
@@ -177,6 +258,39 @@ public class SensorControllerTest
         Assert.IsType<BadRequestObjectResult>(result);
     }
 
+    [Fact]
+    public async Task CreateDevice_WithMissingName_ReturnsBadRequest()
+    {
+        var controller = new SensorController(_unitOfWork, _mapper);
+
+        var result = await controller.CreateDevice(new CreateSensorDTO { SensorCode = "D1", SensorName = "", SensorType = "Water", Latitude = 10m, Longitude = 106m });
+
+        Assert.IsType<BadRequestObjectResult>(result);
+    }
+
+    [Fact]
+    public async Task CreateDevice_WithMissingType_ReturnsBadRequest()
+    {
+        var controller = new SensorController(_unitOfWork, _mapper);
+
+        var result = await controller.CreateDevice(new CreateSensorDTO { SensorCode = "D1", SensorName = "S1", SensorType = "", Latitude = 10m, Longitude = 106m });
+
+        Assert.IsType<BadRequestObjectResult>(result);
+    }
+
+    [Fact]
+    public async Task CreateDevice_WithInternalServerError_Returns500()
+    {
+        A.CallTo(() => _sensorRepository.AddNewSensorAsync(A<CreateSensorDTO>._)).Throws(new Exception("DB Error"));
+        var controller = new SensorController(_unitOfWork, _mapper);
+        var dto = new CreateSensorDTO { SensorCode = "ERR", SensorName = "S1", SensorType = "Water", Latitude = 10m, Longitude = 106m };
+
+        var result = await controller.CreateDevice(dto);
+
+        var objectResult = Assert.IsType<ObjectResult>(result);
+        Assert.Equal(500, objectResult.StatusCode);
+    }
+
     // Update Device Tests (2 tests)
     [Fact]
     public async Task UpdateDevice_WithValidData_ReturnsOkAndUpdatesSensor()
@@ -219,6 +333,32 @@ public class SensorControllerTest
         var result = await controller.UpdateDevice(1, new UpdateSensorDTO());
 
         Assert.IsType<BadRequestObjectResult>(result);
+    }
+
+    [Fact]
+    public async Task UpdateDevice_WithDuplicateSensorCode_ReturnsBadRequest()
+    {
+        A.CallTo(() => _sensorRepository.GetByIdAsync(1)).Returns(new Sensor { SensorId = 1 });
+        A.CallTo(() => _sensorRepository.UpdateSensorAsync(1, A<UpdateSensorDTO>._)).Returns(false);
+        var controller = new SensorController(_unitOfWork, _mapper);
+
+        var result = await controller.UpdateDevice(1, new UpdateSensorDTO { SensorCode = "DUP" });
+
+        var badRequest = Assert.IsType<BadRequestObjectResult>(result);
+        var response = Assert.IsType<BaseCommentResponse>(badRequest.Value);
+        Assert.Contains("Cập nhật thiết bị không thành công", response.Message);
+    }
+
+    [Fact]
+    public async Task UpdateDevice_WithInternalServerError_Returns500()
+    {
+        A.CallTo(() => _sensorRepository.GetByIdAsync(1)).Throws(new Exception("Fatal DB Error"));
+        var controller = new SensorController(_unitOfWork, _mapper);
+
+        var result = await controller.UpdateDevice(1, new UpdateSensorDTO { SensorName = "Err" });
+
+        var objectResult = Assert.IsType<ObjectResult>(result);
+        Assert.Equal(500, objectResult.StatusCode);
     }
 
     // Delete Device Tests (2 tests)

@@ -57,6 +57,55 @@ public class AreaControllerTest
         Assert.Equal(404, response.Statuscodes);
     }
 
+    [Fact]
+    public async Task GetAllAreas_WhenAreasListIsEmpty_ReturnsOkWithEmptyList()
+    {
+        // Arrange
+        var emptyAreas = new List<Area>();
+        A.CallTo(() => _areaRepository.GetAllAsync()).Returns(emptyAreas);
+        var controller = new AreaController(_unitOfWork, _mapper);
+
+        // Act
+        var result = await controller.GetAll();
+
+        // Assert
+        var okResult = Assert.IsType<OkObjectResult>(result);
+        var value = Assert.IsAssignableFrom<IReadOnlyList<Area>>(okResult.Value);
+        Assert.Empty(value);
+    }
+
+    [Fact]
+    public async Task GetAllAreas_WhenAreasListHasMultipleItems_ReturnsOkWithAreasList()
+    {
+        // Arrange
+        var areas = new List<Area> { new Area(), new Area(), new Area() };
+        A.CallTo(() => _areaRepository.GetAllAsync()).Returns(areas);
+        var controller = new AreaController(_unitOfWork, _mapper);
+
+        // Act
+        var result = await controller.GetAll();
+
+        // Assert
+        var okResult = Assert.IsType<OkObjectResult>(result);
+        var value = Assert.IsAssignableFrom<IReadOnlyList<Area>>(okResult.Value);
+        Assert.Equal(3, value.Count);
+    }
+
+    [Fact]
+    public async Task GetAllAreas_WhenRepositoryThrowsException_ReturnsInternalServerError()
+    {
+        // Arrange
+        A.CallTo(() => _areaRepository.GetAllAsync()).Throws(new Exception("Database error"));
+        var controller = new AreaController(_unitOfWork, _mapper);
+
+        // Act
+        var result = await controller.GetAll();
+
+        // Assert
+        var objectResult = Assert.IsType<ObjectResult>(result);
+        Assert.Equal(500, objectResult.StatusCode);
+    }
+
     // Get Area Details Tests (3 tests)
     [Fact]
     public async Task GetAreaDetails_WithValidAreaId_ReturnsOkWithAreaSensorReadings()
@@ -87,6 +136,42 @@ public class AreaControllerTest
 
         // Act
         var result = await controller.GetDetail(invalidAreaId);
+
+        // Assert
+        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result.Result);
+        var response = Assert.IsType<BaseCommentResponse>(notFoundResult.Value);
+        Assert.Equal(404, response.Statuscodes);
+    }
+
+    [Fact]
+    public async Task GetAreaDetails_WithZeroAreaId_ReturnsNotFound()
+    {
+        // Arrange
+        var areaId = 0;
+        A.CallTo(() => _areaRepository.GetAreaSensorReadingsAsync(areaId, A<CancellationToken>._))
+            .Returns(new List<AreaDTO>());
+        var controller = new AreaController(_unitOfWork, _mapper);
+
+        // Act
+        var result = await controller.GetDetail(areaId);
+
+        // Assert
+        var notFoundResult = Assert.IsType<NotFoundObjectResult>(result.Result);
+        var response = Assert.IsType<BaseCommentResponse>(notFoundResult.Value);
+        Assert.Equal(404, response.Statuscodes);
+    }
+
+    [Fact]
+    public async Task GetAreaDetails_WithMaxIntAreaId_ReturnsNotFound()
+    {
+        // Arrange
+        var areaId = int.MaxValue;
+        A.CallTo(() => _areaRepository.GetAreaSensorReadingsAsync(areaId, A<CancellationToken>._))
+            .Returns(new List<AreaDTO>());
+        var controller = new AreaController(_unitOfWork, _mapper);
+
+        // Act
+        var result = await controller.GetDetail(areaId);
 
         // Assert
         var notFoundResult = Assert.IsType<NotFoundObjectResult>(result.Result);
@@ -131,5 +216,22 @@ public class AreaControllerTest
         var okResult = Assert.IsType<OkObjectResult>(result.Result);
         Assert.Same(readings, okResult.Value);
         A.CallTo(() => _areaRepository.GetAreaSensorReadingsAsync(areaId, token)).MustHaveHappenedOnceExactly();
+    }
+
+    [Fact]
+    public async Task GetAreaDetails_WhenRepositoryThrowsException_ReturnsInternalServerError()
+    {
+        // Arrange
+        var areaId = 1;
+        A.CallTo(() => _areaRepository.GetAreaSensorReadingsAsync(areaId, A<CancellationToken>._))
+            .Throws(new Exception("Database error"));
+        var controller = new AreaController(_unitOfWork, _mapper);
+
+        // Act
+        var result = await controller.GetDetail(areaId);
+
+        // Assert
+        var objectResult = Assert.IsType<ObjectResult>(result.Result);
+        Assert.Equal(500, objectResult.StatusCode);
     }
 }

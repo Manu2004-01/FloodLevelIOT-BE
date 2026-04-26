@@ -6,6 +6,7 @@ using Infrastructure.DBContext;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using WebAPI.Controllers;
+using WebAPI.Errors;
 
 namespace FloodLevelIOT_BE.Test.Controllers;
 
@@ -215,6 +216,34 @@ public class HistoryControllerTest
         var payload = Assert.IsType<List<HistoryDTO>>(ok.Value);
         Assert.Equal(4, payload.Count);
         Assert.All(payload, h => Assert.Equal(99, h.LocationId));
+    }
+
+    [Fact]
+    public async Task GetAllHistories_WhenMappingThrows_Returns500()
+    {
+        await using var context = new HistoryTestEventsDbContext(CreateOptions());
+        context.Histories.Add(new History
+        {
+            HistoryId = 1,
+            LocationId = 1,
+            StartTime = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc),
+            MaxWaterLevel = 10f,
+            Severity = Severity.Safe,
+            CreatedAt = new DateTime(2025, 1, 1, 0, 0, 0, DateTimeKind.Utc)
+        });
+        await context.SaveChangesAsync();
+
+        var mapper = A.Fake<IMapper>();
+        A.CallTo(() => mapper.Map<List<HistoryDTO>>(A<object>._))
+            .Throws(new InvalidOperationException("Map failed"));
+        var controller = new HistoryController(context, mapper);
+
+        var result = await controller.GetAllHistories();
+
+        var error = Assert.IsType<ObjectResult>(result.Result);
+        Assert.Equal(500, error.StatusCode);
+        var body = Assert.IsType<BaseCommentResponse>(error.Value);
+        Assert.Equal(500, body.Statuscodes);
     }
 
 }

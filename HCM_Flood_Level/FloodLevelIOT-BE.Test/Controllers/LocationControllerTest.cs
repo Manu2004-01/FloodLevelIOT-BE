@@ -24,7 +24,7 @@ public class LocationControllerTest
         A.CallTo(() => _unitOfWork.LocationRepository).Returns(_locationRepository);
     }
 
-    // Get All Locations Tests (4 tests)
+    // Get All Locations Tests
     [Fact]
     public async Task GetAllLocations_WhenLocationsExist_ReturnsOkWithLocationsList()
     {
@@ -124,5 +124,65 @@ public class LocationControllerTest
         Assert.Equal(500, error.StatusCode);
         var response = Assert.IsType<BaseCommentResponse>(error.Value);
         Assert.Equal(500, response.Statuscodes);
+    }
+
+    [Fact]
+    public async Task GetAllLocations_WhenMultipleLocationsExist_ReturnsOkWithList()
+    {
+        var locations = new List<Location>
+        {
+            new() { PlaceId = 1, Title = "A", Address = "x", Latitude = 1m, Longitude = 2m, Area = new Area { AreaId = 1, AreaName = "A1" } },
+            new() { PlaceId = 2, Title = "B", Address = "y", Latitude = 3m, Longitude = 4m, Area = new Area { AreaId = 2, AreaName = "A2" } }
+        };
+        var dtos = (IReadOnlyList<LocationDTO>)new List<LocationDTO>
+        {
+            new() { PlaceId = 1, AreaName = "A1", Title = "A", Address = "x", Latitude = 1, Longitude = 2 },
+            new() { PlaceId = 2, AreaName = "A2", Title = "B", Address = "y", Latitude = 3, Longitude = 4 }
+        };
+        A.CallTo(() => _locationRepository.GetAllAsync(A<Expression<Func<Location, object>>[]>.Ignored))
+            .Returns(locations);
+        A.CallTo(() => _mapper.Map<IReadOnlyList<Location>, IReadOnlyList<LocationDTO>>(A<IReadOnlyList<Location>>._))
+            .Returns(dtos);
+        var controller = new LocationController(_unitOfWork, _mapper);
+
+        var result = await controller.GetAllLocations();
+
+        var ok = Assert.IsType<OkObjectResult>(result);
+        var payload = Assert.IsAssignableFrom<IReadOnlyList<LocationDTO>>(ok.Value);
+        Assert.Equal(2, payload.Count);
+    }
+
+    [Fact]
+    public async Task GetAllLocations_WhenMappingThrowsException_ReturnsInternalServerError()
+    {
+        var locations = new List<Location>
+        {
+            new() { PlaceId = 1, Title = "A", Address = "x", Latitude = 1m, Longitude = 2m, Area = new Area { AreaId = 1, AreaName = "A1" } }
+        };
+        A.CallTo(() => _locationRepository.GetAllAsync(A<Expression<Func<Location, object>>[]>.Ignored))
+            .Returns(locations);
+        A.CallTo(() => _mapper.Map<IReadOnlyList<Location>, IReadOnlyList<LocationDTO>>(A<IReadOnlyList<Location>>._))
+            .Throws(new InvalidOperationException("Map failed"));
+        var controller = new LocationController(_unitOfWork, _mapper);
+
+        var result = await controller.GetAllLocations();
+
+        var error = Assert.IsType<ObjectResult>(result);
+        Assert.Equal(500, error.StatusCode);
+        var response = Assert.IsType<BaseCommentResponse>(error.Value);
+        Assert.Equal(500, response.Statuscodes);
+    }
+
+    [Fact]
+    public async Task GetAllLocations_WhenGetAllAsyncReturnsNull_ReturnsInternalServerError()
+    {
+        A.CallTo(() => _locationRepository.GetAllAsync(A<Expression<Func<Location, object>>[]>.Ignored))
+            .Returns(Task.FromResult<IEnumerable<Location>>(null!));
+        var controller = new LocationController(_unitOfWork, _mapper);
+
+        var result = await controller.GetAllLocations();
+
+        var error = Assert.IsType<ObjectResult>(result);
+        Assert.Equal(500, error.StatusCode);
     }
 }

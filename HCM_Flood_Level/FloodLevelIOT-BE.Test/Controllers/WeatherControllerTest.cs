@@ -104,4 +104,44 @@ public class WeatherControllerTest
         Assert.Equal(502, body.Statuscodes);
     }
 
+    [Fact]
+    public async Task GetCurrent_WithInvalidLatitude_ReturnsBadRequest()
+    {
+        var controller = new WeatherController(_openWeatherService);
+
+        var result = await controller.GetCurrent(91, 106, CancellationToken.None);
+
+        var bad = Assert.IsType<BadRequestObjectResult>(result);
+        var body = Assert.IsType<BaseCommentResponse>(bad.Value);
+        Assert.Equal(400, body.Statuscodes);
+        A.CallTo(() => _openWeatherService.GetCurrentByCoordinatesAsync(A<double>._, A<double>._, A<CancellationToken>._))
+            .MustNotHaveHappened();
+    }
+
+    [Fact]
+    public async Task GetCurrent_WithInvalidLongitude_ReturnsBadRequest()
+    {
+        var controller = new WeatherController(_openWeatherService);
+
+        var result = await controller.GetCurrent(10, 181, CancellationToken.None);
+
+        var bad = Assert.IsType<BadRequestObjectResult>(result);
+        var body = Assert.IsType<BaseCommentResponse>(bad.Value);
+        Assert.Equal(400, body.Statuscodes);
+        A.CallTo(() => _openWeatherService.GetCurrentByCoordinatesAsync(A<double>._, A<double>._, A<CancellationToken>._))
+            .MustNotHaveHappened();
+    }
+
+    [Fact]
+    public async Task GetCurrent_WhenOpenWeatherServiceThrows_PropagatesException()
+    {
+        A.CallTo(() => _openWeatherService.GetCurrentByCoordinatesAsync(10, 106, A<CancellationToken>._))
+            .ThrowsAsync(new InvalidOperationException("OpenWeather service error"));
+        var controller = new WeatherController(_openWeatherService);
+
+        var ex = await Assert.ThrowsAsync<InvalidOperationException>(() => controller.GetCurrent(10, 106, CancellationToken.None));
+
+        Assert.Equal("OpenWeather service error", ex.Message);
+    }
+
 }
